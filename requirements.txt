@@ -1,5 +1,4 @@
-# Production Hybrid System Requirements
-# Deployment-optimized: ~50MB total vs 500MB+ with local ML
-
 flask==3.0.0
 flask-cors==4.0.0
+openai==1.3.8
+python-dotenv==1.0.0
