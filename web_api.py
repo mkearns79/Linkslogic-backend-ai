@@ -398,6 +398,20 @@ class ProductionHybridVectorSearch:
                     rule_type = "LOCAL" if result['is_local'] else "OFFICIAL"
                     logger.info(f"  {i+1}. {rule_type} - {result['rule']['id']}: {result['best_similarity']:.3f}")
             
+            # Purple line boost
+            if 'purple line' in query.lower():
+                for result in results:
+                    if result.get('rule', {}).get('id') == 'CCC-6':
+                        result['best_similarity'] *= 3.0
+                        break
+                # Re-sort after boosting
+                results.sort(key=sort_key, reverse=True)
+                
+                if verbose:
+                    logger.info("🎯 Applied purple line boost to CCC-6")
+        
+        return results[:top_n]
+
             return results[:top_n]
             
         except Exception as e:
@@ -450,7 +464,7 @@ def get_position_focused_response(question, verbose=False):
     """Focused AI for position/boundary questions with local rules context"""
     try:
         # Get local rules context
-        search_engine = ClubSpecificVectorSearch(club_id='columbia_cc')
+        search_engine = ProductionHybridVectorSearch()
         search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
         
         # TEMPORARY DEBUG LOGGING
