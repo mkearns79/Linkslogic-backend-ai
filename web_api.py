@@ -450,7 +450,7 @@ def get_position_focused_response(question, verbose=False):
     """Focused AI for position/boundary questions with local rules context"""
     try:
         # Get local rules context
-        search_engine = ProductionHybridVectorSearch()
+        search_engine = ClubSpecificVectorSearch(club_id='columbia_cc')
         search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
         
         # TEMPORARY DEBUG LOGGING
