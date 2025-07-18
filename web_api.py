@@ -711,6 +711,7 @@ def ask_question():
                     'ai_system': 'production_hybrid',
                     'tokens_used': result.get('tokens_used', 0),
                     'estimated_cost': round(result.get('tokens_used', 0) * 0.00001, 4),
+                    'intent_detected': result.get('intent_detected', 'unknown'),
                     'timestamp': datetime.now().isoformat()
                 }
                 
