@@ -5273,7 +5273,7 @@ RULES_DATABASE = [
         },
         {
             "situation": "Ball above penalty area",
-            "explanation": "Under Rule 17.1a, a ball is in a penalty area if it is above the edge or any other part of the penalty area, such as when lodged in a tree above water or resting on a bridge over water.",
+            "explanation": "Under Rule 17.1a, a ball is in a penalty area if it is above the edge or any other part of the penalty area, such as when lodged in a tree above water or resting on a bridge over a penalty area.",
             "examples": ["ball in tree above water", "ball on bridge over penalty area", "ball stuck above hazard", "vertical penalty area boundaries"]
         },
         {

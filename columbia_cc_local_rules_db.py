@@ -72,6 +72,11 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'examples': ['Ball in pond west of footbridge', 'Dropping zone only for main pond area']
                 },
                 {
+                    'situation': 'Ball on cart bridge over penalty area',
+                    'explanation': 'When ball comes to rest on the cart bridge between the 17th and 18th holes that crosses over the penalty area, player gets NO RELIEF from the bridge. The ball is considered to be above the penalty area in accordance with Rule 17.1(a), and the bridge is an integral object of the penalty area. Player must play the ball as it lies or proceed under penalty area relief options.',
+                    'examples': ['Ball on bridge between 17th and 18th', 'Ball resting on cart bridge over water', 'Bridge over penalty area - no free relief', 'Must play from bridge or take penalty relief']
+                },
+                {
                     'situation': 'Hole 18 penalty area relief',
                     'explanation': 'When ball is in penalty area on hole 18, player must proceed under Rule 17.1 and may consider the penalty area to be a red penalty area',
                     'examples': ['Ball in water on 18th', 'Ball in penalty area on 18th']

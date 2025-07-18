@@ -92,7 +92,7 @@ If your ball goes in the POND (west of the footbridge):
 • Standard relief under Rule 17.1 (1 penalty stroke), OR  
 • Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
 
-If your ball is in other penalty areas on 17th:
+If your ball is in other penalty areas on 17th, including on the cart bridge:
 • Standard relief under Rule 17.1 only
 
 The dropping zone is only available for the main pond area, not other water hazards on the hole."""
@@ -190,14 +190,14 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
 
     "purple_line_boundary": {
     "keywords": [
-        "purple line out of bounds", "purple line boundary", "ball crossed purple line", "ball over purple line",
+        "purple line out of bounds", "purple line boundary", "ball crossed purple line", "ball over purple line", "ball over the train tracks",
         "purple line construction", "construction boundary", "ball in tunnel", "ball past purple line",
         "purple line area", "construction area boundary", "ball beyond purple line", "crossed construction line",
         "purple boundary line", "construction zone boundary", "ball in construction area",
-        "over the purple line", "past the purple line", "through purple line", "across purple line"
+        "over the purple line", "past the purple line", "through purple line", "across purple line", "across the train tracks"
     ],
     "local_rule": "CCC-6",
-    "quick_response": """According to Columbia Country Club's local rules, the Purple Line construction area is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
+    "quick_response": """According to Columbia Country Club's local rules, the Purple Line construction fence is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
 • Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
@@ -473,22 +473,86 @@ def get_hybrid_interpretation(question, verbose=False):
         context = "\n\n".join(context_parts)
         
         # STEP 4: Sophisticated LLM interpretation (your original prompting)
-        prompt = f"""You are a golf rules expert for Columbia Country Club.
+        prompt = f"""You are an expert golf rules assistant. Analyze the question carefully to select the most appropriate rule.
 
-RELEVANT RULES (ordered by precedence and relevance):
-{context}
+        QUESTION ANALYSIS REQUIRED:
+        Before answering, identify the CORE INTENT behind the question:
 
-QUESTION: {question}
+        **STEP 1: What is the player's situation?**
+        - WHERE is their ball? (location/position)
+        - WHAT happened to their ball? (movement/action)
+        - HOW can they proceed? (options/procedures)
 
-INSTRUCTIONS:
-- If using a COLUMBIA CC LOCAL RULE, start with "According to Columbia Country Club's local rules..."
-- If using an OFFICIAL RULE, start with "According to the Rules of Golf, Rule X.X..."
-- ALWAYS prioritize local rules over official rules when both apply
-- Be specific about free relief vs penalty strokes
-- Include the key procedure steps
-- Keep response under 200 words
+        **STEP 2: What type of rule guidance do they need?**
 
-ANSWER:"""
+        A) BALL LOCATION/STATUS questions:
+           - Intent: "Where is my ball legally?" or "Can I play this ball?"
+           - Examples: boundary determinations, ball position, in/out of bounds
+           - Use: Position/boundary rules (like 18.2a for boundaries)
+
+        B) RELIEF OPTIONS questions:
+           - Intent: "What are my choices?" or "How do I get out of this?"
+           - Examples: penalty area options, relief procedures, dropping zones
+           - Use: Relief procedure rules (Rule 17 for penalty areas, Rule 16 for obstructions)
+
+        C) BALL IDENTIFICATION questions:
+           - Intent: "Which ball should I play?" or "How do I know it's mine?"
+           - Examples: multiple balls, provisional situations, lost ball vs identification
+           - Use: Identification rules (18.3c for provisionals, 7.2 for general ID)
+
+        D) PENALTY/CONSEQUENCE questions:
+           - Intent: "What does this cost me?" or "What's the penalty?"
+           - Examples: stroke penalties, procedure violations
+           - Use: Specific penalty rules
+
+        E) RELIEF PROCEDURE MECHANICS questions:
+           - Intent: "HOW do I drop/place the ball?" or "WHERE exactly?"
+           - Examples: dropping height, dropping area, placement vs dropping
+           - Use: Procedure rules (14.3 for dropping, 14.2 for placing)
+           - Key: Dropping vs placing are DIFFERENT procedures with different rules
+
+        F) BALL SUBSTITUTION/REPLACEMENT questions:
+           - Intent: "Can I use a different ball?" or "Must I use the same ball?"
+           - Examples: when you can/cannot substitute, equipment damage
+           - Use: Ball substitution rules (6.3b, 14.2a)
+           - Key: Substitution allowed during relief, NOT during replacement
+
+        **STEP 3: Key distinctions that matter:**
+        - Water/penalty area ≠ lost ball (different rules entirely)
+        - Ball position questions ≠ relief procedure questions  
+        - Can't find ball ≠ can't identify ball
+        - Free relief situations ≠ penalty relief situations
+        - Movable objects ≠ immovable objects
+        - Course area determines available procedures: 
+          * Teeing area = can re-tee, special rules apply
+          * Bunker = cannot ground club, special relief rules
+          * Putting green = place (don't drop), can clean ball, different rules
+          * General area = standard rules apply
+          * Penalty area = can play as lies or take penalty relief
+        - Dropping ≠ placing (different procedures and areas)
+        - Red penalty area ≠ yellow penalty area (different relief options)
+        - Ball replacement ≠ ball substitution (different rules apply)
+
+        RULES CONTEXT:
+        {context}
+
+        QUESTION: {question}
+
+        SELECTION PRIORITY:
+        1. Choose the rule that matches the question TYPE, not just keywords
+        2. Local rules override official rules when applicable
+        3. Use the most specific sub-rule (like 18.3c(2) instead of 18.3)
+        4. Consider what the player actually needs to know
+
+        ANSWER FORMAT REQUIREMENTS:
+        - If using a COLUMBIA CC LOCAL RULE, start with "According to Columbia Country Club's local rules..."
+        - If using an OFFICIAL RULE, start with "According to the Rules of Golf, Rule X.X..."
+        - ALWAYS prioritize local rules over official rules when both apply
+        - Be specific about free relief vs penalty strokes
+        - Include the key procedure steps
+        - Keep response under 200 words
+
+        Provide a clear answer with the correct rule citation."""
 
         if verbose:
             logger.info("🧠 Consulting LLM with sophisticated context and rule scoring...")

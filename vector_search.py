@@ -570,6 +570,84 @@ class RulesVectorSearch:
         """
         query_lower = query.lower()
         
+        # PROVISIONAL BALL IDENTIFICATION SCENARIO BOOSTING (NEW)
+        provisional_keywords = ['provisional', 'provisional ball']
+        identification_keywords = [
+            'cannot distinguish', 'cannot tell which', 'cannot identify which',
+            'which is which', 'both balls', 'found both', 'same area',
+            'look identical', 'both found', 'distinguish between'
+        ]
+    
+        has_provisional = any(keyword in query_lower for keyword in provisional_keywords)
+        has_identification_issue = any(keyword in query_lower for keyword in identification_keywords)
+        
+        if has_provisional and has_identification_issue:
+            if verbose:
+                print("🎯 Universal Golf: Detected provisional ball identification scenario")
+            
+            # Boost Rule 18.3c(2) and related provisional rules
+            for rule_id in rule_results:
+                rule_text = rule_results[rule_id]['rule'].get('text', '').lower()
+                rule_title = rule_results[rule_id]['rule'].get('title', '').lower()
+                rule_conditions = rule_results[rule_id]['rule'].get('conditions', [])
+                
+                # Check if this rule addresses provisional ball identification
+                rule_addresses_identification = False
+                
+                # Direct rule ID matches
+                if '18.3c(2)' in rule_id or '18.3c' in rule_id or '18.3' in rule_id:
+                    if 'provisional' in rule_text:
+                        rule_addresses_identification = True
+                
+                # Check rule text for provisional identification content
+                if 'provisional' in rule_text and any(keyword in rule_text for keyword in identification_keywords):
+                    rule_addresses_identification = True
+                
+                # Check conditions for specific provisional identification scenarios
+                if isinstance(rule_conditions, list):
+                    for condition in rule_conditions:
+                        if isinstance(condition, dict):
+                            condition_text = str(condition.get('explanation', '')).lower()
+                            condition_examples = condition.get('examples', [])
+                            
+                            # Look for provisional identification in conditions
+                            if ('provisional' in condition_text and 
+                                any(keyword in condition_text for keyword in identification_keywords)):
+                                rule_addresses_identification = True
+                                break
+                            
+                            # Check examples
+                            if isinstance(condition_examples, list):
+                                examples_text = ' '.join(str(ex).lower() for ex in condition_examples)
+                                if ('provisional' in examples_text and 
+                                    any(keyword in examples_text for keyword in identification_keywords)):
+                                    rule_addresses_identification = True
+                                    break
+                
+                if rule_addresses_identification:
+                    old_score = rule_results[rule_id]['best_similarity']
+                    rule_results[rule_id]['best_similarity'] *= 8.0  # Strong boost
+                    
+                    if verbose:
+                        new_score = rule_results[rule_id]['best_similarity']
+                        print(f"   🎯 {rule_id}: {old_score:.3f} → {new_score:.3f} (8.0x boost - provisional ID rule)")
+            
+            # De-boost rules that don't address this specific scenario
+            irrelevant_rule_types = ['lost ball', 'out of bounds', 'penalty area', 'unplayable']
+            for rule_id in rule_results:
+                rule_text = rule_results[rule_id]['rule'].get('text', '').lower()
+                rule_title = rule_results[rule_id]['rule'].get('title', '').lower()
+                
+                # Check if rule is about irrelevant scenarios
+                if any(irrelevant in rule_text or irrelevant in rule_title for irrelevant in irrelevant_rule_types):
+                    if 'provisional' not in rule_text:  # Don't de-boost provisional-related rules
+                        old_score = rule_results[rule_id]['best_similarity']
+                        rule_results[rule_id]['best_similarity'] *= 0.3
+                        
+                        if verbose:
+                            new_score = rule_results[rule_id]['best_similarity']
+                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.3x de-boost - irrelevant context)")
+
         # WRONG BALL SCENARIO BOOSTING (universal across all courses)
         if detect_wrong_ball_scenario(query_lower):
             if verbose:
@@ -615,10 +693,52 @@ class RulesVectorSearch:
                         new_score = rule_results[rule_id]['best_similarity']
                         print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.3x de-boost - ball in motion conflict)")
         
-        # TODO: Add more universal golf scenarios here in the future:
-        # - Equipment rule violations
-        # - General penalty procedures  
-        # - Ball lost vs unplayable distinctions
+        # BALL BOUNCED BACK IN BOUNDS SCENARIO BOOSTING
+        out_of_bounds_keywords = ['out of bounds', 'ob', 'out-of-bounds']
+        bounce_back_keywords = [
+            'bounced back', 'bounce back', 'bounced back in', 'hit tree and bounced',
+            'hit and bounced', 'deflected back', 'came back in', 'ricocheted back',
+            'caromed back', 'rebounded', 'kicked back'
+        ]
+        in_bounds_keywords = ['in bounds', 'back in bounds', 'back in', 'back onto course']
+        
+        has_out_of_bounds = any(keyword in query_lower for keyword in out_of_bounds_keywords)
+        has_bounce_back = any(keyword in query_lower for keyword in bounce_back_keywords)
+        has_in_bounds = any(keyword in query_lower for keyword in in_bounds_keywords)
+        
+        if has_out_of_bounds and (has_bounce_back or has_in_bounds):
+            if verbose:
+                print("🎯 Universal Golf: Detected ball bounced back in bounds scenario")
+            
+            # This is about ball position, not OB relief - boost official boundary rules
+            for rule_id in rule_results:
+                rule_text = rule_results[rule_id]['rule'].get('text', '').lower()
+                rule_title = rule_results[rule_id]['rule'].get('title', '').lower()
+                
+                # Boost official rules about ball position/boundary definitions
+                if ('18.2' in rule_id and 'boundary' in rule_text) or 'boundary' in rule_title:
+                    old_score = rule_results[rule_id]['best_similarity']
+                    rule_results[rule_id]['best_similarity'] *= 6.0
+                    
+                    if verbose:
+                        new_score = rule_results[rule_id]['best_similarity']
+                        print(f"   🎯 {rule_id}: {old_score:.3f} → {new_score:.3f} (6.0x boost - boundary definition rule)")
+            
+            # De-boost local rules about OB relief (this isn't about relief procedures)
+            for rule_id in rule_results:
+                rule_data = rule_results[rule_id]['rule']
+                is_local = rule_results[rule_id].get('is_local', False)
+                
+                if is_local and 'out of bounds' in rule_data.get('text', '').lower():
+                    # Check if it's about relief procedures rather than boundary definition
+                    if any(relief_word in rule_data.get('text', '').lower() 
+                           for relief_word in ['relief', 'drop', 'penalty stroke', 'options']):
+                        old_score = rule_results[rule_id]['best_similarity']
+                        rule_results[rule_id]['best_similarity'] *= 0.2
+                        
+                        if verbose:
+                            new_score = rule_results[rule_id]['best_similarity']
+                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.2x de-boost - OB relief not applicable)")
         
         return rule_results
 
