@@ -415,179 +415,237 @@ def check_common_query(question):
     
     return None
 
-def get_hybrid_interpretation(question, verbose=False):
-    """RESTORED: Your original hybrid interpretation with OpenAI embeddings."""
+def classify_intent_minimal(question):
+    """Lightweight intent classification - ~$0.005 per query"""
     try:
-        # STEP 1: Check templates first (your original approach)
-        template = check_common_query(question)
-        if template:
-            if verbose:
-                logger.info(f"✅ Template match: {template['local_rule']}")
-            return {
-                'answer': template["quick_response"],
-                'source': 'template',
-                'rule_id': template['local_rule'],
-                'confidence': 'highest',
-                'tokens_used': 0
-            }
-        
-        # STEP 2: Vector search with rule relevance scoring (your original sophisticated approach)
-        if verbose:
-            logger.info("🔍 No template found, using vector search with rule scoring...")
-            
-        search_engine = ProductionHybridVectorSearch()
-        
-        # Extract hole number for context (your original logic)
-        hole_match = re.search(r'\b(\d{1,2})(?:th|st|nd|rd)?\s+hole\b', question.lower())
-        hole_number = int(hole_match.group(1)) if hole_match else None
-        
-        search_results = search_engine.search_with_precedence(
-            question, 
-            hole_number=hole_number, 
-            top_n=2, 
-            verbose=verbose
-        )
-        
-        if not search_results:
-            if verbose:
-                logger.info("❌ No relevant rules found")
-            return {
-                'answer': "I couldn't find specific rules for that question. Could you rephrase or ask about Columbia Country Club local rules?",
-                'source': 'no_rules_found',
-                'confidence': 'low',
-                'tokens_used': 0
-            }
-        
-        # STEP 3: Build sophisticated context (your original approach)
-        context_parts = []
-        for result in search_results:
-            rule = result['rule']
-            is_local = result.get('is_local', False)
-            score = result['best_similarity']
-            
-            if is_local:
-                context_parts.append(f"COLUMBIA CC LOCAL RULE {rule['id']}: {rule['title']} - {rule['text']} (Relevance: {score:.3f})")
-            else:
-                context_parts.append(f"OFFICIAL RULE {rule['id']}: {rule['title']} - {rule['text']} (Relevance: {score:.3f})")
-        
-        context = "\n\n".join(context_parts)
-        
-        # STEP 4: Sophisticated LLM interpretation (your original prompting)
-        prompt = f"""You are an expert golf rules assistant. Analyze the question carefully to select the most appropriate rule.
-
-        QUESTION ANALYSIS REQUIRED:
-        Before answering, identify the CORE INTENT behind the question:
-
-        **STEP 1: What is the player's situation?**
-        - WHERE is their ball? (location/position)
-        - WHAT happened to their ball? (movement/action)
-        - HOW can they proceed? (options/procedures)
-
-        **STEP 2: What type of rule guidance do they need?**
-
-        A) BALL LOCATION/STATUS questions:
-           - Intent: "Where is my ball legally?" or "Can I play this ball?"
-           - Examples: boundary determinations, ball position, in/out of bounds
-           - Use: Position/boundary rules (like 18.2a for boundaries)
-
-        B) RELIEF OPTIONS questions:
-           - Intent: "What are my choices?" or "How do I get out of this?"
-           - Examples: penalty area options, relief procedures, dropping zones
-           - Use: Relief procedure rules (Rule 17 for penalty areas, Rule 16 for obstructions)
-
-        C) BALL IDENTIFICATION questions:
-           - Intent: "Which ball should I play?" or "How do I know it's mine?"
-           - Examples: multiple balls, provisional situations, lost ball vs identification
-           - Use: Identification rules (18.3c for provisionals, 7.2 for general ID)
-
-        D) PENALTY/CONSEQUENCE questions:
-           - Intent: "What does this cost me?" or "What's the penalty?"
-           - Examples: stroke penalties, procedure violations
-           - Use: Specific penalty rules
-
-        E) RELIEF PROCEDURE MECHANICS questions:
-           - Intent: "HOW do I drop/place the ball?" or "WHERE exactly?"
-           - Examples: dropping height, dropping area, placement vs dropping
-           - Use: Procedure rules (14.3 for dropping, 14.2 for placing)
-           - Key: Dropping vs placing are DIFFERENT procedures with different rules
-
-        F) BALL SUBSTITUTION/REPLACEMENT questions:
-           - Intent: "Can I use a different ball?" or "Must I use the same ball?"
-           - Examples: when you can/cannot substitute, equipment damage
-           - Use: Ball substitution rules (6.3b, 14.2a)
-           - Key: Substitution allowed during relief, NOT during replacement
-
-        **STEP 3: Key distinctions that matter:**
-        - Water/penalty area ≠ lost ball (different rules entirely)
-        - Ball position questions ≠ relief procedure questions  
-        - Can't find ball ≠ can't identify ball
-        - Free relief situations ≠ penalty relief situations
-        - Movable objects ≠ immovable objects
-        - Course area determines available procedures: 
-          * Teeing area = can re-tee, special rules apply
-          * Bunker = cannot ground club, special relief rules
-          * Putting green = place (don't drop), can clean ball, different rules
-          * General area = standard rules apply
-          * Penalty area = can play as lies or take penalty relief
-        - Dropping ≠ placing (different procedures and areas)
-        - Red penalty area ≠ yellow penalty area (different relief options)
-        - Ball replacement ≠ ball substitution (different rules apply)
-
-        RULES CONTEXT:
-        {context}
-
-        QUESTION: {question}
-
-        SELECTION PRIORITY:
-        1. Choose the rule that matches the question TYPE, not just keywords
-        2. Local rules override official rules when applicable
-        3. Use the most specific sub-rule (like 18.3c(2) instead of 18.3)
-        4. Consider what the player actually needs to know
-
-        ANSWER FORMAT REQUIREMENTS:
-        - If using a COLUMBIA CC LOCAL RULE, start with "According to Columbia Country Club's local rules..."
-        - If using an OFFICIAL RULE, start with "According to the Rules of Golf, Rule X.X..."
-        - ALWAYS prioritize local rules over official rules when both apply
-        - Be specific about free relief vs penalty strokes
-        - Include the key procedure steps
-        - Keep response under 200 words
-
-        Provide a clear answer with the correct rule citation."""
-
-        if verbose:
-            logger.info("🧠 Consulting LLM with sophisticated context and rule scoring...")
-        
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a professional golf rules expert providing accurate rule interpretations for Columbia Country Club. Prioritize local rules over official rules."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.2,
-            max_tokens=250
+            messages=[{
+                "role": "user", 
+                "content": f"""Golf question type?
+A) Ball location/position (where is ball, can I play it, is it in bounds)
+B) Relief options/procedures (what are my options, how do I get relief)
+C) Other
+
+Question: {question}
+Answer:"""
+            }],
+            temperature=0.1,
+            max_tokens=10
         )
         
-        result = response.choices[0].message.content
-        tokens_used = response.usage.total_tokens if response.usage else 0
-        
-        if verbose:
-            logger.info(f"✅ Generated sophisticated AI response (tokens: {tokens_used})")
+        result = response.choices[0].message.content.strip()
+        if result.startswith('A'):
+            return 'position'
+        elif result.startswith('B'):
+            return 'relief'
+        else:
+            return 'other'
             
+    except Exception as e:
+        logger.error(f"Intent classification error: {e}")
+        return 'other'  # Fallback to current system
+
+def get_position_focused_response(question, verbose=False):
+    """Focused AI for position/boundary questions"""
+    try:
+        prompt = f"""Golf rules expert: Determine ball position/status.
+
+Question: {question}
+
+Focus on: Ball location rules, boundary definitions, in bounds vs out of bounds, ball identification.
+Common scenarios: Ball bounced back from OB, ball position determination, can I play this ball.
+Answer format: Rule X.X: [brief ruling]. [Procedure if needed].
+Max 85 words."""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=125
+        )
+        
         return {
-            'answer': result,
-            'source': 'ai_sophisticated',
-            'rules_used': [r['rule']['id'] for r in search_results],
+            'answer': response.choices[0].message.content,
+            'source': 'ai_position',
             'confidence': 'high',
-            'tokens_used': tokens_used
+            'tokens_used': response.usage.total_tokens if response.usage else 0
         }
         
+    except Exception as e:
+        logger.error(f"Position response error: {e}")
+        return get_fallback_response()
+
+def get_relief_focused_response(question, verbose=False):
+    """Focused AI for relief/procedure questions with local rules context"""
+    try:
+        # Get minimal context from vector search
+        search_engine = ProductionHybridVectorSearch()
+        search_results = search_engine.search_with_precedence(question, top_n=2, verbose=verbose)
+        
+        # Build minimal context
+        context_parts = []
+        for result in search_results[:2]:  # Limit to top 2 for token efficiency
+            rule = result['rule']
+            is_local = result.get('is_local', False)
+            if is_local:
+                context_parts.append(f"LOCAL RULE {rule['id']}: {rule['title'][:60]}...")
+            else:
+                context_parts.append(f"Rule {rule['id']}: {rule['title'][:50]}...")
+        
+        context = "\n".join(context_parts) if context_parts else "No specific local rules found."
+        
+        prompt = f"""Golf rules expert: Provide relief options/procedures.
+
+Question: {question}
+
+Relevant Rules:
+{context}
+
+Focus on: Relief procedures, dropping zones, penalty strokes, local rule options.
+If LOCAL RULE mentioned, start with "According to Columbia Country Club's local rules..."
+If official rule, start with "According to the Rules of Golf, Rule X.X..."
+Max 85 words."""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=125
+        )
+        
+        return {
+            'answer': response.choices[0].message.content,
+            'source': 'ai_relief',
+            'confidence': 'high',
+            'tokens_used': response.usage.total_tokens if response.usage else 0
+        }
+        
+    except Exception as e:
+        logger.error(f"Relief response error: {e}")
+        return get_fallback_response()
+
+def get_general_focused_response(question, verbose=False):
+    """General AI for unclear intent - uses simplified enhanced prompt"""
+    try:
+        # Get minimal context from vector search
+        search_engine = ProductionHybridVectorSearch()
+        search_results = search_engine.search_with_precedence(question, top_n=2, verbose=verbose)
+        
+        # Build minimal context
+        context_parts = []
+        for result in search_results[:2]:
+            rule = result['rule']
+            is_local = result.get('is_local', False)
+            context_parts.append(f"{'LOCAL' if is_local else 'OFFICIAL'} Rule {rule['id']}: {rule['title'][:60]}...")
+        
+        context = "\n".join(context_parts) if context_parts else "General golf rules apply."
+        
+        prompt = f"""Golf rules expert: Answer golf question.
+
+Question: {question}
+
+Relevant Rules:
+{context}
+
+Determine if this is about: ball position, relief procedures, or rule clarification.
+If LOCAL rule applies, start with "According to Columbia Country Club's local rules..."
+If official rule, start with "According to the Rules of Golf, Rule X.X..."
+Max 85 words."""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.2,
+            max_tokens=125
+        )
+        
+        return {
+            'answer': response.choices[0].message.content,
+            'source': 'ai_general',
+            'confidence': 'medium',
+            'tokens_used': response.usage.total_tokens if response.usage else 0
+        }
+        
+    except Exception as e:
+        logger.error(f"General response error: {e}")
+        return get_fallback_response()
+
+def get_fallback_response():
+    """Fallback response when AI fails"""
+    return {
+        'answer': "I'm having trouble processing that question. Please try rephrasing or contact support.",
+        'source': 'fallback',
+        'confidence': 'low',
+        'tokens_used': 0
+    }
+
+def get_hybrid_interpretation(question, verbose=False):
+    """Two-stage approach: Intent classification + focused AI"""
+    try:
+        start_time = time.time()
+        
+        # STEP 1: Lightweight intent classification (always runs)
+        intent = classify_intent_minimal(question)
+        if verbose:
+            logger.info(f"🎯 Intent classified as: {intent}")
+        
+        # STEP 2: Route based on intent
+        if intent == 'position':
+            # Position questions: Skip templates, go straight to focused AI
+            result = get_position_focused_response(question, verbose)
+            
+        elif intent == 'relief':
+            # Relief questions: Check templates first, then AI if needed
+            template = check_common_query(question)
+            if template:
+                if verbose:
+                    logger.info(f"✅ Template match: {template['local_rule']}")
+                result = {
+                    'answer': template["quick_response"],
+                    'source': 'template',
+                    'rule_id': template['local_rule'],
+                    'confidence': 'highest',
+                    'tokens_used': 0
+                }
+            else:
+                result = get_relief_focused_response(question, verbose)
+                
+        else:  # 'other'
+            # Unclear intent: Fall back to current system
+            template = check_common_query(question)
+            if template:
+                if verbose:
+                    logger.info(f"✅ Template match for unclear intent: {template['local_rule']}")
+                result = {
+                    'answer': template["quick_response"],
+                    'source': 'template',
+                    'rule_id': template['local_rule'],
+                    'confidence': 'highest',
+                    'tokens_used': 0
+                }
+            else:
+                result = get_general_focused_response(question, verbose)
+        
+        # Add timing and intent info to result
+        response_time = round(time.time() - start_time, 2)
+        result['response_time'] = response_time
+        result['intent_detected'] = intent
+        
+        # Enhanced logging for cost tracking
+        if verbose:
+            logger.info(f"✅ Response completed: Intent={intent}, Source={result['source']}, Tokens={result.get('tokens_used', 0)}, Time={response_time}s")
+        
+        return result
+                
     except Exception as e:
         logger.error(f"Hybrid interpretation error: {e}")
         return {
             'answer': "I'm experiencing a technical issue. Please try rephrasing your question.",
             'source': 'error',
             'confidence': 'none',
-            'tokens_used': 0
+            'tokens_used': 0,
+            'intent_detected': 'error'
         }
 
 def initialize_ai_system():
