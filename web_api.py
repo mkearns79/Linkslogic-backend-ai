@@ -409,8 +409,6 @@ class ProductionHybridVectorSearch:
                 
                 if verbose:
                     logger.info("🎯 Applied purple line boost to CCC-6")
-        
-        return results[:top_n]
 
             return results[:top_n]
             
