@@ -447,15 +447,58 @@ Answer:"""
         return 'other'  # Fallback to current system
 
 def get_position_focused_response(question, verbose=False):
-    """Focused AI for position/boundary questions"""
+    """Focused AI for position/boundary questions with local rules context"""
     try:
-        prompt = f"""Golf rules expert: Determine ball position/status.
+        # Get local rules context
+        search_engine = ProductionHybridVectorSearch()
+        search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
+        
+        # TEMPORARY DEBUG LOGGING
+        if verbose:
+            logger.info(f"🔍 Position search results for '{question}':")
+            for i, result in enumerate(search_results):
+                rule_id = result['rule']['id']
+                title = result['rule']['title']
+                is_local = result.get('is_local', False)
+                score = result.get('best_similarity', 0)
+                logger.info(f"  {i+1}. {'LOCAL' if is_local else 'OFFICIAL'} - {rule_id}: {title} (score: {score:.3f})")
+        
+        # Build context including local rules
+        context_parts = []
+        for result in search_results[:3]:
+            rule = result['rule']
+            is_local = result.get('is_local', False)
+            if is_local:
+                context_parts.append(f"COLUMBIA CC LOCAL RULE {rule['id']}: {rule['title']} - {rule['text'][:150]}...")
+            else:
+                context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
+        
+        context = "\n".join(context_parts) if context_parts else "General golf rules apply."
+
+        prompt = f"""Golf rules expert: Determine ball position/status at Columbia Country Club.
 
 Question: {question}
 
-Focus on: Ball location rules, boundary definitions, in bounds vs out of bounds, ball identification.
-Common scenarios: Ball bounced back from OB, ball position determination, can I play this ball.
-Answer format: Rule X.X: [brief ruling]. [Procedure if needed].
+Relevant Rules:
+{context}
+
+Focus on: 
+- Local boundary definitions (purple line, train tracks, construction areas, out of bounds markers)
+- Ball location determination (in bounds vs out of bounds, penalty area vs general area)
+- Course area identification (teeing area, bunker, penalty area, putting green, general area)
+- Local obstruction rules (cart paths as integral objects vs immovable obstructions)
+- Ball identification issues (which ball is mine, provisional vs original)
+- Playability status (can I play this ball, is it the right ball)
+- Movement and position after deflection (bounced back, kicked back, ricocheted)
+- Columbia-specific areas (maintenance zones, construction boundaries, integral cart paths)
+
+Key distinctions:
+- Ball position ≠ relief procedures (focus on WHERE not HOW to get relief)
+- Different course areas have different rules
+- Local boundaries may differ from standard golf boundaries
+
+If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
+If official rule, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
         response = client.chat.completions.create(
@@ -477,33 +520,57 @@ Max 85 words."""
         return get_fallback_response()
 
 def get_relief_focused_response(question, verbose=False):
-    """Focused AI for relief/procedure questions with local rules context"""
+    """Focused AI for relief/procedure questions with enhanced local rules context"""
     try:
-        # Get minimal context from vector search
+        # Get local rules context with more results for comprehensive relief options
         search_engine = ProductionHybridVectorSearch()
-        search_results = search_engine.search_with_precedence(question, top_n=2, verbose=verbose)
+        search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
         
-        # Build minimal context
+        # ENHANCED DEBUG LOGGING (same as position function)
+        if verbose:
+            logger.info(f"🔍 Relief search results for '{question}':")
+            for i, result in enumerate(search_results):
+                rule_id = result['rule']['id']
+                title = result['rule']['title']
+                is_local = result.get('is_local', False)
+                score = result.get('best_similarity', 0)
+                logger.info(f"  {i+1}. {'LOCAL' if is_local else 'OFFICIAL'} - {rule_id}: {title} (score: {score:.3f})")
+        
+        # Build enhanced context with more local rule detail
         context_parts = []
-        for result in search_results[:2]:  # Limit to top 2 for token efficiency
+        for result in search_results[:3]:  # Use top 3 instead of 2
             rule = result['rule']
             is_local = result.get('is_local', False)
             if is_local:
-                context_parts.append(f"LOCAL RULE {rule['id']}: {rule['title'][:60]}...")
+                # More detailed local rule context (increased from 60 to 200 chars)
+                context_parts.append(f"COLUMBIA CC LOCAL RULE {rule['id']}: {rule['title']} - {rule['text'][:200]}...")
             else:
-                context_parts.append(f"Rule {rule['id']}: {rule['title'][:50]}...")
+                context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
         
         context = "\n".join(context_parts) if context_parts else "No specific local rules found."
         
-        prompt = f"""Golf rules expert: Provide relief options/procedures.
+        prompt = f"""Golf rules expert: Provide relief options/procedures at Columbia Country Club.
 
 Question: {question}
 
 Relevant Rules:
 {context}
 
-Focus on: Relief procedures, dropping zones, penalty strokes, local rule options.
-If LOCAL RULE mentioned, start with "According to Columbia Country Club's local rules..."
+Focus on: 
+- Columbia CC local relief options (special procedures, dropping zones, free vs penalty relief)
+- Local rule exceptions (integral objects, no-relief areas, boundary definitions)
+- Relief procedures (where to drop, how many penalty strokes, measurement procedures)
+- Local vs official relief options (always prioritize local when available)
+- Hole-specific relief (dropping zones, special areas, course-specific rules)
+- Equipment/obstruction relief (cart paths, maintenance areas, construction fences, construction zones)
+
+Key distinctions:
+- Local relief options override official rules when applicable
+- Free relief vs penalty relief situations
+- Dropping vs placing procedures
+- Course area-specific relief rules
+
+If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
 If official rule, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
@@ -528,28 +595,33 @@ Max 85 words."""
 def get_general_focused_response(question, verbose=False):
     """General AI for unclear intent - uses simplified enhanced prompt"""
     try:
-        # Get minimal context from vector search
+        # Get context from vector search (keep current top 2)
         search_engine = ProductionHybridVectorSearch()
         search_results = search_engine.search_with_precedence(question, top_n=2, verbose=verbose)
         
-        # Build minimal context
+        # Build context (slight enhancement - 100 chars vs 60)
         context_parts = []
         for result in search_results[:2]:
             rule = result['rule']
             is_local = result.get('is_local', False)
-            context_parts.append(f"{'LOCAL' if is_local else 'OFFICIAL'} Rule {rule['id']}: {rule['title'][:60]}...")
+            if is_local:
+                context_parts.append(f"COLUMBIA CC LOCAL RULE {rule['id']}: {rule['title']} - {rule['text'][:100]}...")
+            else:
+                context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
         
         context = "\n".join(context_parts) if context_parts else "General golf rules apply."
         
-        prompt = f"""Golf rules expert: Answer golf question.
+        prompt = f"""Golf rules expert: Answer golf question at Columbia Country Club.
 
 Question: {question}
 
 Relevant Rules:
 {context}
 
-Determine if this is about: ball position, relief procedures, or rule clarification.
-If LOCAL rule applies, start with "According to Columbia Country Club's local rules..."
+Determine if this is about: ball position, relief procedures, equipment, or rule clarification.
+Focus on: Local rule priority, Columbia-specific procedures, official rule application.
+
+If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
 If official rule, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
