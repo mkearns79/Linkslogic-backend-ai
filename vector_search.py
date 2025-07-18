@@ -911,7 +911,7 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
                 result['precedence_level'] = 'Local Rule'
             else:
                 result['precedence_level'] = 'Official Rule'
-        
+
         # Apply universal golf boosting FIRST
         rule_results = self.apply_universal_golf_boosting(rule_results, query, verbose)
 
@@ -1003,6 +1003,21 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
         
         query_lower = query.lower()
         
+        # Simple purple line detection and boost
+        if 'purple line' in query_lower:
+            if verbose:
+                print("🎯 Columbia CC: Purple line query detected")
+            
+            # Give CCC-6 a strong boost to ensure it ranks highest
+            if 'CCC-6' in rule_results:
+                old_score = rule_results['CCC-6']['best_similarity']
+                rule_results['CCC-6']['best_similarity'] *= 3.0
+                
+                if verbose:
+                    new_score = rule_results['CCC-6']['best_similarity']
+                    print(f"   🎯 CCC-6: {old_score:.3f} → {new_score:.3f} (3.0x purple line boost)")
+
+
         # PROBLEM FIX: Cart path behind holes 12, 14, 17 (integral objects)
         if hole_number in [12, 14, 17]:
             cart_path_terms = ['cart path', 'path', 'road', 'unpaved road']
