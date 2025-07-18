@@ -181,7 +181,7 @@ COLUMBIA_CC_LOCAL_RULES = {
             'id': 'CCC-6',
             'title': 'Purple Line and Construction Fence',
             'text': 'The fence around the Purple Line construction area is considered a boundary fence from which free relief is not available. Mesh attached to the fence is part of the fence and considered immovable. A ball coming to rest on or beyond the Purple Line construction area is out of bounds.',
-            'keywords': ['purple line', 'construction fence', 'purple line fence', 'boundary fence', 'out of bounds', 'no relief', 'green fence', 'mesh', 'mesh fence', 'construction mesh', 'green mesh', 'behind green', 'behind 1st green', 'behind first green', 'behind 14th green', 'to the right of #2', 'construction area', 'fence behind green', 'temporary fence'],
+            'keywords': ['purple line', 'the purple line', 'purple', 'construction fence', 'purple line fence', 'boundary fence', 'out of bounds', 'no relief', 'green fence', 'mesh', 'mesh fence', 'construction mesh', 'green mesh', 'behind green', 'behind 1st green', 'behind first green', 'behind 14th green', 'to the right of #2', 'construction area', 'fence behind green', 'temporary fence'],
             'examples': [
                 'Ball lands in construction area - out of bounds, proceed under stroke and distance',
                 'Ball against purple line fence - no free relief available, play as lies or unplayable',
