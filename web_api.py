@@ -1077,7 +1077,7 @@ logger.info(f"  • {len(RULES_DATABASE)} official golf rules")
 
 ai_initialized = initialize_ai_system()
 
-if ai_initialized:
+if ai_initialized: 
     logger.info("🎯 Production Hybrid System Ready - Templates + AI + Rule Scoring + Local Precedence!")
 else:
     logger.warning("⚠️ Running in template-only mode")
