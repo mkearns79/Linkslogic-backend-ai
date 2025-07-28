@@ -917,6 +917,11 @@ def get_quick_questions():
         }
     })
 
+@app.route('/api/admin/queries', methods=['GET'])
+def view_all_queries():
+    """Simple dashboard test."""
+    return "Dashboard working!"
+
 # Initialize the production hybrid system
 logger.info("🚀 Starting Production Hybrid Golf Rules System...")
 logger.info("📊 System includes:")
