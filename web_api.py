@@ -1020,7 +1020,7 @@ def view_all_queries():
         for query in all_queries[:100]:  # Limit to 100 for performance
             timestamp = query.get('timestamp', 'N/A')[:16]
             question = query.get('question', 'N/A')[:100]
-            answer = query.get('answer', 'N/A')[:150]
+            answer = query.get('answer', 'N/A')[:300]
             source = query.get('source', 'unknown')
             rule_type = query.get('rule_type', 'N/A')
             tokens = query.get('tokens_used', 0)
