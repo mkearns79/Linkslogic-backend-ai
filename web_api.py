@@ -6,6 +6,7 @@ import os
 import re
 import math
 from datetime import datetime
+from datetime import timedelta
 import logging
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -820,9 +821,9 @@ def ask_question():
                         "success": response_data.get('success', False)
                     }
                     
-                    with open("all_queries.json", "a") as f:
-                        f.write(json.dumps(comprehensive_log) + "\n")
-
+                    # Log to Cloud Logging (persists forever)
+                    logger.info(f"GOLF_QUERY: {json.dumps(comprehensive_log)}")
+                    
                 except Exception as e:
                     logger.error(f"Dashboard logging error: {e}")
 
@@ -940,33 +941,43 @@ def get_quick_questions():
 
 @app.route('/api/admin/queries', methods=['GET'])
 def view_all_queries():
-    """Dashboard to view all queries and responses."""
+    """Dashboard reading from Cloud Logging."""
     try:
-        # Read queries from various log files
+        from google.cloud import logging as cloud_logging
+        
+        # Initialize Cloud Logging client
+        logging_client = cloud_logging.Client()
+        
+        # Query for our golf queries from the last 7 days
+        filter_str = '''
+        resource.type="cloud_run_revision"
+        textPayload:"GOLF_QUERY:"
+        timestamp >= "{}T00:00:00Z"
+        '''.format((datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))
+        
         all_queries = []
         
-        # Check multiple possible log files
-        log_files = ["usage_log.json", "all_queries.json", "qa_sessions.json"]
-        
-        for log_file in log_files:
-            if os.path.exists(log_file):
-                with open(log_file, "r") as f:
-                    for line in f:
-                        try:
-                            entry = json.loads(line.strip())
-                            all_queries.append(entry)
-                        except:
-                            continue
+        # Fetch logs
+        for entry in logging_client.list_entries(filter_=filter_str, max_results=500):
+            try:
+                # Extract the JSON from the log message
+                log_text = entry.payload
+                if "GOLF_QUERY:" in log_text:
+                    json_part = log_text.split("GOLF_QUERY:", 1)[1].strip()
+                    query_data = json.loads(json_part)
+                    all_queries.append(query_data)
+            except:
+                continue
         
         # Sort by timestamp (newest first)
         all_queries.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
         
-        # Create HTML dashboard
+        # Create HTML dashboard (same as before)
         html = f"""
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Golf Rules Query Dashboard</title>
+            <title>Golf Rules Query Dashboard (Cloud Logging)</title>
             <style>
                 body {{ font-family: Arial, sans-serif; margin: 20px; }}
                 table {{ border-collapse: collapse; width: 100%; margin-top: 20px; }}
@@ -981,14 +992,15 @@ def view_all_queries():
             </style>
         </head>
         <body>
-            <h1>🏌️ Golf Rules Query Dashboard</h1>
+            <h1>🏌️ Golf Rules Query Dashboard (Persistent)</h1>
             
             <div class="summary">
-                <h3>Summary</h3>
+                <h3>Summary (Last 7 Days)</h3>
                 <p><strong>Total Queries:</strong> {len(all_queries)}</p>
-                <p><strong>Template Responses:</strong> {len([q for q in all_queries if q.get('source', '').startswith('template')])}</p>
+                <p><strong>Template Responses:</strong> {len([q for q in all_queries if 'template' in q.get('source', '')])}</p>
                 <p><strong>AI Responses:</strong> {len([q for q in all_queries if 'ai' in q.get('source', '')])}</p>
-                <p><strong>Total Cost:</strong> ${sum([q.get('cost', 0) for q in all_queries]):.4f}</p>
+                <p><strong>Total Cost:</strong> ${sum([q.get('estimated_cost', 0) for q in all_queries]):.4f}</p>
+                <p><strong>Data Source:</strong> Cloud Logging (Persistent)</p>
             </div>
             
             <table>
@@ -1004,18 +1016,18 @@ def view_all_queries():
                 </tr>
         """
         
-        # Add rows for each query (limit to last 100 for performance)
-        for query in all_queries[:100]:
-            timestamp = query.get('timestamp', 'N/A')[:16]  # Short timestamp
-            question = query.get('question', query.get('question_preview', 'N/A'))[:100]
+        # Add rows for each query
+        for query in all_queries[:100]:  # Limit to 100 for performance
+            timestamp = query.get('timestamp', 'N/A')[:16]
+            question = query.get('question', 'N/A')[:100]
             answer = query.get('answer', 'N/A')[:150]
             source = query.get('source', 'unknown')
-            rule_type = query.get('rule_type', query.get('rule_id', 'N/A'))
-            tokens = query.get('tokens_used', query.get('tokens', 0))
-            cost = query.get('estimated_cost', query.get('cost', 0))
+            rule_type = query.get('rule_type', 'N/A')
+            tokens = query.get('tokens_used', 0)
+            cost = query.get('estimated_cost', 0)
             response_time = query.get('response_time', 0)
             
-            # Color code by source type
+            # Color code by source
             row_class = ""
             if 'template' in source:
                 row_class = "template"
@@ -1045,11 +1057,12 @@ def view_all_queries():
                 <p><span style="background-color: #e8f5e8; padding: 2px 6px;">Green</span> = Template (Free)</p>
                 <p><span style="background-color: #e8f0ff; padding: 2px 6px;">Blue</span> = AI Response (Costs tokens)</p>
                 <p><span style="background-color: #ffe8e8; padding: 2px 6px;">Red</span> = Error/Fallback</p>
+                <p><strong>Data persists across container restarts!</strong></p>
             </div>
             
             <script>
-                // Auto-refresh every 30 seconds
-                setTimeout(() => location.reload(), 30000);
+                // Auto-refresh every 60 seconds
+                setTimeout(() => location.reload(), 60000);
             </script>
         </body>
         </html>
@@ -1062,8 +1075,8 @@ def view_all_queries():
         <html>
         <body>
             <h1>Dashboard Error</h1>
-            <p>Error loading queries: {str(e)}</p>
-            <p>Make sure your app is logging queries properly.</p>
+            <p>Error loading from Cloud Logging: {str(e)}</p>
+            <p>Falling back to file-based logs...</p>
         </body>
         </html>
         """
