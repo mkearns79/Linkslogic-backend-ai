@@ -677,12 +677,29 @@ def get_hybrid_interpretation(question, verbose=False):
     try:
         start_time = time.time()
         
-        # STEP 1: Lightweight intent classification (always runs)
+        # STEP 1: Always check templates first, regardless of intent
+        template = check_common_query(question)
+        if template:
+            if verbose:
+                logger.info(f"✅ Template match: {template['local_rule']}")
+            result = {
+                'answer': template["quick_response"],
+                'source': 'template',
+                'rule_id': template['local_rule'],
+                'confidence': 'highest',
+                'tokens_used': 0
+            }
+            # Add timing and return immediately
+            response_time = round(time.time() - start_time, 2)
+            result['response_time'] = response_time
+            return result
+        
+        # STEP 2: If no template match, then do lightweight intent classification
         intent = classify_intent_minimal(question)
         if verbose:
             logger.info(f"🎯 Intent classified as: {intent}")
         
-        # STEP 2: Route based on intent
+        # STEP 3: Route based on intent
         if intent == 'position':
             # Position questions: Skip templates, go straight to focused AI
             result = get_position_focused_response(question, verbose)
