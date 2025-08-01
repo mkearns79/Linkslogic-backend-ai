@@ -191,7 +191,7 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
 
     "purple_line_boundary": {
     "keywords": [
-        "purple line out of bounds", "purple line boundary", "ball crossed purple line", "ball over purple line", "ball over the train tracks",
+        "purple line", "purple line out of bounds", "purple line boundary", "ball crossed purple line", "ball over purple line", "ball over the train tracks",
         "purple line construction", "construction boundary", "ball in tunnel", "ball past purple line",
         "purple line area", "construction area boundary", "ball beyond purple line", "crossed construction line",
         "purple boundary line", "construction zone boundary", "ball in construction area",
