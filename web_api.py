@@ -85,7 +85,7 @@ The dropping zone is often the better choice as it gives you a good angle to the
     },
     
     "water_hazard_17": {
-        "keywords": ["Ball in water on hole 17", "water on seventeen", "water on 17", "17th hole water", "pond on hole seventeen", "17th water", "drop zone on seventeen"],
+        "keywords": ["Water on 17", "Ball in water on hole 17", "water on seventeen", "17th hole water", "pond on hole seventeen", "17th water", "drop zone on seventeen"],
         "local_rule": "CCC-2", 
         "quick_response": """On the 17th hole at Columbia CC:
 
@@ -422,11 +422,17 @@ def check_common_query(question):
     """RESTORED: Your original template checking function."""
     question_lower = question.lower()
     
+    print(f"🔍 DEBUG: Checking question: '{question_lower}'")
+    print(f"🔍 DEBUG: Available templates: {list(COMMON_QUERY_TEMPLATES.keys())}")
+    
     for template_name, template_data in COMMON_QUERY_TEMPLATES.items():
+        print(f"🔍 DEBUG: Checking template '{template_name}' with {len(template_data['keywords'])} keywords")
         for keyword_phrase in template_data["keywords"]:
             if keyword_phrase in question_lower:
+                print(f"✅ DEBUG: MATCH FOUND! Template: {template_name}, Keyword: '{keyword_phrase}'")
                 return template_data
     
+    print("❌ DEBUG: No template match found")
     return None
 
 def classify_intent_minimal(question):
