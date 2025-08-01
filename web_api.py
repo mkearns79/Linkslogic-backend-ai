@@ -85,7 +85,7 @@ The dropping zone is often the better choice as it gives you a good angle to the
     },
     
     "water_hazard_17": {
-        "keywords": ["water on seventeen", "water on 17", "17th hole water", "pond on hole seventeen", "17th water", "drop zone on seventeen"],
+        "keywords": ["Ball in water on hole 17", "water on seventeen", "water on 17", "17th hole water", "pond on hole seventeen", "17th water", "drop zone on seventeen"],
         "local_rule": "CCC-2", 
         "quick_response": """On the 17th hole at Columbia CC:
 
@@ -115,7 +115,7 @@ This is different from regular ground under repair - relief is mandatory, not op
     },
      
     "maintenance_facility": {
-        "keywords": ["maintenance", "building", "facility", "shed", "equipment", "roof"],
+        "keywords": ["Ball near maintenance building on hole 10", "maintenance", "building", "facility", "shed", "equipment", "roof"],
         "local_rule": "CCC-7",
         "quick_response": """Maintenance facility at Columbia CC (near holes 9 & 10):
 
@@ -169,7 +169,7 @@ The construction fence is treated as a boundary, not a regular obstruction."""
         "cart path behind 14th green", "cart path behind 17th green", "path behind fourteenth green", "path behind seventeenth green", 
         "cart path green stakes", "path marked with green stakes", "integral object cart path",
         "no relief cart path", "cart path behind green", "path behind 14", "path behind 17",
-        "green stakes cart path", "stakes behind green", "marked cart path"
+        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind 14 & 17 green"
     ],
     "local_rule": "CCC-4",
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
@@ -201,6 +201,7 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
     "quick_response": """According to Columbia Country Club's local rules, the Purple Line construction fence is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
+• NO RELIEF for balls near or against Purple Line boundary fence
 • Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
 • This applies EVEN IF the ball comes to rest in a seemingly playable position
 • This includes balls that end up on the other side of the boundary
@@ -898,7 +899,7 @@ def get_quick_questions():
         'success': True,
         'questions': [
             {
-                'id': 'maintenance_template',
+                'id': 'maintenance_facility',
                 'text': 'Ball near maintenance building on hole 10',
                 'category': 'local_rules',
                 'icon': '🏗️',
@@ -906,28 +907,28 @@ def get_quick_questions():
                 'expected_rule': 'CCC-7'
             },
             {
-                'id': 'embedded_ball_ai',
-                'text': 'My ball is embedded in the fairway',
-                'category': 'official_rules',
-                'icon': '⛳',
-                'expected_source': 'ai_sophisticated',
-                'expected_rule': '16.3'
+                'id': 'purple_line_boundary',
+                'text': 'Purple Line',
+                'category': 'local_rules',
+                'icon': '🚆',
+                'expected_source': 'template',
+                'expected_rule': 'CCC-6'
             },
             {
-                'id': 'water_17_template',
-                'text': 'Ball in water on hole 17',
+                'id': 'water_hazard_17',
+                'text': 'Water on 17',
                 'category': 'local_rules',
                 'icon': '💧',
                 'expected_source': 'template',
                 'expected_rule': 'CCC-2'
             },
             {
-                'id': 'unplayable_ball_ai',
-                'text': 'I want to declare my ball unplayable',
-                'category': 'official_rules',
+                'id': 'green_stakes_cart_path',
+                'text': 'Path behind 14 & 17 green',
+                'category': 'local_rules',
                 'icon': '🚫',
-                'expected_source': 'ai_sophisticated',
-                'expected_rule': '19.2'
+                'expected_source': 'template',
+                'expected_rule': 'CCC-4'
             }
         ],
         'ai_available': ai_system_available,
