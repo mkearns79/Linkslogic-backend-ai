@@ -422,17 +422,26 @@ def check_common_query(question):
     """RESTORED: Your original template checking function."""
     question_lower = question.lower()
     
-    print(f"🔍 DEBUG: Checking question: '{question_lower}'")
-    print(f"🔍 DEBUG: Available templates: {list(COMMON_QUERY_TEMPLATES.keys())}")
+    # DEBUG: Add these lines temporarily
+    if "water on 17" in question_lower:
+        logger.info(f"🔍 DEBUG: Checking 'water on 17' question")
+        logger.info(f"🔍 DEBUG: Available templates: {list(COMMON_QUERY_TEMPLATES.keys())}")
+        
+        if 'water_hazard_17' in COMMON_QUERY_TEMPLATES:
+            keywords = COMMON_QUERY_TEMPLATES['water_hazard_17']['keywords']
+            logger.info(f"🔍 DEBUG: water_hazard_17 keywords: {keywords}")
+            
+            for keyword in keywords:
+                if keyword in question_lower:
+                    logger.info(f"✅ DEBUG: FOUND MATCH! Keyword: '{keyword}'")
+                else:
+                    logger.info(f"❌ DEBUG: No match for keyword: '{keyword}'")
     
     for template_name, template_data in COMMON_QUERY_TEMPLATES.items():
-        print(f"🔍 DEBUG: Checking template '{template_name}' with {len(template_data['keywords'])} keywords")
         for keyword_phrase in template_data["keywords"]:
             if keyword_phrase in question_lower:
-                print(f"✅ DEBUG: MATCH FOUND! Template: {template_name}, Keyword: '{keyword_phrase}'")
                 return template_data
     
-    print("❌ DEBUG: No template match found")
     return None
 
 def classify_intent_minimal(question):
