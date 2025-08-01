@@ -85,7 +85,7 @@ The dropping zone is often the better choice as it gives you a good angle to the
     },
     
     "water_hazard_17": {
-        "keywords": ["Water on 17", "Ball in water on hole 17", "water on seventeen", "17th hole water", "pond on hole seventeen", "17th water", "drop zone on seventeen"],
+        "keywords": ["water on 17", "ball in water on hole 17", "water on seventeen", "17th hole water", "pond on hole seventeen", "17th water", "drop zone on seventeen"],
         "local_rule": "CCC-2", 
         "quick_response": """On the 17th hole at Columbia CC:
 
@@ -424,7 +424,7 @@ def check_common_query(question):
     
     for template_name, template_data in COMMON_QUERY_TEMPLATES.items():
         for keyword_phrase in template_data["keywords"]:
-            if keyword_phrase.lower() in question_lower:  # ADD .lower() here!
+            if keyword_phrase.lower() in question_lower:
                 return template_data
     
     return None
