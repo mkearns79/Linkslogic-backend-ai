@@ -879,3 +879,4 @@ COMMON_DEFINITION_LOOKUPS = {
     'club length': 'CLUB_LENGTH',
     'abnormal course condition': 'ABNORMAL_COURSE_CONDITION'
 }
+]
