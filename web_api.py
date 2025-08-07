@@ -11,9 +11,17 @@ import logging
 from openai import OpenAI
 from dotenv import load_dotenv
 
+
 # Import your existing comprehensive databases
 from golf_rules_data import RULES_DATABASE
 from columbia_cc_local_rules_db import COLUMBIA_CC_LOCAL_RULES
+from golf_definitions_db import (
+    GOLF_DEFINITIONS_DATABASE, 
+    search_definitions_by_keyword,
+    get_definition_by_id,
+    get_definitions_by_category,
+    COMMON_DEFINITION_LOOKUPS
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -85,7 +93,7 @@ The dropping zone is often the better choice as it gives you a good angle to the
     },
     
     "water_hazard_17": {
-        "keywords": ["water on 17", "ball in water on hole 17", "water on seventeen", "17th hole water", "pond on hole seventeen", "17th water", "drop zone on seventeen"],
+        "keywords": ["water on #17", "water on 17", "ball in water on hole 17", "water on seventeen", "17th hole water", "pond on hole seventeen", "17th water", "drop zone on seventeen"],
         "local_rule": "CCC-2", 
         "quick_response": """On the 17th hole at Columbia CC:
 
@@ -115,7 +123,7 @@ This is different from regular ground under repair - relief is mandatory, not op
     },
      
     "maintenance_facility": {
-        "keywords": ["Ball near maintenance building on hole 10", "maintenance", "building", "facility", "shed", "equipment", "roof"],
+        "keywords": ["Maintenance facility on #10", "ball near maintenance building on hole 10", "road left of 10", "maintenance road", "paved area left of 10", "maintenance", "building", "facility", "shed", "equipment", "roof"],
         "local_rule": "CCC-7",
         "quick_response": """Maintenance facility at Columbia CC (near holes 9 & 10):
 
@@ -127,6 +135,14 @@ FREE RELIEF available from:
 • Equipment
 
 The entire maintenance complex is treated as one large immovable obstruction. Drop within one club-length of your nearest point of complete relief, no closer to the hole."""
+    },
+    
+     "OB_lines": {
+        "keywords": ["touching the out-of-bounds line", "on the out of bounds line", "touching the white line", "on the white line", "painted boundary line", "on the painted OB line", "touching the white paint", "on the line of white stakes"],
+        "official_definition": "Out of Bounds",
+        "quick_response": """According to the Rules of Golf, when out-of-bounds is defined by a painted line on the ground, the boundary edge is the course-side edge of the line, and the line itself is out of bounds.
+
+When stakes are used to define or show the boundary edge, they are boundary objects, which are treated as immovable even if they are movable or any part of them is movable."""
     },
     
     "aeration_holes": {
@@ -169,7 +185,7 @@ The construction fence is treated as a boundary, not a regular obstruction."""
         "cart path behind 14th green", "cart path behind 17th green", "path behind fourteenth green", "path behind seventeenth green", 
         "cart path green stakes", "path marked with green stakes", "integral object cart path",
         "no relief cart path", "cart path behind green", "path behind 14", "path behind 17",
-        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind 14 & 17 green"
+        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #14 & #17 green"
     ],
     "local_rule": "CCC-4",
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
@@ -180,11 +196,11 @@ AFFECTED AREAS:
 • Unpaved road behind 12th green
 
 NO FREE RELIEF AVAILABLE - Your options:
-- Play the ball as it lies if possible
-- Declare the ball unplayable under Rule 19 (1 penalty stroke)
-  - Drop within two club-lengths, not nearer hole
-  - Drop on line from hole through ball, going back as far as desired
-  - Return to previous spot where you played
+• Play the ball as it lies if possible
+• Declare the ball unplayable under Rule 19 (1 penalty stroke)
+• Drop within two club-lengths, not nearer hole
+• Drop on line from hole through ball, going back as far as desired
+• Return to previous spot where you played
 
 Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects."""
     },
@@ -418,6 +434,92 @@ class ProductionHybridVectorSearch:
             logger.error(f"Search error: {e}")
             return []
 
+def detect_definition_query(query):
+    """Detect if query is asking for a golf definition."""
+    query_lower = query.lower().strip()
+    
+    # Direct definition queries
+    definition_patterns = [
+        r'what is (?:a |an |the )?(.+?)(?:\?|$)',
+        r'define (?:a |an |the )?(.+?)(?:\?|$)', 
+        r'definition of (?:a |an |the )?(.+?)(?:\?|$)',
+        r'what does (.+?) mean(?:\?|$)',
+        r'meaning of (.+?)(?:\?|$)',
+        r'(.+?) definition(?:\?|$)',
+        r'tell me about (?:a |an |the )?(.+?)(?:\?|$)'
+    ]
+    
+    import re
+    for pattern in definition_patterns:
+        match = re.search(pattern, query_lower)
+        if match:
+            term = match.group(1).strip()
+            # Check common lookups first
+            if term in COMMON_DEFINITION_LOOKUPS:
+                return COMMON_DEFINITION_LOOKUPS[term]
+            
+            # Search by keywords
+            results = search_definitions_by_keyword([term])
+            if results and results[0]['relevance_score'] >= 2:
+                return results[0]['definition']['id']
+    
+    return None
+
+def create_definition_response(definition_id, query):
+    """Create a formatted response for a definition query."""
+    definition = get_definition_by_id(definition_id)
+    if not definition:
+        return None
+    
+    response = f"""**{definition['term']}**
+
+{definition['definition']}
+
+**Examples:**
+{chr(10).join([f'• {example}' for example in definition['examples'][:4]])}
+
+**Related Rules:** {', '.join(definition['related_rules'])}"""
+    
+    return {
+        'success': True,
+        'answer': response,
+        'question': query,
+        'source': 'definitions_database',
+        'definition_id': definition_id,
+        'rule_type': 'definition',
+        'confidence': 'high'
+    }
+
+def enhance_ai_prompt_with_definitions(prompt, query):
+    """Enhance AI prompt with relevant definitions when needed."""
+    query_words = query.lower().split()
+    relevant_definitions = []
+    
+    # Check for definition terms in query
+    for word in query_words:
+        if word in COMMON_DEFINITION_LOOKUPS:
+            def_id = COMMON_DEFINITION_LOOKUPS[word]
+            definition = get_definition_by_id(def_id)
+            if definition and definition not in relevant_definitions:
+                relevant_definitions.append(definition)
+    
+    # Search for multi-word terms
+    for term in COMMON_DEFINITION_LOOKUPS:
+        if term in query.lower() and len(term.split()) > 1:
+            def_id = COMMON_DEFINITION_LOOKUPS[term]
+            definition = get_definition_by_id(def_id)
+            if definition and definition not in relevant_definitions:
+                relevant_definitions.append(definition)
+    
+    if relevant_definitions:
+        definitions_context = "\n\nRelevant Definitions:\n"
+        for definition in relevant_definitions[:3]:
+            definitions_context += f"- {definition['term']}: {definition['definition']}\n"
+        
+        return prompt + definitions_context
+    
+    return prompt
+
 def check_common_query(question):
     """RESTORED: Your original template checking function."""
     question_lower = question.lower()
@@ -489,7 +591,7 @@ def get_position_focused_response(question, verbose=False):
         
         context = "\n".join(context_parts) if context_parts else "General golf rules apply."
 
-        prompt = f"""Golf rules expert: Determine ball position/status at Columbia Country Club.
+        base_prompt = f"""Golf rules expert: Determine ball position/status at Columbia Country Club.
 
 Question: {question}
 
@@ -515,9 +617,11 @@ If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rul
 If official rule, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
+        enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
+
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.2,
             max_tokens=125
         )
@@ -563,7 +667,7 @@ def get_relief_focused_response(question, verbose=False):
         
         context = "\n".join(context_parts) if context_parts else "No specific local rules found."
         
-        prompt = f"""Golf rules expert: Provide relief options/procedures at Columbia Country Club.
+        base_prompt = f"""Golf rules expert: Provide relief options/procedures at Columbia Country Club.
 
 Question: {question}
 
@@ -588,9 +692,11 @@ If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rul
 If official rule, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
+        enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
+
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.2,
             max_tokens=125
         )
@@ -625,7 +731,7 @@ def get_general_focused_response(question, verbose=False):
         
         context = "\n".join(context_parts) if context_parts else "General golf rules apply."
         
-        prompt = f"""Golf rules expert: Answer golf question at Columbia Country Club.
+        base_prompt = f"""Golf rules expert: Answer golf question at Columbia Country Club.
 
 Question: {question}
 
@@ -639,9 +745,11 @@ If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rul
 If official rule, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
+        enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
+
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.2,
             max_tokens=125
         )
@@ -675,6 +783,7 @@ def get_hybrid_interpretation(question, verbose=False):
         template = check_common_query(question)
         if template:
             if verbose:
+                rule_id = template.get('local_rule') or template.get('official_rule') or template.get('official definition', 'Unknown')
                 logger.info(f"✅ Template match: {template['local_rule']}")
             result = {
                 'answer': template["quick_response"],
@@ -792,6 +901,20 @@ def ask_question():
         
         logger.info(f"🔍 Question: {question}")
         start_time = time.time()
+
+        definition_id = detect_definition_query(question)
+        if definition_id:
+            logger.info(f"📖 Definition query detected: {definition_id}")
+            response_data = create_definition_response(definition_id, question)
+            if response_data:
+                response_time = round(time.time() - start_time, 2)
+                response_data['response_time'] = response_time
+                response_data['club_id'] = 'columbia_cc'
+                response_data['ai_system'] = 'definitions_database'
+                response_data['timestamp'] = datetime.now().isoformat()
+                
+                logger.info(f"✅ Definition response in {response_time}s")
+                return jsonify(response_data)
         
         if ai_system_available:
             try:
@@ -880,11 +1003,65 @@ def ask_question():
             'timestamp': datetime.now().isoformat()
         }), 500
 
+@app.route('/api/definitions', methods=['GET'])
+def get_definitions():
+    """Get golf definitions - can search or get by category."""
+    try:
+        search_term = request.args.get('search', '').strip()
+        category = request.args.get('category', '').strip()
+        definition_id = request.args.get('id', '').strip()
+        
+        if definition_id:
+            definition = get_definition_by_id(definition_id)
+            if definition:
+                return jsonify({
+                    'success': True,
+                    'definitions': [definition],
+                    'total': 1
+                })
+            else:
+                return jsonify({'success': False, 'error': 'Definition not found'}), 404
+        
+        elif search_term:
+            results = search_definitions_by_keyword([search_term])
+            definitions = [result['definition'] for result in results[:10]]
+            
+            return jsonify({
+                'success': True,
+                'definitions': definitions,
+                'total': len(definitions),
+                'search_term': search_term
+            })
+        
+        elif category:
+            definitions = get_definitions_by_category(category)
+            return jsonify({
+                'success': True,
+                'definitions': definitions,
+                'total': len(definitions),
+                'category': category
+            })
+        
+        else:
+            return jsonify({
+                'success': True,
+                'definitions': GOLF_DEFINITIONS_DATABASE,
+                'total': len(GOLF_DEFINITIONS_DATABASE)
+            })
+    
+    except Exception as e:
+        logger.error(f"❌ Definitions API Error: {str(e)}")
+        return jsonify({
+            'success': False,
+            'error': f'Failed to get definitions: {str(e)}'
+        }), 500
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check showing production hybrid system status."""
     local_rules_count = len(COLUMBIA_CC_LOCAL_RULES.get('local_rules', []))
     official_rules_count = len(RULES_DATABASE)
+    definitions_count = len(GOLF_DEFINITIONS_DATABASE)
     
     return jsonify({
         'status': 'healthy',
@@ -917,7 +1094,7 @@ def get_quick_questions():
         'questions': [
             {
                 'id': 'maintenance_facility',
-                'text': 'Ball near maintenance building on hole 10',
+                'text': 'Maintenance facility on #10',
                 'category': 'local_rules',
                 'icon': '🏗️',
                 'expected_source': 'template',
@@ -933,7 +1110,7 @@ def get_quick_questions():
             },
             {
                 'id': 'water_hazard_17',
-                'text': 'Water on 17',
+                'text': 'Water on #17',
                 'category': 'local_rules',
                 'icon': '💧',
                 'expected_source': 'template',
@@ -941,7 +1118,7 @@ def get_quick_questions():
             },
             {
                 'id': 'green_stakes_cart_path',
-                'text': 'Path behind 14 & 17 green',
+                'text': 'Path behind #14 & #17 green',
                 'category': 'local_rules',
                 'icon': '🚫',
                 'expected_source': 'template',
@@ -1116,3 +1293,45 @@ else:
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
     app.run(debug=False, host='0.0.0.0', port=port)
+
+
+<div className="bg-white rounded-lg p-6 shadow-lg">
+  {activeTab === 'voice' ? (
+    <div className="text-center space-y-4">
+      <p className="text-sm text-gray-600">
+        {isListening 
+          ? 'Listening... (I\'ll submit after 5 seconds of silence)' 
+          : hasSubmitted 
+            ? 'Question submitted!'
+            : 'Tap the Voice button above to speak your question'
+        }
+      </p>
+      
+      {transcript && (
+        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200 text-left">
+          <p className="text-blue-800 font-medium text-sm">You said:</p>
+          <p className="text-blue-600 mt-1">"{transcript}"</p>
+        </div>
+      )}
+    </div>
+  ) : (
+    <form onSubmit={handleTextSubmit} className="space-y-3">
+      <textarea
+        value={textInput}
+        onChange={(e) => setTextInput(e.target.value)}
+        placeholder="Type your golf rules question..."
+        className="w-full p-4 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        rows={3}
+        disabled={loading}
+      />
+      <button
+        type="submit"
+        disabled={loading || !textInput.trim()}
+        className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
+        style={{ padding: '20px', fontSize: '18px' }}
+      >
+        {loading ? 'Rex is thinking...' : 'Ask Rex'}
+      </button>
+    </form>
+  )}
+</div>    
