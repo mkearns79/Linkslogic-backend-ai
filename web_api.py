@@ -15,13 +15,13 @@ from dotenv import load_dotenv
 # Import your existing comprehensive databases
 from golf_rules_data import RULES_DATABASE
 from columbia_cc_local_rules_db import COLUMBIA_CC_LOCAL_RULES
-from golf_definitions_db import (
-    GOLF_DEFINITIONS_DATABASE, 
-    search_definitions_by_keyword,
-    get_definition_by_id,
-    get_definitions_by_category,
-    COMMON_DEFINITION_LOOKUPS
-)
+# from golf_definitions_db import (
+   # GOLF_DEFINITIONS_DATABASE, 
+   # search_definitions_by_keyword,
+   # get_definition_by_id,
+   # get_definitions_by_category,
+   # COMMON_DEFINITION_LOOKUPS
+#)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -902,19 +902,19 @@ def ask_question():
         logger.info(f"🔍 Question: {question}")
         start_time = time.time()
 
-        definition_id = detect_definition_query(question)
-        if definition_id:
-            logger.info(f"📖 Definition query detected: {definition_id}")
-            response_data = create_definition_response(definition_id, question)
-            if response_data:
-                response_time = round(time.time() - start_time, 2)
-                response_data['response_time'] = response_time
-                response_data['club_id'] = 'columbia_cc'
-                response_data['ai_system'] = 'definitions_database'
-                response_data['timestamp'] = datetime.now().isoformat()
+        #definition_id = detect_definition_query(question)
+        #if definition_id:
+            #logger.info(f"📖 Definition query detected: {definition_id}")
+            #response_data = create_definition_response(definition_id, question)
+            #if response_data:
+                #response_time = round(time.time() - start_time, 2)
+                #response_data['response_time'] = response_time
+                #response_data['club_id'] = 'columbia_cc'
+                #response_data['ai_system'] = 'definitions_database'
+                #response_data['timestamp'] = datetime.now().isoformat()
                 
-                logger.info(f"✅ Definition response in {response_time}s")
-                return jsonify(response_data)
+                #logger.info(f"✅ Definition response in {response_time}s")
+                #return jsonify(response_data)
         
         if ai_system_available:
             try:
