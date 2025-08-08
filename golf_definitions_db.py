@@ -877,5 +877,5 @@ COMMON_DEFINITION_LOOKUPS = {
     'plugged': 'EMBEDDED',
     'relief area': 'RELIEF_AREA',
     'club length': 'CLUB_LENGTH',
-    'abnormal course condition': 'ABNORMAL_COURSE_CONDITION'
+    'abnormal course condition': 'ABNORMAL_COURSE_CONDITION',
 }
