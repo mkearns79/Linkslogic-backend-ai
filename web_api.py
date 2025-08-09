@@ -492,33 +492,42 @@ def create_definition_response(definition_id, query):
 
 def enhance_ai_prompt_with_definitions(prompt, query):
     """Enhance AI prompt with relevant definitions when needed."""
-    query_words = query.lower().split()
-    relevant_definitions = []
-    
-    # Check for definition terms in query
-    for word in query_words:
-        if word in COMMON_DEFINITION_LOOKUPS:
-            def_id = COMMON_DEFINITION_LOOKUPS[word]
-            definition = get_definition_by_id(def_id)
-            if definition and definition not in relevant_definitions:
-                relevant_definitions.append(definition)
-    
-    # Search for multi-word terms
-    for term in COMMON_DEFINITION_LOOKUPS:
-        if term in query.lower() and len(term.split()) > 1:
-            def_id = COMMON_DEFINITION_LOOKUPS[term]
-            definition = get_definition_by_id(def_id)
-            if definition and definition not in relevant_definitions:
-                relevant_definitions.append(definition)
-    
-    if relevant_definitions:
-        definitions_context = "\n\nRelevant Definitions:\n"
-        for definition in relevant_definitions[:3]:
-            definitions_context += f"- {definition['term']}: {definition['definition']}\n"
+    try:
+        # Import locally to avoid scope issues
+        from golf_definitions_db import COMMON_DEFINITION_LOOKUPS, get_definition_by_id
         
-        return prompt + definitions_context
-    
-    return prompt
+        query_words = query.lower().split()
+        relevant_definitions = []
+        
+        # Check for definition terms in query
+        for word in query_words:
+            if word in COMMON_DEFINITION_LOOKUPS:
+                def_id = COMMON_DEFINITION_LOOKUPS[word]
+                definition = get_definition_by_id(def_id)
+                if definition and definition not in relevant_definitions:
+                    relevant_definitions.append(definition)
+        
+        # Search for multi-word terms
+        for term in COMMON_DEFINITION_LOOKUPS:
+            if term in query.lower() and len(term.split()) > 1:
+                def_id = COMMON_DEFINITION_LOOKUPS[term]
+                definition = get_definition_by_id(def_id)
+                if definition and definition not in relevant_definitions:
+                    relevant_definitions.append(definition)
+        
+        if relevant_definitions:
+            definitions_context = "\n\nRelevant Definitions:\n"
+            for definition in relevant_definitions[:3]:
+                definitions_context += f"- {definition['term']}: {definition['definition']}\n"
+            
+            return prompt + definitions_context
+        
+        return prompt
+        
+    except Exception as e:
+        # If definitions fail, just return the original prompt
+        logger.warning(f"Definition enhancement failed: {e}")
+        return prompt
 
 def check_common_query(question):
     """RESTORED: Your original template checking function."""
