@@ -86,10 +86,9 @@ Exception: player gets FREE RELIEF from a ball hit into the maintenance area to 
         "quick_response": """On the 16th hole at Columbia CC, your options depend on where the ball entered the water:
 
 If your ball goes in the water/penalty area on the south side of the footbridge marked by yellow stakes:
-• Standard relief under Rule 17.1 (1 penalty stroke), OR
+• Back-on-the-Line relief under Rule 17.1 (1 penalty stroke), OR
 • Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
-
-If your ball goes into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole."""
+If your ball goes into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option under Rule 17.1 to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
     },
     
     "water_hazard_17": {
