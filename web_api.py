@@ -101,7 +101,7 @@ If your ball goes in the POND (west of the footbridge):
 • Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
 If your ball is in other penalty areas on 17th, including on the cart bridge:
 • Standard relief under Rule 17.1 only
-The dropping zone is only available for the main pond area, not other water hazards on the hole."""
+The dropping zone is only available for the main pond area, not other penalty areas on the hole."""
     },
 
     "turf_nursery": {
@@ -189,12 +189,11 @@ AFFECTED AREAS:
 • Cart path sections behind 17th green marked by green stakes  
 • Unpaved road behind 12th green
 NO FREE RELIEF AVAILABLE - Your options:
-1) Play the ball as it lies if possible
-2) Declare the ball unplayable under Rule 19 (1 penalty stroke)
-   • Drop within two club-lengths, not nearer hole
-3) Drop on line from hole through ball, going back as far as desired
-4) Return to previous spot where you played
-
+• Play the ball as it lies if possible
+• Declare the ball unplayable under Rule 19 (1 penalty stroke)
+   - Drop within two club-lengths, not nearer hole
+• Drop on line from hole through ball, going back as far as desired
+• Return to previous spot where you played
 Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects."""
     },
 
