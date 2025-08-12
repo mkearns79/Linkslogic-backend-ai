@@ -73,7 +73,6 @@ Instead of going back to where you last played, you can:
 • Drop anywhere between two imaginary lines: one from the hole through where your ball was lost, and one from the hole through the nearest fairway point
 • Stay within two club-lengths of those lines
 • Must not be closer to the hole than where ball was lost
-
 OPTION 2 - Standard Rule (1 penalty stroke):
 Return to where you last played and hit again (stroke and distance).
 
@@ -83,12 +82,13 @@ Exception: player gets FREE RELIEF from a ball hit into the maintenance area to 
     "water_hazard_16": {
         "keywords": ["water on 16", "water on #16", "penalty area on #16", "water on hole 16", "hit it in the water on the 16th", "water hazard on 16"],
         "local_rule": "CCC-2",
-        "quick_response": """On the 16th hole at Columbia CC, your options depend on where the ball entered the water:
+        "quick_response": """On the 16th hole at Columbia CC, your options under Rule 17.1 depend on where the ball entered the water:
 
 If your ball goes in the water/penalty area on the south side of the footbridge marked by yellow stakes:
-• Back-on-the-Line relief under Rule 17.1 (1 penalty stroke), OR
+• Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
+• Back-on-the-Line Relief (1 penalty stroke), OR
 • Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
-If your ball goes into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option under Rule 17.1 to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
+If your ball goes into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
     },
     
     "water_hazard_17": {
@@ -99,10 +99,8 @@ If your ball goes into the water/penalty area on the north side of the footbridg
 If your ball goes in the POND (west of the footbridge):
 • Standard relief under Rule 17.1 (1 penalty stroke), OR  
 • Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
-
 If your ball is in other penalty areas on 17th, including on the cart bridge:
 • Standard relief under Rule 17.1 only
-
 The dropping zone is only available for the main pond area, not other water hazards on the hole."""
     },
 
@@ -132,7 +130,6 @@ FREE RELIEF available from:
 • Paved and gravel areas
 • Retention ponds
 • Equipment
-
 The entire maintenance complex is treated as one large immovable obstruction. Drop within one club-length of your nearest point of complete relief, no closer to the hole."""
     },
     
@@ -153,11 +150,9 @@ FREE RELIEF available when:
 • Ball is IN an aeration hole
 • Ball TOUCHES an aeration hole  
 • Aeration hole interferes with your swing
-
 NO RELIEF when:
 • Aeration hole only affects your stance
 • On putting green: only affects your line of putt
-
 Relief: Drop/place within one club-length of nearest point of relief. If you get relief and the ball rolls into another aeration hole, you get relief again."""
     },
 
@@ -193,7 +188,6 @@ AFFECTED AREAS:
 • Cart path sections behind 14th green marked by green stakes
 • Cart path sections behind 17th green marked by green stakes  
 • Unpaved road behind 12th green
-
 NO FREE RELIEF AVAILABLE - Your options:
 1) Play the ball as it lies if possible
 2) Declare the ball unplayable under Rule 19 (1 penalty stroke)
@@ -221,7 +215,6 @@ IMPORTANT BOUNDARY RULE:
 • This applies EVEN IF the ball comes to rest in a seemingly playable position
 • This includes balls that end up on the other side of the boundary
 • This includes balls that come to rest inside tunnels or other areas beyond the line
-
 OUT OF BOUNDS RELIEF OPTIONS:
 You have TWO options under Columbia CC's local rules:
 
@@ -230,10 +223,8 @@ OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
 • Find the nearest fairway point to that crossing point
 • Drop within two club-lengths of the line between the hole and those reference points
 • Must not be closer to the hole than where ball crossed boundary
-
 OPTION 2 - Standard Rule (1 penalty stroke):
 • Return to where you last played and hit again (stroke and distance)
-
 Remember: The Purple Line boundary fence (including any mesh) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
     }
 }
