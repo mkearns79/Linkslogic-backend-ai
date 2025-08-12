@@ -64,7 +64,7 @@ COLUMBIA_CC_LOCAL_RULES = {
                 {
                     'situation': 'Hole 16 penalty area relief options',
                     'explanation': 'When ball is in penalty area on hole 16, player has two relief options for one penalty stroke: (1) Standard relief under Rule 17.1, or (2) Drop in designated dropping zone near 16th green',
-                    'examples': ['Ball in water on 16th', 'Use dropping zone for better angle to pin']
+                    'examples': ['Ball in water on 16th', 'Ball in water on number 16']
                 },
                 {
                     'situation': 'Hole 17 penalty area relief options',
@@ -97,7 +97,7 @@ COLUMBIA_CC_LOCAL_RULES = {
             'examples': [
                 'Ball rolls left into rough area on hole 2 - red penalty area relief available',
                 'Ball in unmaintained area on left side of hole 3',
-                'Ball in scrub area left of fairway on hole 4'
+                'Ball in fescue area left of fairway on hole 4'
             ],
             'conditions': [
                 {

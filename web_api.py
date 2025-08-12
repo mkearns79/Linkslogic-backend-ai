@@ -83,13 +83,13 @@ Exception: player gets FREE RELIEF from a ball hit into the maintenance area to 
     "water_hazard_16": {
         "keywords": ["water on 16", "water on #16", "penalty area on #16", "water on hole 16", "hit it in the water on the 16th", "water hazard on 16"],
         "local_rule": "CCC-2",
-        "quick_response": """On the 16th hole at Columbia CC, you have EXTRA relief options:
+        "quick_response": """On the 16th hole at Columbia CC, your options depend on where the ball entered the water:
 
-If your ball goes in the water/penalty area:
+If your ball goes in the water/penalty area on the south side of the footbridge marked by yellow stakes:
 • Standard relief under Rule 17.1 (1 penalty stroke), OR
 • Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
 
-The dropping zone is often the better choice as it gives you a good angle to the pin without having to go way back or play from a difficult angle."""
+If your ball goes into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole."""
     },
     
     "water_hazard_17": {
@@ -196,11 +196,11 @@ AFFECTED AREAS:
 • Unpaved road behind 12th green
 
 NO FREE RELIEF AVAILABLE - Your options:
-• Play the ball as it lies if possible
-• Declare the ball unplayable under Rule 19 (1 penalty stroke)
-• Drop within two club-lengths, not nearer hole
-• Drop on line from hole through ball, going back as far as desired
-• Return to previous spot where you played
+1) Play the ball as it lies if possible
+2) Declare the ball unplayable under Rule 19 (1 penalty stroke)
+   • Drop within two club-lengths, not nearer hole
+3) Drop on line from hole through ball, going back as far as desired
+4) Return to previous spot where you played
 
 Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects."""
     },
