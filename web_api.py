@@ -15,13 +15,13 @@ from dotenv import load_dotenv
 # Import your existing comprehensive databases
 from golf_rules_data import RULES_DATABASE
 from columbia_cc_local_rules_db import COLUMBIA_CC_LOCAL_RULES
-# from golf_definitions_db import (
-   # GOLF_DEFINITIONS_DATABASE, 
-   # search_definitions_by_keyword,
-   # get_definition_by_id,
-   # get_definitions_by_category,
-   # COMMON_DEFINITION_LOOKUPS
-#)
+from golf_definitions_db import (
+    GOLF_DEFINITIONS_DATABASE, 
+    search_definitions_by_keyword,
+    get_definition_by_id,
+    get_definitions_by_category,
+    COMMON_DEFINITION_LOOKUPS
+)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -43,7 +43,7 @@ ai_error_message = ""
 # RESTORED: Your Complete Template System (from your original system)
 COMMON_QUERY_TEMPLATES = {
     "clear_lost_ball": {
-        "keywords": ["lost my ball in the woods", "lost my ball in the rough", "can't find my ball in the woods", "lost ball in trees", "lost ball in the fescue"],
+        "keywords": ["lost my ball in the woods", "lost my ball in the rough", "can't find my ball in the woods", "lost ball in trees", "lost ball in the fescue", "ball is lost in", "cannot find my ball"],
         "local_rule": "CCC-1",
         "quick_response": """At Columbia Country Club, you have TWO options for lost balls:
 
@@ -62,7 +62,7 @@ Most golfers prefer the Columbia CC option since you don't have to walk back."""
     },
 
     "clear_out_of_bounds": {
-        "keywords": ["out of bounds", "over the fence", "ob"],
+        "keywords": ["out of bounds", "over the fence", "ob", "ball is OB", "ball went OB"],
         "local_rule": "CCC-1",
         "quick_response": """At Columbia, you have TWO options for out-of-bounds balls:
 
@@ -84,11 +84,11 @@ Exception: player gets FREE RELIEF from a ball hit into the maintenance area to 
         "local_rule": "CCC-2",
         "quick_response": """On the 16th hole at Columbia CC, your options under Rule 17.1 depend on where the ball entered the water:
 
-If your ball goes in the water/penalty area on the south side of the footbridge marked by yellow stakes:
+If your ball went into the water/penalty area on the south side of the footbridge marked by yellow stakes:
 • Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
 • Back-on-the-Line Relief (1 penalty stroke), OR
 • Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
-If your ball goes into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
+If your ball went into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
     },
     
     "water_hazard_17": {
@@ -900,19 +900,19 @@ def ask_question():
         logger.info(f"🔍 Question: {question}")
         start_time = time.time()
 
-        #definition_id = detect_definition_query(question)
-        #if definition_id:
-            #logger.info(f"📖 Definition query detected: {definition_id}")
-            #response_data = create_definition_response(definition_id, question)
-            #if response_data:
-                #response_time = round(time.time() - start_time, 2)
-                #response_data['response_time'] = response_time
-                #response_data['club_id'] = 'columbia_cc'
-                #response_data['ai_system'] = 'definitions_database'
-                #response_data['timestamp'] = datetime.now().isoformat()
+        definition_id = detect_definition_query(question)
+        if definition_id:
+            logger.info(f"📖 Definition query detected: {definition_id}")
+            response_data = create_definition_response(definition_id, question)
+            if response_data:
+                response_time = round(time.time() - start_time, 2)
+                response_data['response_time'] = response_time
+                response_data['club_id'] = 'columbia_cc'
+                response_data['ai_system'] = 'definitions_database'
+                response_data['timestamp'] = datetime.now().isoformat()
                 
-                #logger.info(f"✅ Definition response in {response_time}s")
-                #return jsonify(response_data)
+                logger.info(f"✅ Definition response in {response_time}s")
+                return jsonify(response_data)
         
         if ai_system_available:
             try:
