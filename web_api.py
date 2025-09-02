@@ -73,6 +73,7 @@ Instead of going back to where you last played, you can:
 • Drop anywhere between two imaginary lines: one from the hole through where your ball was lost, and one from the hole through the nearest fairway point
 • Stay within two club-lengths of those lines
 • Must not be closer to the hole than where ball was lost
+
 OPTION 2 - Standard Rule (1 penalty stroke):
 Return to where you last played and hit again (stroke and distance).
 
@@ -88,6 +89,7 @@ If your ball went into the water/penalty area on the south side of the footbridg
 • Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
 • Back-on-the-Line Relief (1 penalty stroke), OR
 • Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
+
 If your ball went into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
     },
     
@@ -772,79 +774,326 @@ def get_fallback_response():
         'tokens_used': 0
     }
 
+def calculate_template_confidence(question, template_data):
+    """
+    Calculate confidence score for template match (0.0 to 1.0).
+    Handles exact phrase matches, intelligent partial matching, and context-specific penalties.
+    """
+    question_lower = question.lower().strip()
+    
+    best_match_score = 0.0
+    matched_keyword = None
+    
+    # Check each keyword for matches
+    for keyword_phrase in template_data.get("keywords", []):
+        keyword_lower = keyword_phrase.lower()
+        match_score = 0.0
+        
+        # EXACT PHRASE MATCH
+        if keyword_lower in question_lower:
+            # For very short keywords (ob, cc), verify word boundaries
+            if len(keyword_lower) <= 3:
+                import re
+                pattern = r'\b' + re.escape(keyword_lower) + r'\b'
+                if not re.search(pattern, question_lower):
+                    continue  # Skip "ob" inside "obstruction"
+            
+            # Score based on coverage
+            coverage = len(keyword_lower) / len(question_lower)
+            if keyword_lower == question_lower:
+                match_score = 1.0
+            elif coverage > 0.7:
+                match_score = 0.9
+            elif coverage > 0.5:
+                match_score = 0.8
+            else:
+                match_score = 0.7
+                
+        # INTELLIGENT PARTIAL MATCHING
+        else:
+            # Look for important phrase components
+            important_phrases = {
+                'lost ball': ['lost', 'ball'],
+                'out of bounds': ['out', 'bounds'],
+                'cart path': ['cart', 'path'],
+                'green stakes': ['green', 'stakes'],
+                'maintenance facility': ['maintenance', 'facility'],
+                'purple line': ['purple', 'line'],
+            }
+            
+            # Check for phrase components
+            for phrase, components in important_phrases.items():
+                if all(word in question_lower for word in components):
+                    if all(word in keyword_lower for word in components):
+                        match_score = 0.7  # Good phrase match
+                        break
+            
+            # Check for hole number matches
+            if not match_score:
+                import re
+                keyword_numbers = set(re.findall(r'\b\d+\b', keyword_lower))
+                question_numbers = set(re.findall(r'\b\d+\b', question_lower))
+                
+                if keyword_numbers and question_numbers:
+                    if keyword_numbers.intersection(question_numbers):
+                        match_score = 0.6  # Hole number match
+            
+            # Check word overlap as last resort
+            if not match_score:
+                stop_words = {'what', 'is', 'the', 'for', 'if', 'my', 'a', 'an', 'to', 'on', 'in', 'of', 'do', 'i', 'rule', 'happens', 'comes', 'rest'}
+                keyword_words = set(keyword_lower.split())
+                question_words = set(question_lower.split())
+                
+                keyword_important = {w for w in keyword_words if w not in stop_words and len(w) > 2}
+                question_important = {w for w in question_words if w not in stop_words and len(w) > 2}
+                
+                if keyword_important and question_important:
+                    overlap = keyword_important.intersection(question_important)
+                    if overlap:
+                        overlap_score = len(overlap) / min(len(keyword_important), len(question_important))
+                        match_score = overlap_score * 0.5
+        
+        if match_score > best_match_score:
+            best_match_score = match_score
+            matched_keyword = keyword_phrase
+    
+    if best_match_score == 0:
+        return 0.0
+    
+    confidence = best_match_score
+    
+    # TEMPLATE-SPECIFIC CONTEXT PENALTIES/BOOSTS
+    template_name = template_data.get('template_name', template_data.get('local_rule', ''))
+    
+    # For LOST BALL template
+    if 'lost_ball' in template_name.lower() or template_data.get('local_rule') == 'CCC-1':
+        # Penalty: Red/yellow stakes indicate penalty area, not lost ball
+        if any(indicator in question_lower for indicator in 
+               ['red stake', 'red stakes', 'red-staked', 'yellow stake', 'yellow stakes', 
+                'yellow-staked', 'penalty area', 'water hazard']):
+            confidence *= 0.2
+            
+        # Penalty: Water terms (usually penalty area)
+        if any(indicator in question_lower for indicator in 
+               ['water', 'pond', 'lake', 'creek', 'stream', 'wetland']):
+            confidence *= 0.3
+    
+    # For OUT OF BOUNDS template
+    if 'out_of_bounds' in template_name.lower() or 'out_of_bounds' in str(template_data.get('keywords', [])):
+        # Penalty: Red/yellow stakes are penalty areas, not OB
+        if any(color in question_lower for color in ['red stake', 'yellow stake']):
+            confidence *= 0.2
+            
+        # Penalty: "obstruction" containing "ob" - false positive
+        if 'obstruction' in question_lower and matched_keyword and 'ob' in matched_keyword.lower():
+            confidence *= 0.1
+            
+        # Boost: White stakes indicate OB
+        if any(indicator in question_lower for indicator in ['white stake', 'white stakes']):
+            confidence = min(1.0, confidence * 1.5)
+    
+    # GENERAL MODIFIERS
+    
+    # Penalty for asking about official/USGA rules
+    if any(term in question_lower for term in ['usga', 'official rule', 'rules of golf']):
+        confidence *= 0.3
+    
+    # Boost for Columbia-specific context
+    if any(term in question_lower for term in ['columbia', 'cc', 'here', 'our']):
+        confidence = min(1.0, confidence * 1.3)
+    
+    return confidence
+
+def extract_key_concepts(text):
+    """
+    Extract important concepts from text for matching.
+    Returns a set of key terms.
+    """
+    # Remove common words and extract key concepts
+    stop_words = {'the', 'a', 'an', 'is', 'my', 'in', 'on', 'at', 'to', 'for', 
+                  'of', 'with', 'what', 'if', 'do', 'i', 'how', 'can', 'get',
+                  'from', 'when', 'where', 'rule', 'rules', 'happens'}
+    
+    # Special handling for compound concepts
+    text = text.replace('out of bounds', 'out_of_bounds')
+    text = text.replace('lost ball', 'lost_ball')
+    text = text.replace('cart path', 'cart_path')
+    text = text.replace('green stakes', 'green_stakes')
+    text = text.replace('maintenance facility', 'maintenance_facility')
+    text = text.replace('purple line', 'purple_line')
+    text = text.replace('water hazard', 'water_hazard')
+    
+    # Extract words
+    words = text.lower().split()
+    
+    # Keep important words and numbers
+    concepts = set()
+    for word in words:
+        # Keep numbers (hole numbers)
+        if any(char.isdigit() for char in word):
+            # Extract just the number
+            import re
+            numbers = re.findall(r'\d+', word)
+            concepts.update(numbers)
+        # Keep non-stop words
+        elif word not in stop_words and len(word) > 2:
+            concepts.add(word)
+    
+    return concepts
+
+
+def check_critical_concepts(matching_concepts, template_name):
+    """
+    Check if the matching concepts include critical identifiers for this template.
+    """
+    critical_concepts = {
+        'clear_lost_ball': {'lost_ball', 'lost', 'ball', 'woods', 'rough', 'fescue'},
+        'clear_out_of_bounds': {'out_of_bounds', 'bounds', 'fence', 'ob'},
+        'water_hazard_16': {'water', '16', 'water_hazard', 'hazard'},
+        'water_hazard_17': {'water', '17', 'water_hazard', 'hazard'},
+        'green_stakes_cart_path': {'green_stakes', 'cart_path', '14', '17', 'path', 'behind'},
+        'maintenance_facility': {'maintenance', 'maintenance_facility', 'facility'},
+        'purple_line_boundary': {'purple_line', 'purple', 'line', 'boundary'},
+    }
+    
+    template_critical = critical_concepts.get(template_name, set())
+    
+    # Check if any critical concept matches
+    return bool(matching_concepts.intersection(template_critical))
+
+def check_common_query_with_confidence(question, confidence_threshold=0.6):
+    """
+    Check templates with confidence scoring.
+    Uses same approach as vector search: calculate similarity, apply threshold.
+    """
+    best_match = None
+    best_confidence = 0.0
+    
+    # Debug output
+    debug_matches = []
+    
+    for template_name, template_data in COMMON_QUERY_TEMPLATES.items():
+        confidence = calculate_template_confidence(question, template_data)
+        
+        debug_matches.append((template_name, confidence))
+        
+        if confidence > best_confidence:
+            best_confidence = confidence
+            best_match = {
+                'template_name': template_name,
+                'template_data': template_data,
+                'confidence': confidence
+            }
+    
+    # Debug print (like your verbose mode in vector search)
+    print(f"\n🔍 Template matching for: '{question[:40]}...'")
+    for name, conf in sorted(debug_matches, key=lambda x: x[1], reverse=True)[:3]:
+        status = "✅" if conf >= confidence_threshold else "  "
+        print(f"  {status} {name}: {conf:.3f}")
+    
+    # Apply threshold (like similarity < 0.1 skip in vector search)
+    if best_match and best_confidence >= confidence_threshold:
+        template_data = best_match['template_data'].copy()
+        template_data['match_confidence'] = best_confidence
+        template_data['template_name'] = best_match['template_name']
+        
+        # Classify confidence level (like your vector search)
+        if best_confidence > 0.7:
+            template_data['confidence_level'] = 'high'
+        elif best_confidence > 0.4:
+            template_data['confidence_level'] = 'medium'
+        else:
+            template_data['confidence_level'] = 'low'
+            
+        return template_data
+    
+    return None
+
 def get_hybrid_interpretation(question, verbose=False):
-    """Two-stage approach: Intent classification + focused AI"""
+    """
+    ENHANCED: Two-stage approach with confidence-based routing
+    """
     try:
         start_time = time.time()
         
-        # STEP 1: Always check templates first, regardless of intent
-        template = check_common_query(question)
-        if template:
-            if verbose:
-                rule_id = template.get('local_rule') or template.get('official_rule') or template.get('official definition', 'Unknown')
-                logger.info(f"✅ Template match: {template['local_rule']}")
-            result = {
-                'answer': template["quick_response"],
-                'source': 'template',
-                'rule_id': template['local_rule'],
-                'confidence': 'highest',
-                'tokens_used': 0
-            }
-            # Add timing and return immediately
-            response_time = round(time.time() - start_time, 2)
-            result['response_time'] = response_time
-            return result
+        # STEP 1: Check templates with confidence scoring
+        # Use lower threshold for initial check, will validate further
+        template = check_common_query_with_confidence(question, confidence_threshold=0.5)
         
-        # STEP 2: If no template match, then do lightweight intent classification
+        if template:
+            confidence = template.get('match_confidence', 0)
+            
+            if verbose:
+                template_name = template.get('template_name', 'unknown')
+                rule_id = template.get('local_rule', 'unknown')
+                logger.info(f"📊 Template match: {template_name} (Rule {rule_id}) with confidence {confidence:.3f}")
+            
+            # High confidence: Use template immediately
+            if confidence >= 0.75:
+                if verbose:
+                    logger.info(f"✅ High confidence ({confidence:.3f}) - using template")
+                
+                result = {
+                    'answer': template["quick_response"],
+                    'source': 'template',
+                    'rule_id': template.get('local_rule'),
+                    'confidence': 'high',
+                    'confidence_score': confidence,
+                    'tokens_used': 0
+                }
+                result['response_time'] = round(time.time() - start_time, 2)
+                return result
+            
+            # Medium confidence: Use template but note uncertainty
+            elif confidence >= 0.5:
+                if verbose:
+                    logger.info(f"⚠️ Medium confidence ({confidence:.3f}) - using template with note")
+                
+                # Add a note about confidence
+                modified_answer = template["quick_response"]
+                if confidence < 0.65:
+                    modified_answer += "\n\n*Note: If this doesn't address your specific situation, please ask for more details.*"
+                
+                result = {
+                    'answer': modified_answer,
+                    'source': 'template_medium_confidence',
+                    'rule_id': template.get('local_rule'),
+                    'confidence': 'medium',
+                    'confidence_score': confidence,
+                    'tokens_used': 0
+                }
+                result['response_time'] = round(time.time() - start_time, 2)
+                return result
+            
+            # Low confidence: Fall through to AI
+            else:
+                if verbose:
+                    logger.info(f"❌ Low confidence ({confidence:.3f}) - routing to AI")
+        
+        # STEP 2: No good template match, classify intent for AI routing
         intent = classify_intent_minimal(question)
         if verbose:
             logger.info(f"🎯 Intent classified as: {intent}")
         
-        # STEP 3: Route based on intent
+        # STEP 3: Route to appropriate AI handler
         if intent == 'position':
-            # Position questions: Skip templates, go straight to focused AI
             result = get_position_focused_response(question, verbose)
-            
         elif intent == 'relief':
-            # Relief questions: Check templates first, then AI if needed
-            template = check_common_query(question)
-            if template:
-                if verbose:
-                    logger.info(f"✅ Template match: {template['local_rule']}")
-                result = {
-                    'answer': template["quick_response"],
-                    'source': 'template',
-                    'rule_id': template['local_rule'],
-                    'confidence': 'highest',
-                    'tokens_used': 0
-                }
-            else:
-                result = get_relief_focused_response(question, verbose)
-                
-        else:  # 'other'
-            # Unclear intent: Fall back to current system
-            template = check_common_query(question)
-            if template:
-                if verbose:
-                    logger.info(f"✅ Template match for unclear intent: {template['local_rule']}")
-                result = {
-                    'answer': template["quick_response"],
-                    'source': 'template',
-                    'rule_id': template['local_rule'],
-                    'confidence': 'highest',
-                    'tokens_used': 0
-                }
-            else:
-                result = get_general_focused_response(question, verbose)
+            result = get_relief_focused_response(question, verbose)
+        elif intent == 'penalty':
+            result = get_penalty_focused_response(question, verbose)
+        elif intent == 'procedure':
+            result = get_procedure_focused_response(question, verbose)
+        else:
+            result = get_general_focused_response(question, verbose)
         
-        # Add timing and intent info to result
+        # Add timing and intent info
         response_time = round(time.time() - start_time, 2)
         result['response_time'] = response_time
         result['intent_detected'] = intent
         
-        # Enhanced logging for cost tracking
         if verbose:
-            logger.info(f"✅ Response completed: Intent={intent}, Source={result['source']}, Tokens={result.get('tokens_used', 0)}, Time={response_time}s")
+            logger.info(f"✅ AI response completed in {response_time}s")
         
         return result
                 
@@ -857,6 +1106,7 @@ def get_hybrid_interpretation(question, verbose=False):
             'tokens_used': 0,
             'intent_detected': 'error'
         }
+
 
 def initialize_ai_system():
     """Initialize the production hybrid system."""
@@ -1288,6 +1538,11 @@ if ai_initialized:
 else:
     logger.warning("⚠️ Running in template-only mode")
 
+        
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
     app.run(debug=False, host='0.0.0.0', port=port)
+
+# Add this at the bottom of web_api.py temporarily
+#if __name__ == "__main__":
+    #test_template_confidence()
