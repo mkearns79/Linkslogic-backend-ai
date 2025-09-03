@@ -362,7 +362,7 @@ def get_optimized_hybrid_interpretation(question, verbose=False, use_compression
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[
-                {"role": "system", "content": "You are a golf rules expert for Columbia Country Club. When answering GENERAL rules questions (no specific hole mentioned), prioritize official Rules of Golf and reference rule numbers. When answering HOLE-SPECIFIC questions, prioritize Columbia's local rules. Use 'According to Columbia's local rules...' for local rules (NEVER mention CCC codes), 'According to the Rules of Golf, Rule X.X...' for official rules. Be concise but complete."},
+                {"role": "system", "content": "You are a golf rules expert for Columbia Country Club. When answering GENERAL rules questions (no specific hole mentioned), prioritize official Rules of Golf and reference rule numbers. When answering HOLE-SPECIFIC questions, prioritize Columbia's local rules but only if a local rule applies (if a Local Rule doesn't apply, default to official Rules of Golf. Use 'According to Columbia's local rules...' for local rules (NEVER mention CCC codes), 'According to the Rules of Golf, Rule X.X...' for official rules. Be concise but complete."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.3,
@@ -443,7 +443,7 @@ RULES CONTEXT:
 QUESTION: {question}
 
 INSTRUCTIONS:
-- If the context shows a COLUMBIA CC LOCAL RULE, start your answer with "According to Columbia Country Club's local rules..."
+- If the context shows a COLUMBIA CC LOCAL RULE, start your answer with "According to Columbia Country Club's local rules..." (but never mention CCC codes)
 - If FREE RELIEF is mentioned in the context, emphasize that in your answer
 - If PENALTY or NO RELIEF is mentioned, emphasize that instead
 - Be specific about the procedure (where to drop, penalty strokes, etc.)
@@ -460,7 +460,7 @@ RULES:
 
 QUESTION: {question}
 
-If using a LOCAL rule, start with "According to Columbia Country Club's local rules..."
+If using a LOCAL rule, start with "According to Columbia Country Club's local rules..." (but never mention CCC codes)
 If using an OFFICIAL rule, start with "According to the Rules of Golf, Rule X.X..."
 
 Provide clear procedure and mention any free relief or penalties.

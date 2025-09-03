@@ -585,7 +585,7 @@ def get_position_focused_response(question, verbose=False):
             rule = result['rule']
             is_local = result.get('is_local', False)
             if is_local:
-                context_parts.append(f"COLUMBIA CC LOCAL RULE {rule['id']}: {rule['title']} - {rule['text'][:150]}...")
+                context_parts.append(f"COLUMBIA CC LOCAL RULE - {rule['title']} - {rule['text'][:150]}...")
             else:
                 context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
         
@@ -661,7 +661,7 @@ def get_relief_focused_response(question, verbose=False):
             is_local = result.get('is_local', False)
             if is_local:
                 # More detailed local rule context (increased from 60 to 200 chars)
-                context_parts.append(f"COLUMBIA CC LOCAL RULE {rule['id']}: {rule['title']} - {rule['text'][:200]}...")
+                context_parts.append(f"COLUMBIA CC LOCAL RULE - {rule['title']} - {rule['text'][:200]}...")
             else:
                 context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
         
@@ -725,7 +725,7 @@ def get_general_focused_response(question, verbose=False):
             rule = result['rule']
             is_local = result.get('is_local', False)
             if is_local:
-                context_parts.append(f"COLUMBIA CC LOCAL RULE {rule['id']}: {rule['title']} - {rule['text'][:100]}...")
+                context_parts.append(f"COLUMBIA CC LOCAL RULE - {rule['title']} - {rule['text'][:100]}...")
             else:
                 context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
         
@@ -1375,32 +1375,28 @@ def get_quick_questions():
                 'text': 'Maintenance facility on #10',
                 'category': 'local_rules',
                 'icon': '🏗️',
-                'expected_source': 'template',
-                'expected_rule': 'CCC-7'
+                'expected_source': 'template'
             },
             {
                 'id': 'purple_line_boundary',
                 'text': 'Purple Line',
                 'category': 'local_rules',
                 'icon': '🚆',
-                'expected_source': 'template',
-                'expected_rule': 'CCC-6'
+                'expected_source': 'template'
             },
             {
                 'id': 'water_hazard_17',
                 'text': 'Water on #17',
                 'category': 'local_rules',
                 'icon': '💧',
-                'expected_source': 'template',
-                'expected_rule': 'CCC-2'
+                'expected_source': 'template'
             },
             {
                 'id': 'green_stakes_cart_path',
                 'text': 'Path behind #14 & #17 green',
                 'category': 'local_rules',
                 'icon': '🚫',
-                'expected_source': 'template',
-                'expected_rule': 'CCC-4'
+                'expected_source': 'template'
             }
         ],
         'ai_available': ai_system_available,
