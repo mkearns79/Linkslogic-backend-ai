@@ -591,7 +591,7 @@ def get_position_focused_response(question, verbose=False):
         
         context = "\n".join(context_parts) if context_parts else "General golf rules apply."
 
-        base_prompt = f"""Golf rules expert: Determine ball position/status at Columbia Country Club.
+        base_prompt = f"""Golf rules expert: Determine ball position/status at Columbia Country Club. Be aware that many ball position/status situations are not Columbia-specific, and for these the official golf rules are the more suitable source for the response.
 
 Question: {question}
 
@@ -614,7 +614,7 @@ Key distinctions:
 - Local boundaries may differ from standard golf boundaries
 
 If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
-If official rule, start with "According to the Rules of Golf, Rule X.X..."
+If an official rule applies, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
@@ -667,7 +667,7 @@ def get_relief_focused_response(question, verbose=False):
         
         context = "\n".join(context_parts) if context_parts else "No specific local rules found."
         
-        base_prompt = f"""Golf rules expert: Provide relief options/procedures at Columbia Country Club.
+        base_prompt = f"""Golf rules expert: Provide relief options/procedures at Columbia Country Club. Be aware that many relief option/procedure situations are not Columbia-specific, and for these the official golf rules are the more suitable source for the response.
 
 Question: {question}
 
@@ -678,18 +678,18 @@ Focus on:
 - Columbia CC local relief options (special procedures, dropping zones, free vs penalty relief)
 - Local rule exceptions (integral objects, no-relief areas, boundary definitions)
 - Relief procedures (where to drop, how many penalty strokes, measurement procedures)
-- Local vs official relief options (always prioritize local when available)
+- Local vs official relief options (always prioritize local when the inquiry is an exactly defined in the Local Rules)
 - Hole-specific relief (dropping zones, special areas, course-specific rules)
 - Equipment/obstruction relief (cart paths, maintenance areas, construction fences, construction zones)
 
 Key distinctions:
-- Local relief options override official rules when applicable
+- Local relief options override official rules, but only when a local rule applies directly to the user's inquiry
 - Free relief vs penalty relief situations
 - Dropping vs placing procedures
 - Course area-specific relief rules
 
 If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
-If official rule, start with "According to the Rules of Golf, Rule X.X..."
+If an official rule applies, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
@@ -739,7 +739,7 @@ Relevant Rules:
 {context}
 
 Determine if this is about: ball position, relief procedures, equipment, or rule clarification.
-Focus on: Local rule priority, Columbia-specific procedures, official rule application.
+Focus on: Local rule priority (when the inquiry is a direct match to a local rule), Columbia-specific procedures, official rule application.
 
 If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
 If official rule, start with "According to the Rules of Golf, Rule X.X..."
@@ -1156,14 +1156,42 @@ def ask_question():
             response_data = create_definition_response(definition_id, question)
             if response_data:
                 response_time = round(time.time() - start_time, 2)
+                
+                # Add standard response metadata
                 response_data['response_time'] = response_time
                 response_data['club_id'] = 'columbia_cc'
                 response_data['ai_system'] = 'definitions_database'
                 response_data['timestamp'] = datetime.now().isoformat()
+                response_data['tokens_used'] = 0  # Definitions are free
+                response_data['estimated_cost'] = 0.0
+                response_data['intent_detected'] = 'definition'
+                
+                # ADD COMPREHENSIVE LOGGING (same format as other sources)
+                try:
+                    comprehensive_log = {
+                        "timestamp": datetime.now().isoformat(),
+                        "question": question,
+                        "answer": response_data.get('answer', ''),
+                        "source": 'definitions_database',
+                        "rule_type": 'definition',
+                        "confidence": response_data.get('confidence', 'high'),
+                        "tokens_used": 0,
+                        "estimated_cost": 0.0,
+                        "response_time": response_time,
+                        "intent_detected": 'definition',
+                        "success": True,
+                        "definition_id": definition_id  # Additional metadata for definitions
+                    }
+                    
+                    # Log to Cloud Logging (persists forever) - SAME FORMAT AS OTHER SOURCES
+                    logger.info(f"GOLF_QUERY: {json.dumps(comprehensive_log)}")
+                    
+                except Exception as e:
+                    logger.error(f"Dashboard logging error for definitions: {e}")
                 
                 logger.info(f"✅ Definition response in {response_time}s")
                 return jsonify(response_data)
-        
+            
         if ai_system_available:
             try:
                 # Use restored sophisticated hybrid system
@@ -1315,7 +1343,7 @@ def health_check():
         'status': 'healthy',
         'service': 'production_hybrid_golf_rules',
         'timestamp': datetime.now().isoformat(),
-        'version': '6.0.0-production-hybrid',
+        'version': '6.1.0-production-hybrid',
         'ai_available': ai_system_available,
         'approach': 'templates_first_then_ai_with_rule_scoring',
         'deployment_optimized': True,
@@ -1323,10 +1351,12 @@ def health_check():
             'templates_loaded': len(COMMON_QUERY_TEMPLATES),
             'local_rules_loaded': local_rules_count,
             'official_rules_loaded': official_rules_count,
+            'definitions_loaded': definitions_count,
             'total_rules': local_rules_count + official_rules_count
         },
         'features': {
             'template_matching': True,
+            'definitions_database': True,
             'vector_search': ai_system_available,
             'rule_precedence': True,
             'local_rule_priority': True,
@@ -1415,7 +1445,12 @@ def view_all_queries():
         # Sort by timestamp (newest first)
         all_queries.sort(key=lambda x: x.get('timestamp', ''), reverse=True)
         
-        # Create HTML dashboard (same as before)
+        # UPDATED SUMMARY WITH DEFINITIONS DATABASE TRACKING
+        template_count = len([q for q in all_queries if 'template' in q.get('source', '')])
+        ai_count = len([q for q in all_queries if 'ai' in q.get('source', '')])
+        definitions_count = len([q for q in all_queries if q.get('source', '') == 'definitions_database'])
+
+        # Create HTML dashboard with enhanced summary
         html = f"""
         <!DOCTYPE html>
         <html>
@@ -1430,18 +1465,20 @@ def view_all_queries():
                 .answer {{ max-width: 400px; word-wrap: break-word; }}
                 .template {{ background-color: #e8f5e8; }}
                 .ai {{ background-color: #e8f0ff; }}
+                .definitions {{ background-color: #fff5e6; }}
                 .error {{ background-color: #ffe8e8; }}
                 .summary {{ background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; }}
             </style>
         </head>
         <body>
-            <h1>🏌️ Golf Rules Query Dashboard (Persistent)</h1>
+            <h1>🌏️ Golf Rules Query Dashboard (Persistent)</h1>
             
             <div class="summary">
                 <h3>Summary (Last 7 Days)</h3>
                 <p><strong>Total Queries:</strong> {len(all_queries)}</p>
-                <p><strong>Template Responses:</strong> {len([q for q in all_queries if 'template' in q.get('source', '')])}</p>
-                <p><strong>AI Responses:</strong> {len([q for q in all_queries if 'ai' in q.get('source', '')])}</p>
+                <p><strong>Template Responses:</strong> {template_count}</p>
+                <p><strong>Definitions Database:</strong> {definitions_count} ✨ NEW</p>
+                <p><strong>AI Responses:</strong> {ai_count}</p>
                 <p><strong>Total Cost:</strong> ${sum([q.get('estimated_cost', 0) for q in all_queries]):.4f}</p>
                 <p><strong>Data Source:</strong> Cloud Logging (Persistent)</p>
             </div>
@@ -1459,7 +1496,7 @@ def view_all_queries():
                 </tr>
         """
         
-        # Add rows for each query
+        # Add rows for each query with definitions database color coding
         for query in all_queries[:100]:  # Limit to 100 for performance
             timestamp = query.get('timestamp', 'N/A')[:16]
             question = query.get('question', 'N/A')[:100]
@@ -1470,10 +1507,12 @@ def view_all_queries():
             cost = query.get('estimated_cost', 0)
             response_time = query.get('response_time', 0)
             
-            # Color code by source
+            # Color code by source - ADDED DEFINITIONS DATABASE
             row_class = ""
             if 'template' in source:
                 row_class = "template"
+            elif source == 'definitions_database':
+                row_class = "definitions"
             elif 'ai' in source:
                 row_class = "ai"
             elif 'error' in source or 'fallback' in source:
@@ -1498,6 +1537,7 @@ def view_all_queries():
             <div style="margin-top: 20px; font-size: 12px; color: #666;">
                 <p><strong>Color coding:</strong></p>
                 <p><span style="background-color: #e8f5e8; padding: 2px 6px;">Green</span> = Template (Free)</p>
+                <p><span style="background-color: #fff5e6; padding: 2px 6px;">Orange</span> = Definitions Database (Free) ✨ NEW</p>
                 <p><span style="background-color: #e8f0ff; padding: 2px 6px;">Blue</span> = AI Response (Costs tokens)</p>
                 <p><span style="background-color: #ffe8e8; padding: 2px 6px;">Red</span> = Error/Fallback</p>
                 <p><strong>Data persists across container restarts!</strong></p>
@@ -1507,6 +1547,19 @@ def view_all_queries():
                 // Auto-refresh every 60 seconds
                 setTimeout(() => location.reload(), 60000);
             </script>
+        </body>
+        </html>
+        """
+        
+        return html
+        
+    except Exception as e:
+        return f"""
+        <html>
+        <body>
+            <h1>Dashboard Error</h1>
+            <p>Error loading from Cloud Logging: {str(e)}</p>
+            <p>Falling back to file-based logs...</p>
         </body>
         </html>
         """
