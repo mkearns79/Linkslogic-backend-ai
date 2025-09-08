@@ -776,134 +776,154 @@ def get_fallback_response():
 
 def calculate_template_confidence(question, template_data):
     """
-    Calculate confidence score for template match (0.0 to 1.0).
-    Handles exact phrase matches, intelligent partial matching, and context-specific penalties.
+    Hybrid approach: Positive signals for base match, with disqualifiers.
+    Only matches when clearly asking about a Columbia-specific scenario.
     """
     question_lower = question.lower().strip()
-    
-    best_match_score = 0.0
+    confidence = 0.0
     matched_keyword = None
     
-    # Check each keyword for matches
+    # Check each keyword for positive signals
     for keyword_phrase in template_data.get("keywords", []):
         keyword_lower = keyword_phrase.lower()
-        match_score = 0.0
         
-        # EXACT PHRASE MATCH
-        if keyword_lower in question_lower:
-            # For very short keywords (ob, cc), verify word boundaries
-            if len(keyword_lower) <= 3:
-                import re
-                pattern = r'\b' + re.escape(keyword_lower) + r'\b'
-                if not re.search(pattern, question_lower):
-                    continue  # Skip "ob" inside "obstruction"
+        # Skip if keyword not in question at all
+        if keyword_lower not in question_lower:
+            continue
             
-            # Score based on coverage
-            coverage = len(keyword_lower) / len(question_lower)
-            if keyword_lower == question_lower:
-                match_score = 1.0
-            elif coverage > 0.7:
-                match_score = 0.9
-            elif coverage > 0.5:
-                match_score = 0.8
-            else:
-                match_score = 0.7
-                
-        # INTELLIGENT PARTIAL MATCHING
-        else:
-            # Look for important phrase components
-            important_phrases = {
-                'lost ball': ['lost', 'ball'],
-                'out of bounds': ['out', 'bounds'],
-                'cart path': ['cart', 'path'],
-                'green stakes': ['green', 'stakes'],
-                'maintenance facility': ['maintenance', 'facility'],
-                'purple line': ['purple', 'line'],
-            }
-            
-            # Check for phrase components
-            for phrase, components in important_phrases.items():
-                if all(word in question_lower for word in components):
-                    if all(word in keyword_lower for word in components):
-                        match_score = 0.7  # Good phrase match
+        # For very short keywords (ob, cc), verify word boundaries
+        if len(keyword_lower) <= 3:
+            import re
+            pattern = r'\b' + re.escape(keyword_lower) + r'\b'
+            if not re.search(pattern, question_lower):
+                continue  # Skip "ob" inside "obstruction"
+        
+        # STRONG POSITIVE SIGNALS (high confidence)
+        strong_signals = [
+            keyword_lower == question_lower,  # Exact match
+            question_lower.startswith(keyword_lower),  # Starts with keyword
+            question_lower.endswith(keyword_lower),  # Ends with keyword
+            f"rule for {keyword_lower}" in question_lower,  # "what is the rule for X"
+            f"rule about {keyword_lower}" in question_lower,  # "rule about X"
+            f"rule if {keyword_lower}" in question_lower,  # "what's the rule if X"
+            f"relief from {keyword_lower}" in question_lower,  # "relief from X"
+            f"relief for {keyword_lower}" in question_lower,  # "relief for X"
+            f"procedure for {keyword_lower}" in question_lower,  # "procedure for X"
+            len(keyword_lower) / len(question_lower) > 0.7,  # Keyword is 70%+ of question
+        ]
+        
+        # MODERATE POSITIVE SIGNALS (medium confidence)
+        moderate_signals = [
+            len(keyword_lower) / len(question_lower) > 0.4,  # Keyword is 40%+ of question
+            question_lower.startswith("what") and keyword_lower in question_lower[:50],  # What + keyword early
+            question_lower.startswith("how") and keyword_lower in question_lower[:50],  # How + keyword early
+            question_lower.startswith("where") and keyword_lower in question_lower[:50],  # Where + keyword early
+            f"hit {keyword_lower}" in question_lower,  # "ball hit purple line"
+            f"went {keyword_lower}" in question_lower,  # "ball went out of bounds"
+            f"into {keyword_lower}" in question_lower,  # "into maintenance facility"
+            f"near {keyword_lower}" in question_lower,  # "near purple line"
+        ]
+        
+        # Check for Columbia-specific partial matches (for things like "lost ball")
+        columbia_partial_matches = {
+            'lost ball': ['lost', 'ball'],
+            'cart path': ['cart', 'path'],
+            'green stakes': ['green', 'stakes'],
+            'purple line': ['purple', 'line'],
+            'maintenance': ['maintenance'],
+            'water': ['water', 'hazard'],
+        }
+        
+        partial_match = False
+        for phrase, required_words in columbia_partial_matches.items():
+            if all(word in keyword_lower for word in required_words):
+                if all(word in question_lower for word in required_words):
+                    # Check if this is asking about the rule/procedure
+                    if any(asking_word in question_lower for asking_word in 
+                           ['rule', 'relief', 'procedure', 'what', 'how', 'where']):
+                        partial_match = True
                         break
-            
-            # Check for hole number matches
-            if not match_score:
-                import re
-                keyword_numbers = set(re.findall(r'\b\d+\b', keyword_lower))
-                question_numbers = set(re.findall(r'\b\d+\b', question_lower))
-                
-                if keyword_numbers and question_numbers:
-                    if keyword_numbers.intersection(question_numbers):
-                        match_score = 0.6  # Hole number match
-            
-            # Check word overlap as last resort
-            if not match_score:
-                stop_words = {'what', 'is', 'the', 'for', 'if', 'my', 'a', 'an', 'to', 'on', 'in', 'of', 'do', 'i', 'rule', 'happens', 'comes', 'rest'}
-                keyword_words = set(keyword_lower.split())
-                question_words = set(question_lower.split())
-                
-                keyword_important = {w for w in keyword_words if w not in stop_words and len(w) > 2}
-                question_important = {w for w in question_words if w not in stop_words and len(w) > 2}
-                
-                if keyword_important and question_important:
-                    overlap = keyword_important.intersection(question_important)
-
-                    min_overlap = max(2, len(keyword_important) * 0.5)
-                    
-                    if len(overlap) >= min_overlap:
-                        overlap_score = len(overlap) / min(len(keyword_important), len(question_important))
-                        match_score = overlap_score * 0.5
         
-        if match_score > best_match_score:
-            best_match_score = match_score
+        # Assign confidence based on signals
+        if any(strong_signals):
+            confidence = 0.8
             matched_keyword = keyword_phrase
+            break
+        elif any(moderate_signals):
+            confidence = 0.6
+            matched_keyword = keyword_phrase
+            break
+        elif partial_match:
+            confidence = 0.5
+            matched_keyword = keyword_phrase
+            # Don't break - keep looking for better matches
     
-    if best_match_score == 0:
+    # EARLY EXIT: No match found
+    if confidence == 0:
         return 0.0
     
-    confidence = best_match_score
+    # DISQUALIFIERS - Complex scenarios that should go to AI
+    disqualifiers = [
+        # Multi-step scenarios
+        'and then' in question_lower,
+        'after that' in question_lower,
+        'which caused' in question_lower,
+        'resulted in' in question_lower,
+        'subsequently' in question_lower,
+        
+        # Ball in motion scenarios
+        'in motion' in question_lower,
+        'moving ball' in question_lower,
+        'while it was still' in question_lower,
+        'accidentally hit' in question_lower,
+        'accidentally deflected' in question_lower,
+        
+        # Multi-player interactions
+        ('my opponent' in question_lower or 'another player' in question_lower) and 
+        any(action in question_lower for action in ['hit', 'played', 'moved', 'touched']),
+        
+        # Complex rules scenarios
+        'what happens if' in question_lower and len(question_lower.split()) > 15,
+        'is it legal' in question_lower and 'then' in question_lower,
+        
+        # Query is too long (likely a complex scenario)
+        len(question_lower.split()) > 25,
+        
+        # Multiple golf actions (complex scenario)
+        sum(1 for action in ['hit', 'chipped', 'putted', 'drove', 'played', 'dropped', 'placed', 'lifted'] 
+            if action in question_lower) > 2,
+    ]
     
-    # TEMPLATE-SPECIFIC CONTEXT PENALTIES/BOOSTS
+    if any(disqualifiers):
+        return 0.0  # Disqualified - this is a complex rules scenario
+    
+    # TEMPLATE-SPECIFIC ADJUSTMENTS
     template_name = template_data.get('template_name', template_data.get('local_rule', ''))
     
-    # For LOST BALL template
+    # For LOST BALL template - avoid penalty area confusion
     if 'lost_ball' in template_name.lower() or template_data.get('local_rule') == 'CCC-1':
-        # Penalty: Red/yellow stakes indicate penalty area, not lost ball
         if any(indicator in question_lower for indicator in 
-               ['red stake', 'red stakes', 'red-staked', 'yellow stake', 'yellow stakes', 
-                'yellow-staked', 'penalty area', 'water hazard']):
-            confidence *= 0.2
-            
-        # Penalty: Water terms (usually penalty area)
-        if any(indicator in question_lower for indicator in 
-               ['water', 'pond', 'lake', 'creek', 'stream', 'wetland']):
-            confidence *= 0.3
+               ['red stake', 'yellow stake', 'penalty area', 'water hazard', 'water', 'pond', 'creek']):
+            return 0.0  # This is a penalty area, not a lost ball scenario
     
-    # For OUT OF BOUNDS template
-    if 'out_of_bounds' in template_name.lower() or 'out_of_bounds' in str(template_data.get('keywords', [])):
-        # Penalty: Red/yellow stakes are penalty areas, not OB
-        if any(color in question_lower for color in ['red stake', 'yellow stake']):
-            confidence *= 0.2
-            
-        # Penalty: "obstruction" containing "ob" - false positive
-        if 'obstruction' in question_lower and matched_keyword and 'ob' in matched_keyword.lower():
-            confidence *= 0.1
-            
-        # Boost: White stakes indicate OB
-        if any(indicator in question_lower for indicator in ['white stake', 'white stakes']):
-            confidence = min(1.0, confidence * 1.5)
+    # For OUT OF BOUNDS template - avoid penalty area confusion  
+    if 'out_of_bounds' in template_name.lower():
+        if any(indicator in question_lower for indicator in ['red stake', 'yellow stake', 'penalty area']):
+            return 0.0  # This is a penalty area, not OB
+        
+        # Boost for white stakes (indicate OB)
+        if 'white stake' in question_lower:
+            confidence = min(1.0, confidence * 1.3)
     
-    # GENERAL MODIFIERS
+    # FINAL ADJUSTMENTS
     
-    # Penalty for asking about official/USGA rules
+    # Boost for explicit Columbia context
+    if any(term in question_lower for term in ['columbia', 'cc', 'our course', 'here at']):
+        confidence = min(1.0, confidence * 1.2)
+    
+    # Penalty for explicit general/USGA context
     if any(term in question_lower for term in ['usga', 'official rule', 'rules of golf']):
         confidence *= 0.3
-    
-    # Boost for Columbia-specific context
-    if any(term in question_lower for term in ['columbia', 'cc', 'here', 'our']):
-        confidence = min(1.0, confidence * 1.3)
     
     return confidence
 
