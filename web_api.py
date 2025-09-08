@@ -849,7 +849,10 @@ def calculate_template_confidence(question, template_data):
                 
                 if keyword_important and question_important:
                     overlap = keyword_important.intersection(question_important)
-                    if overlap:
+
+                    min_overlap = max(2, len(keyword_important) * 0.5)
+                    
+                    if len(overlap) >= min_overlap:
                         overlap_score = len(overlap) / min(len(keyword_important), len(question_important))
                         match_score = overlap_score * 0.5
         
