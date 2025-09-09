@@ -754,7 +754,7 @@ Max 85 words."""
             'tokens_used': response.usage.total_tokens if response.usage else 0
         }
         
-         if not validate_response_completeness(result['answer'], question):
+        if not validate_response_completeness(result['answer'], question):
             logger.warning(f"Response may be incomplete for question: {question}")
             result['confidence'] = 'medium'  # Downgrade confidence if incomplete
 
