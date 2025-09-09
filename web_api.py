@@ -696,7 +696,7 @@ def get_relief_focused_response(question, verbose=False):
     try:
         # Get local rules context with more results for comprehensive relief options
         search_engine = ProductionHybridVectorSearch()
-        search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
+        search_results = search_engine.search_with_precedence(question, top_n=4, verbose=verbose)
         
         # ENHANCED DEBUG LOGGING (same as position function)
         if verbose:
@@ -710,13 +710,19 @@ def get_relief_focused_response(question, verbose=False):
         
         context = build_enhanced_rule_context(search_results, max_rules=3)
         
-        base_prompt = f"""Golf rules expert: Provide relief options/procedures at Columbia Country Club. Be aware that many relief option/procedure situations are not Columbia-specific, and for these the official golf rules are the more suitable source for the response.
+        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE and ACCURATE answer about relief options.
         
 
 Question: {question}
 
 Relevant Rules:
 {context}
+
+CRITICAL INSTRUCTIONS:
+1. Include ALL conditions that must be met for relief to be available
+2. Specify what types of interference qualify (e.g., swing, stance, and for putting green only)
+3. Mention any exceptions or situations where relief is NOT available
+4. Be specific about the relief procedure if applicable
 
 Focus on: 
 - Columbia CC local relief options (special procedures, dropping zones, free vs penalty relief)
@@ -733,8 +739,11 @@ Key distinctions:
 - Course area-specific relief rules
 
 If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
-If an official rule applies, start with "According to the Rules of Golf, Rule X.X..."
-Max 85 words."""
+If an official rule applies, start with "According to the Rules of Golf, Rule X.X... (e.g., Rule 16.1a)"
+Max 85 words.
+
+Remember: Incomplete answers that omit conditions or limitations are incorrect."""
+
 
         base_prompt = enhance_ai_prompt_with_completeness_check(base_prompt, question, "relief")
 
