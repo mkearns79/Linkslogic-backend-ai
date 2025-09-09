@@ -425,6 +425,46 @@ class ProductionHybridVectorSearch:
             logger.error(f"Search error: {e}")
             return []
 
+def build_enhanced_rule_context(search_results, max_rules=3):
+    """
+    Build comprehensive context including full rule text and conditions.
+    This ensures the AI has complete information about when rules apply.
+    """
+    context_parts = []
+    
+    for i, result in enumerate(search_results[:max_rules]):
+        rule = result['rule']
+        is_local = result.get('is_local', False)
+        
+        # Start with rule identification
+        if is_local:
+            context_part = f"COLUMBIA CC LOCAL RULE - {rule['title']}\n"
+        else:
+            context_part = f"Official Rule {rule['id']}: {rule['title']}\n"
+        
+        # Add main rule text (increase from 100-200 chars to full text or at least 500 chars)
+        rule_text = rule.get('text', '')
+        if len(rule_text) > 500:
+            context_part += f"Main Text: {rule_text[:500]}...\n"
+        else:
+            context_part += f"Main Text: {rule_text}\n"
+        
+        # CRITICAL: Add conditions that specify when rule applies and exceptions
+        if 'conditions' in rule and rule['conditions']:
+            context_part += "Key Conditions:\n"
+            for j, condition in enumerate(rule['conditions'][:3]):  # Include top 3 conditions
+                situation = condition.get('situation', '')
+                explanation = condition.get('explanation', '')
+                context_part += f"  - {situation}: {explanation}\n"
+        
+        # Add relevant examples for clarity
+        if 'examples' in rule and rule['examples']:
+            context_part += f"Examples: {', '.join(rule['examples'][:3])}\n"
+        
+        context_parts.append(context_part)
+    
+    return "\n---\n".join(context_parts)
+
 def detect_definition_query(query):
     """Detect if query is asking for a golf definition."""
     query_lower = query.lower().strip()
@@ -531,36 +571,52 @@ def check_common_query(question):
     
     return None
 
-def classify_intent_minimal(question):
-    """Lightweight intent classification - ~$0.005 per query"""
+def classify_intent_enhanced(question):
+    """
+    Enhanced intent classification that better identifies complex queries.
+    """
     try:
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{
-                "role": "user", 
-                "content": f"""Golf question type?
-A) Ball location/position (where is ball, can I play it, is it in bounds)
-B) Relief options/procedures (what are my options, how do I get relief)
-C) Other
+        classification_prompt = f"""Classify this golf rules question into the most specific category:
 
 Question: {question}
-Answer:"""
-            }],
+
+Categories:
+A) Relief procedures - How to take relief, drop procedures, relief options
+B) Obstruction/condition interference - When relief is available from obstructions or abnormal conditions
+C) Ball position/status - Where the ball is, which area, in/out of bounds
+D) Penalty situations - Penalty strokes, breaches, wrong ball
+E) Definitions - What is a term, terminology questions
+F) Procedures - How to proceed, order of play, marking
+G) Equipment - Clubs, balls, devices
+H) General/Other - Doesn't fit above categories
+
+Answer with letter only:"""
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": classification_prompt}],
             temperature=0.1,
-            max_tokens=10
+            max_tokens=5
         )
         
-        result = response.choices[0].message.content.strip()
-        if result.startswith('A'):
-            return 'position'
-        elif result.startswith('B'):
-            return 'relief'
-        else:
-            return 'other'
+        result = response.choices[0].message.content.strip().upper()
+        
+        # Map to intent categories
+        intent_map = {
+            'A': 'relief',
+            'B': 'obstruction',
+            'C': 'position',
+            'D': 'penalty',
+            'E': 'definition',
+            'F': 'procedure',
+            'G': 'equipment'
+        }
+        
+        return intent_map.get(result[0], 'general')
             
     except Exception as e:
-        logger.error(f"Intent classification error: {e}")
-        return 'other'  # Fallback to current system
+        logger.error(f"Enhanced intent classification error: {e}")
+        return 'general'
 
 def get_position_focused_response(question, verbose=False):
     """Focused AI for position/boundary questions with local rules context"""
@@ -579,17 +635,7 @@ def get_position_focused_response(question, verbose=False):
                 score = result.get('best_similarity', 0)
                 logger.info(f"  {i+1}. {'LOCAL' if is_local else 'OFFICIAL'} - {rule_id}: {title} (score: {score:.3f})")
         
-        # Build context including local rules
-        context_parts = []
-        for result in search_results[:3]:
-            rule = result['rule']
-            is_local = result.get('is_local', False)
-            if is_local:
-                context_parts.append(f"COLUMBIA CC LOCAL RULE - {rule['title']} - {rule['text'][:150]}...")
-            else:
-                context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
-        
-        context = "\n".join(context_parts) if context_parts else "General golf rules apply."
+        context = build_enhanced_rule_context(search_results, max_rules=3)
 
         base_prompt = f"""Golf rules expert: Determine ball position/status at Columbia Country Club. Be aware that many ball position/status situations are not Columbia-specific, and for these the official golf rules are the more suitable source for the response.
 
@@ -617,21 +663,29 @@ If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rul
 If an official rule applies, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
+        base_prompt = enhance_ai_prompt_with_completeness_check(base_prompt, question, "position")
+
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
 
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
-            temperature=0.2,
+            temperature=0.1,
             max_tokens=125
         )
         
-        return {
+        result = {
             'answer': response.choices[0].message.content,
             'source': 'ai_position',
             'confidence': 'high',
             'tokens_used': response.usage.total_tokens if response.usage else 0
         }
+
+        if not validate_response_completeness(result['answer'], question):
+            logger.warning(f"Response may be incomplete for question: {question}")
+            result['confidence'] = 'medium'  # Downgrade confidence if incomplete
+
+        return result
         
     except Exception as e:
         logger.error(f"Position response error: {e}")
@@ -654,20 +708,10 @@ def get_relief_focused_response(question, verbose=False):
                 score = result.get('best_similarity', 0)
                 logger.info(f"  {i+1}. {'LOCAL' if is_local else 'OFFICIAL'} - {rule_id}: {title} (score: {score:.3f})")
         
-        # Build enhanced context with more local rule detail
-        context_parts = []
-        for result in search_results[:3]:  # Use top 3 instead of 2
-            rule = result['rule']
-            is_local = result.get('is_local', False)
-            if is_local:
-                # More detailed local rule context (increased from 60 to 200 chars)
-                context_parts.append(f"COLUMBIA CC LOCAL RULE - {rule['title']} - {rule['text'][:200]}...")
-            else:
-                context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
-        
-        context = "\n".join(context_parts) if context_parts else "No specific local rules found."
+        context = build_enhanced_rule_context(search_results, max_rules=3)
         
         base_prompt = f"""Golf rules expert: Provide relief options/procedures at Columbia Country Club. Be aware that many relief option/procedure situations are not Columbia-specific, and for these the official golf rules are the more suitable source for the response.
+        
 
 Question: {question}
 
@@ -692,22 +736,30 @@ If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rul
 If an official rule applies, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
+        base_prompt = enhance_ai_prompt_with_completeness_check(base_prompt, question, "relief")
+
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
 
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
-            temperature=0.2,
+            temperature=0.1,
             max_tokens=125
         )
         
-        return {
+        result = {
             'answer': response.choices[0].message.content,
             'source': 'ai_relief',
             'confidence': 'high',
             'tokens_used': response.usage.total_tokens if response.usage else 0
         }
         
+         if not validate_response_completeness(result['answer'], question):
+            logger.warning(f"Response may be incomplete for question: {question}")
+            result['confidence'] = 'medium'  # Downgrade confidence if incomplete
+
+        return result
+
     except Exception as e:
         logger.error(f"Relief response error: {e}")
         return get_fallback_response()
@@ -719,17 +771,7 @@ def get_general_focused_response(question, verbose=False):
         search_engine = ProductionHybridVectorSearch()
         search_results = search_engine.search_with_precedence(question, top_n=2, verbose=verbose)
         
-        # Build context (slight enhancement - 100 chars vs 60)
-        context_parts = []
-        for result in search_results[:2]:
-            rule = result['rule']
-            is_local = result.get('is_local', False)
-            if is_local:
-                context_parts.append(f"COLUMBIA CC LOCAL RULE - {rule['title']} - {rule['text'][:100]}...")
-            else:
-                context_parts.append(f"Official Rule {rule['id']}: {rule['title'][:80]}...")
-        
-        context = "\n".join(context_parts) if context_parts else "General golf rules apply."
+        context = build_enhanced_rule_context(search_results, max_rules=2)
         
         base_prompt = f"""Golf rules expert: Answer golf question at Columbia Country Club.
 
@@ -745,21 +787,29 @@ If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rul
 If official rule, start with "According to the Rules of Golf, Rule X.X..."
 Max 85 words."""
 
+        base_prompt = enhance_ai_prompt_with_completeness_check(base_prompt, question, "general")
+
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
 
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
-            temperature=0.2,
+            temperature=0.1,
             max_tokens=125
         )
         
-        return {
+        result = {
             'answer': response.choices[0].message.content,
             'source': 'ai_general',
             'confidence': 'medium',
             'tokens_used': response.usage.total_tokens if response.usage else 0
         }
+
+        if not validate_response_completeness(result['answer'], question):
+            logger.warning(f"Response may be incomplete for question: {question}")
+            result['confidence'] = 'medium'  # Downgrade confidence if incomplete
+
+        return result
         
     except Exception as e:
         logger.error(f"General response error: {e}")
@@ -1094,7 +1144,7 @@ def get_hybrid_interpretation(question, verbose=False):
                     logger.info(f"❌ Low confidence ({confidence:.3f}) - routing to AI")
         
         # STEP 2: No good template match, classify intent for AI routing
-        intent = classify_intent_minimal(question)
+        intent = classify_intent_enhanced(question)
         if verbose:
             logger.info(f"🎯 Intent classified as: {intent}")
         
@@ -1130,6 +1180,57 @@ def get_hybrid_interpretation(question, verbose=False):
             'intent_detected': 'error'
         }
 
+def enhance_ai_prompt_with_completeness_check(base_prompt, question, rule_type="general"):
+    """
+    Add completeness requirements to any AI prompt.
+    This ensures responses include conditions and limitations.
+    """
+    completeness_instructions = """
+
+ACCURACY REQUIREMENTS:
+- Include ALL qualifying conditions (when the rule applies)
+- Include ALL exceptions (when the rule does NOT apply)
+- For relief questions: specify what types of interference qualify
+- For position questions: specify all relevant boundaries and areas
+- Never provide partial information that could mislead
+
+If the rule has specific conditions for applicability, you MUST mention them.
+Example: "Relief is available ONLY when [condition 1] AND [condition 2]"
+"""
+    
+    # Add specific checks based on question type
+    if "relief" in question.lower() or "obstruction" in question.lower():
+        completeness_instructions += """
+For relief from obstructions/conditions:
+- Specify if interference must be with swing, stance, or line of play
+- Note if different rules apply on putting green vs general area
+- Include any "clearly unreasonable" exceptions
+"""
+    
+    return base_prompt + completeness_instructions
+
+def validate_response_completeness(response_text, question):
+    """
+    Quick validation to ensure response includes necessary components.
+    Returns True if response appears complete, False if missing key elements.
+    """
+    response_lower = response_text.lower()
+    question_lower = question.lower()
+    
+    # Check for rule citation
+    has_rule_citation = ("rule" in response_lower and 
+                        any(char.isdigit() for char in response_text))
+    
+    # Check for conditions/limitations based on question type
+    if "relief" in question_lower or "obstruction" in question_lower:
+        # Should mention when relief is available
+        has_conditions = any(phrase in response_lower for phrase in [
+            "only if", "only when", "must", "interference", 
+            "not available", "except", "unless"
+        ])
+        return has_rule_citation and has_conditions
+    
+    return has_rule_citation
 
 def initialize_ai_system():
     """Initialize the production hybrid system."""
