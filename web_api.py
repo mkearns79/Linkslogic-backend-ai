@@ -260,20 +260,52 @@ class ProductionHybridVectorSearch:
     def _process_official_rules(self):
         """Process official rules from your comprehensive database."""
         processed_rules = []
-        
-        # Only process first 50 official rules to prevent API overload
-        # You can increase this gradually
-        for rule in RULES_DATABASE[:50]:
-            processed_rules.append({
-                'id': rule['id'],
-                'title': rule['title'],
-                'text': rule['text'],
-                'keywords': rule.get('keywords', []),
-                'is_local': False,
-                'priority': 2,
-                'search_text': f"{rule['title']} {rule['text']} {' '.join(rule.get('keywords', []))}"
-            })
-            
+    
+        # CRITICAL FIX: Include ALL rules or at least the most important ones
+        # Priority rules that should definitely be included
+        priority_rule_ids = [
+            "15.2", "15.2a", "15.2a(2)", "15.2a(3)", "15.2b",  # Movable obstructions
+            "16.1", "16.1a", "16.1b",  # Abnormal course conditions
+            "8.1a", "8.1b", "8.1c", "8.1d",  # Playing course as found
+            "17.1", "17.1a", "17.1b", "17.1c", "17.1d",  # Penalty areas
+            "9.4", "9.4a", "9.4b",  # Ball moved
+            "7.4",  # Ball moved during search
+            "14.2", "14.2b", "14.2e",  # Replacing ball procedures
+        ]
+    
+        # First, add priority rules
+        added_ids = set()
+        for rule in RULES_DATABASE:
+            if rule['id'] in priority_rule_ids:
+                processed_rules.append({
+                    'id': rule['id'],
+                    'title': rule['title'],
+                    'text': rule['text'],
+                    'keywords': rule.get('keywords', []),
+                    'is_local': False,
+                    'priority': 2,
+                    'search_text': f"{rule['title']} {rule['text']} {' '.join(rule.get('keywords', []))}"
+                })
+                added_ids.add(rule['id'])
+    
+        # Then add remaining rules up to a reasonable limit (e.g., 100 total)
+        remaining_count = 0
+        max_additional = 100 - len(processed_rules)
+    
+        for rule in RULES_DATABASE:
+            if rule['id'] not in added_ids and remaining_count < max_additional:
+                processed_rules.append({
+                    'id': rule['id'],
+                    'title': rule['title'],
+                    'text': rule['text'],
+                    'keywords': rule.get('keywords', []),
+                    'is_local': False,
+                    'priority': 2,
+                    'search_text': f"{rule['title']} {rule['text']} {' '.join(rule.get('keywords', []))}"
+                })
+                remaining_count += 1
+    
+        logger.info(f"📚 Processed {len(processed_rules)} official rules for embedding")
         return processed_rules
     
     def _precompute_rule_embeddings(self):
@@ -427,7 +459,7 @@ class ProductionHybridVectorSearch:
 
 def build_enhanced_rule_context(search_results, max_rules=3):
     """
-    Build comprehensive context including full rule text and conditions.
+    Build COMPLETE context including full rule text and ALL conditions.
     This ensures the AI has complete information about when rules apply.
     """
     context_parts = []
@@ -442,28 +474,31 @@ def build_enhanced_rule_context(search_results, max_rules=3):
         else:
             context_part = f"Official Rule {rule['id']}: {rule['title']}\n"
         
-        # Add main rule text (increase from 100-200 chars to full text or at least 500 chars)
+        # CRITICAL FIX: Include COMPLETE rule text, not truncated
         rule_text = rule.get('text', '')
-        if len(rule_text) > 500:
-            context_part += f"Main Text: {rule_text[:500]}...\n"
-        else:
-            context_part += f"Main Text: {rule_text}\n"
+        context_part += f"Full Text: {rule_text}\n"
         
-        # CRITICAL: Add conditions that specify when rule applies and exceptions
+        # CRITICAL: Add ALL conditions that specify when rule applies and exceptions
         if 'conditions' in rule and rule['conditions']:
-            context_part += "Key Conditions:\n"
-            for j, condition in enumerate(rule['conditions'][:3]):  # Include top 3 conditions
+            context_part += "\nIMPORTANT CONDITIONS AND APPLICATIONS:\n"
+            for j, condition in enumerate(rule['conditions']):
                 situation = condition.get('situation', '')
                 explanation = condition.get('explanation', '')
-                context_part += f"  - {situation}: {explanation}\n"
+                examples = condition.get('examples', [])
+                
+                context_part += f"\n{j+1}. {situation}\n"
+                context_part += f"   Explanation: {explanation}\n"
+                if examples:
+                    context_part += f"   Examples: {', '.join(examples[:5])}\n"
         
-        # Add relevant examples for clarity
-        if 'examples' in rule and rule['examples']:
-            context_part += f"Examples: {', '.join(rule['examples'][:3])}\n"
+        # Add any enhanced context if it exists
+        if 'enhanced_context' in rule:
+            context_part += f"\nAdditional Context: {rule['enhanced_context']}\n"
         
         context_parts.append(context_part)
     
-    return "\n---\n".join(context_parts)
+    return "\n" + "="*50 + "\n".join(context_parts)
+
 
 def detect_definition_query(query):
     """Detect if query is asking for a golf definition."""
@@ -522,41 +557,52 @@ def create_definition_response(definition_id, query):
     }
 
 def enhance_ai_prompt_with_definitions(prompt, query):
-    """Enhance AI prompt with relevant definitions when needed."""
+    """
+    Option 1: Include potentially relevant definitions and let AI choose.
+    For stake queries, includes both movable obstruction and penalty area definitions.
+    """
     try:
-        # Import locally to avoid scope issues
-        from golf_definitions_db import COMMON_DEFINITION_LOOKUPS, get_definition_by_id
+        from golf_definitions_db import get_definition_by_id, COMMON_DEFINITION_LOOKUPS
         
-        query_words = query.lower().split()
-        relevant_definitions = []
+        query_lower = query.lower()
+        definitions_to_add = []
         
-        # Check for definition terms in query
+        # Check if stakes are mentioned
+        stake_mentioned = any(term in query_lower for term in ['stake', 'stakes', 'red', 'yellow'])
+        
+        if stake_mentioned:
+            # Add BOTH definitions and let the AI figure out which is relevant
+            movable_def = get_definition_by_id('MOVABLE_OBSTRUCTION')
+            penalty_def = get_definition_by_id('PENALTY_AREA')
+            
+            if movable_def:
+                definitions_to_add.append(movable_def)
+            if penalty_def:
+                definitions_to_add.append(penalty_def)
+        
+        # Also check for other specific terms
+        query_words = query_lower.split()
         for word in query_words:
-            if word in COMMON_DEFINITION_LOOKUPS:
+            if word in COMMON_DEFINITION_LOOKUPS and word not in ['stake', 'stakes', 'red', 'yellow']:
                 def_id = COMMON_DEFINITION_LOOKUPS[word]
                 definition = get_definition_by_id(def_id)
-                if definition and definition not in relevant_definitions:
-                    relevant_definitions.append(definition)
+                if definition and definition not in definitions_to_add:
+                    definitions_to_add.append(definition)
         
-        # Search for multi-word terms
-        for term in COMMON_DEFINITION_LOOKUPS:
-            if term in query.lower() and len(term.split()) > 1:
-                def_id = COMMON_DEFINITION_LOOKUPS[term]
-                definition = get_definition_by_id(def_id)
-                if definition and definition not in relevant_definitions:
-                    relevant_definitions.append(definition)
-        
-        if relevant_definitions:
-            definitions_context = "\n\nRelevant Definitions:\n"
-            for definition in relevant_definitions[:3]:
-                definitions_context += f"- {definition['term']}: {definition['definition']}\n"
+        # Add definitions to prompt if any were found
+        if definitions_to_add:
+            definitions_context = "\n\nPOTENTIALLY RELEVANT DEFINITIONS:\n"
+            for definition in definitions_to_add[:3]:  # Limit to 3 definitions max
+                definitions_context += f"\n{definition['term']}: {definition['definition']}\n"
+                if 'related_rules' in definition and definition['related_rules']:
+                    definitions_context += f"Related Rules: {', '.join(definition['related_rules'])}\n"
             
+            definitions_context += "\nNote: Apply only the definitions relevant to the specific question being asked.\n"
             return prompt + definitions_context
         
         return prompt
         
     except Exception as e:
-        # If definitions fail, just return the original prompt
         logger.warning(f"Definition enhancement failed: {e}")
         return prompt
 
@@ -661,9 +707,7 @@ Key distinctions:
 
 If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
 If an official rule applies, start with "According to the Rules of Golf, Rule X.X..."
-Max 85 words."""
-
-        base_prompt = enhance_ai_prompt_with_completeness_check(base_prompt, question, "position")
+"""
 
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
 
@@ -671,7 +715,7 @@ Max 85 words."""
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
-            max_tokens=125
+            max_tokens=500
         )
         
         result = {
@@ -692,13 +736,11 @@ Max 85 words."""
         return get_fallback_response()
 
 def get_relief_focused_response(question, verbose=False):
-    """Focused AI for relief/procedure questions with enhanced local rules context"""
+    """Focused AI for relief/procedure questions - COMPLETE ANSWERS"""
     try:
-        # Get local rules context with more results for comprehensive relief options
         search_engine = ProductionHybridVectorSearch()
         search_results = search_engine.search_with_precedence(question, top_n=4, verbose=verbose)
         
-        # ENHANCED DEBUG LOGGING (same as position function)
         if verbose:
             logger.info(f"🔍 Relief search results for '{question}':")
             for i, result in enumerate(search_results):
@@ -710,50 +752,40 @@ def get_relief_focused_response(question, verbose=False):
         
         context = build_enhanced_rule_context(search_results, max_rules=3)
         
+        # REMOVED word limit - allow complete answers
         base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE and ACCURATE answer about relief options.
-        
 
 Question: {question}
 
-Relevant Rules:
+Relevant Rules Context:
 {context}
 
 CRITICAL INSTRUCTIONS:
-1. Include ALL conditions that must be met for relief to be available
-2. Specify what types of interference qualify (e.g., swing, stance, and for putting green only)
-3. Mention any exceptions or situations where relief is NOT available
-4. Be specific about the relief procedure if applicable
+1. Provide a COMPLETE answer - do not truncate or summarize important details, but be as consise as possible to provide a complete answer
+2. Include ALL conditions that must be met for relief to be available
+3. Specify what types of interference qualify (e.g., swing, stance, line of play)
+4. Mention ANY exceptions or situations where relief is NOT available
+5. Be clear about whether there is free relief or if a penalty applies
+5. If discussing movable obstructions, clearly state they can be removed without penalty
+6. If discussing immovable obstructions, explain the relief procedure
+7. Distinguish between movable and immovable obstructions if relevant
 
-Focus on: 
-- Columbia CC local relief options (special procedures, dropping zones, free vs penalty relief)
-- Local rule exceptions (integral objects, no-relief areas, boundary definitions)
-- Relief procedures (where to drop, how many penalty strokes, measurement procedures)
-- Local vs official relief options (always prioritize local when the inquiry is an exactly defined in the Local Rules)
-- Hole-specific relief (dropping zones, special areas, course-specific rules)
-- Equipment/obstruction relief (cart paths, maintenance areas, construction fences, construction zones)
+Start your response with either:
+- "According to Columbia's local rules..." (if using local rule)
+- "According to the Rules of Golf, Rule X.X..." (if using official rule)
 
-Key distinctions:
-- Local relief options override official rules, but only when a local rule applies directly to the user's inquiry
-- Free relief vs penalty relief situations
-- Dropping vs placing procedures
-- Course area-specific relief rules
-
-If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
-If an official rule applies, start with "According to the Rules of Golf, Rule X.X... (e.g., Rule 16.1a)"
-Max 85 words.
-
-Remember: Incomplete answers that omit conditions or limitations are incorrect."""
-
-
-        base_prompt = enhance_ai_prompt_with_completeness_check(base_prompt, question, "relief")
+Provide the complete procedure including:
+- Whether there is a penalty or free relief
+- Where and how to take relief
+- Any specific requirements or limitations"""
 
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
 
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=[{"role": "user", "content": enhanced_prompt}],
+            messages=[{"role": "user", "content": prompt}],
             temperature=0.1,
-            max_tokens=125
+            max_tokens=500  # Increased from 125 to allow complete answers
         )
         
         result = {
@@ -763,9 +795,8 @@ Remember: Incomplete answers that omit conditions or limitations are incorrect."
             'tokens_used': response.usage.total_tokens if response.usage else 0
         }
         
-        if not validate_response_completeness(result['answer'], question):
-            logger.warning(f"Response may be incomplete for question: {question}")
-            result['confidence'] = 'medium'  # Downgrade confidence if incomplete
+        # Log token usage
+        logger.info(f"📊 General response tokens used: {result['tokens_used']}")
 
         return result
 
@@ -773,38 +804,168 @@ Remember: Incomplete answers that omit conditions or limitations are incorrect."
         logger.error(f"Relief response error: {e}")
         return get_fallback_response()
 
-def get_general_focused_response(question, verbose=False):
-    """General AI for unclear intent - uses simplified enhanced prompt"""
+def get_penalty_focused_response(question, verbose=False):
+    """Focused AI for penalty situations - COMPLETE ANSWERS"""
     try:
-        # Get context from vector search (keep current top 2)
         search_engine = ProductionHybridVectorSearch()
-        search_results = search_engine.search_with_precedence(question, top_n=2, verbose=verbose)
+        search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
         
-        context = build_enhanced_rule_context(search_results, max_rules=2)
+        if verbose:
+            logger.info(f"🔍 Penalty search results for '{question}':")
+            for i, result in enumerate(search_results):
+                rule_id = result['rule']['id']
+                title = result['rule']['title']
+                is_local = result.get('is_local', False)
+                score = result.get('best_similarity', 0)
+                logger.info(f"  {i+1}. {'LOCAL' if is_local else 'OFFICIAL'} - {rule_id}: {title} (score: {score:.3f})")
         
-        base_prompt = f"""Golf rules expert: Answer golf question at Columbia Country Club.
+        context = build_enhanced_rule_context(search_results, max_rules=3)
+        
+        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer about penalties and breaches.
 
 Question: {question}
 
-Relevant Rules:
+Relevant Rules Context:
 {context}
 
-Determine if this is about: ball position, relief procedures, equipment, or rule clarification.
-Focus on: Local rule priority (when the inquiry is a direct match to a local rule), Columbia-specific procedures, official rule application.
+CRITICAL INSTRUCTIONS:
+1. Provide a COMPLETE answer with all details
+2. Clearly state whether there is a penalty or not
+3. If there is a penalty, specify exactly what it is (one stroke, two strokes, loss of hole, disqualification)
+4. Explain ALL conditions that affect whether a penalty applies
+5. Include any exceptions where the penalty does NOT apply
+6. Describe the complete procedure to continue play after the breach
 
-If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
-If official rule, start with "According to the Rules of Golf, Rule X.X..."
-Max 85 words."""
+Start your response appropriately:
+- "According to Columbia's local rules..." (if using local rule)
+- "According to the Rules of Golf, Rule X.X..." (if using official rule)"""
 
-        base_prompt = enhance_ai_prompt_with_completeness_check(base_prompt, question, "general")
-
+        # Apply definition enhancement (Option 1)
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
 
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
-            max_tokens=125
+            max_tokens=500  # Increased to allow complete answers
+        )
+        
+        result = {
+            'answer': response.choices[0].message.content,
+            'source': 'ai_penalty',
+            'confidence': 'high',
+            'tokens_used': response.usage.total_tokens if response.usage else 0
+        }
+        
+        # Log token usage
+        logger.info(f"📊 Penalty response tokens used: {result['tokens_used']}")
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Penalty response error: {e}")
+        return get_fallback_response()
+
+
+def get_procedure_focused_response(question, verbose=False):
+    """Focused AI for procedure questions - COMPLETE ANSWERS"""
+    try:
+        search_engine = ProductionHybridVectorSearch()
+        search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
+        
+        if verbose:
+            logger.info(f"🔍 Procedure search results for '{question}':")
+            for i, result in enumerate(search_results):
+                rule_id = result['rule']['id']
+                title = result['rule']['title']
+                is_local = result.get('is_local', False)
+                score = result.get('best_similarity', 0)
+                logger.info(f"  {i+1}. {'LOCAL' if is_local else 'OFFICIAL'} - {rule_id}: {title} (score: {score:.3f})")
+        
+        context = build_enhanced_rule_context(search_results, max_rules=3)
+        
+        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer about golf procedures.
+
+Question: {question}
+
+Relevant Rules Context:
+{context}
+
+CRITICAL INSTRUCTIONS:
+1. Provide a COMPLETE step-by-step procedure
+2. Number each step clearly for easy following
+3. Include ALL requirements and conditions for each step
+4. Specify any penalties for incorrect procedures
+5. Mention any exceptions or special situations
+6. Be thorough - do not skip steps or details
+
+Start your response appropriately:
+- "According to Columbia's local rules..." (if using local rule)
+- "According to the Rules of Golf, Rule X.X..." (if using official rule)
+
+Format the procedure clearly with numbered steps when applicable."""
+
+        # Apply definition enhancement (Option 1)
+        enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": enhanced_prompt}],
+            temperature=0.1,
+            max_tokens=500  # Increased to allow complete answers
+        )
+        
+        result = {
+            'answer': response.choices[0].message.content,
+            'source': 'ai_procedure',
+            'confidence': 'high',
+            'tokens_used': response.usage.total_tokens if response.usage else 0
+        }
+        
+        # Log token usage
+        logger.info(f"📊 Procedure response tokens used: {result['tokens_used']}")
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Procedure response error: {e}")
+        return get_fallback_response()
+
+def get_general_focused_response(question, verbose=False):
+    """General AI for unclear intent - COMPLETE ANSWERS"""
+    try:
+        search_engine = ProductionHybridVectorSearch()
+        search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
+        
+        context = build_enhanced_rule_context(search_results, max_rules=3)
+        
+        # REMOVED word limit
+        prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer to this golf rules question.
+
+Question: {question}
+
+Relevant Rules Context:
+{context}
+
+CRITICAL INSTRUCTIONS:
+1. Provide a COMPLETE answer with all necessary details
+2. Include all relevant conditions, exceptions, and procedures
+3. Be specific and accurate - do not omit important information
+4. If the rule has specific requirements or limitations, include them all
+
+Start your response appropriately:
+- "According to Columbia's local rules..." (if using local rule)
+- "According to the Rules of Golf, Rule X.X..." (if using official rule)
+
+Ensure your answer is complete and would allow a golfer to proceed correctly."""
+
+        enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
+
+        response = client.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.1,
+            max_tokens=500  # Increased to allow complete answers
         )
         
         result = {
@@ -814,10 +975,9 @@ Max 85 words."""
             'tokens_used': response.usage.total_tokens if response.usage else 0
         }
 
-        if not validate_response_completeness(result['answer'], question):
-            logger.warning(f"Response may be incomplete for question: {question}")
-            result['confidence'] = 'medium'  # Downgrade confidence if incomplete
-
+        # Log token usage
+        logger.info(f"📊 General response tokens used: {result['tokens_used']}")
+        
         return result
         
     except Exception as e:
