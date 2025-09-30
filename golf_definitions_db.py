@@ -316,6 +316,8 @@ GOLF_DEFINITIONS_DATABASE = [
             "sprinkler heads", 
             "buildings",
             "permanent bridges",
+            "boundary stakes",
+            "white stake",
             "fixed benches"
         ],
         "related_rules": ["16.1", "24.2"],
@@ -460,6 +462,14 @@ GOLF_DEFINITIONS_DATABASE = [
             "loose cart", 
             "movable bench",
             "temporary signs",
+            "penalty area stake",
+            "penalty area stakes",
+            "penalty stake",
+            "penalty stakes".
+            "red stakes",
+            "red stake",
+            "yellow stakes",
+            "yellow stake",
             "maintenance equipment"
         ],
         "related_rules": ["15.2", "24.1"],
