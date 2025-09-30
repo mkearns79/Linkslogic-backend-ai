@@ -70,11 +70,12 @@ GOLF_DEFINITIONS_DATABASE = [
     {
         "id": "BOUNDARY_OBJECT",
         "term": "Boundary Object",
-        "definition": "Artificial objects defining or showing out of bounds, such as walls, fences, stakes and railings, from which free relief is not allowed. Boundary objects are treated as immovable even if they are movable.",
-        "keywords": ["boundary object", "out of bounds", "fence", "wall", "stakes", "railings", "no relief"],
+        "definition": "Artificial objects defining or showing out of bounds, such as walls, fences, white stakes and railings, from which free relief is not allowed. Boundary objects are treated as immovable even if they are movable.",
+        "keywords": ["boundary object", "out of bounds", "fence", "wall", "white stakes", "railings", "no relief"],
         "examples": [
             "boundary fence", 
             "out of bounds stakes",
+            "white stakes",
             "property wall",
             "boundary railings"
         ],
@@ -318,7 +319,8 @@ GOLF_DEFINITIONS_DATABASE = [
             "permanent bridges",
             "boundary stakes",
             "white stake",
-            "fixed benches"
+            "fixed benches",
+            "NOT penalty area stakes - red and yellow stakes ARE movable"
         ],
         "related_rules": ["16.1", "24.2"],
         "category": "obstructions"
@@ -455,7 +457,7 @@ GOLF_DEFINITIONS_DATABASE = [
     {
         "id": "MOVABLE_OBSTRUCTION",
         "term": "Movable Obstruction", 
-        "definition": "An obstruction that can be moved with reasonable effort and without damaging the obstruction or the course. Committee may define any obstruction to be immovable even if it meets movable criteria.",
+        "definition": "An obstruction that can be moved with reasonable effort and without damaging the obstruction or the course. IMPORTANT: Penalty area stakes (red or yellow) are movable obstructions. Boundary stakes (white) are NOT movable obstructions - they are boundary objects and therefore immovable obstructions. Committee may define any obstruction to be immovable even if it meets movable criteria.",
         "keywords": ["movable obstruction", "reasonable effort", "no damage", "can move", "committee may define immovable"],
         "examples": [
             "rake in bunker",
@@ -514,9 +516,9 @@ GOLF_DEFINITIONS_DATABASE = [
         "id": "PENALTY_AREA",
         "term": "Penalty Area",
         "definition": "An area from which relief with a one-stroke penalty is allowed if the player's ball comes to rest there. Includes any body of water on the course and any other area the Committee defines. The edge extends both up above the ground and down below the ground. When defined by stakes, the edge is the line between the outside points of the stakes at ground level, and the stakes are inside the penalty area. When defined by painted lines on the ground, the edge is the outside edge of the line, and the line itself is in the penalty area. Yellow penalty areas have two relief options; red penalty areas have an additional lateral relief option.",
-        "keywords": ["penalty area", "water hazard", "one stroke penalty", "yellow red", "body of water", "committee defined", "lateral relief", "outside edge of line", "line in penalty area", "stakes inside"],
+        "keywords": ["penalty area", "water hazard", "one stroke penalty", "yellow stakes", "red stakes", "body of water", "committee defined", "lateral relief", "outside edge of line", "line in penalty area", "red stakes inside", "yellow stakes inside"],
         "examples": [
-            "water hazard with stakes",
+            "water hazard with red stakes",
             "pond marked yellow",
             "stream marked red", 
             "designated wetland area",
