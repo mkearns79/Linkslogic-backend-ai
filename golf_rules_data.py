@@ -4688,6 +4688,7 @@ RULES_DATABASE = [
         "examples": [
             "moving rakes from bunker",
             "removing water bottles near ball",
+            "removing penalty area stake near ball",
             "ball moves when moving cart"
         ]
     },
@@ -4700,13 +4701,14 @@ RULES_DATABASE = [
             "removing rake near ball",
             "moving cart away from ball",
             "lifting towel that ball is on",
+            "removing penalty area stake to make a swing",
             "moving scorecard from line of play"
         ],
         "conditions": [
         {
             "situation": "General removal allowed",
             "explanation": "You may remove any movable obstruction anywhere on or off the course in any way you choose, without penalty.",
-            "examples": ["picking up rake from bunker", "moving cart from fairway", "removing water bottle from rough"]
+            "examples": ["picking up rake from bunker", "moving cart from fairway", "removing water bottle from rough", "removing a penalty area stake that is interfering with ball or stance"]
         },
         {
             "situation": "No penalty if ball moves during removal",
