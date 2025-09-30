@@ -725,9 +725,8 @@ If an official rule applies, start with "According to the Rules of Golf, Rule X.
             'tokens_used': response.usage.total_tokens if response.usage else 0
         }
 
-        if not validate_response_completeness(result['answer'], question):
-            logger.warning(f"Response may be incomplete for question: {question}")
-            result['confidence'] = 'medium'  # Downgrade confidence if incomplete
+        # Log token usage
+        logger.info(f"📊 General response tokens used: {result['tokens_used']}")
 
         return result
         
@@ -783,7 +782,7 @@ Provide the complete procedure including:
 
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
             max_tokens=500  # Increased from 125 to allow complete answers
         )
@@ -963,7 +962,7 @@ Ensure your answer is complete and would allow a golfer to proceed correctly."""
 
         response = client.chat.completions.create(
             model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
+            messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
             max_tokens=500  # Increased to allow complete answers
         )
