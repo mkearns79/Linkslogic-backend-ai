@@ -562,7 +562,7 @@ def enhance_ai_prompt_with_definitions(prompt, query):
     For stake queries, includes both movable obstruction and penalty area definitions.
     """
     try:
-        from golf_definitions_db import get_definition_by_id, COMMON_DEFINITION_LOOKUPS
+        logger.info(f"🔍 DEBUG: enhance_ai_prompt_with_definitions called for query: {query}")
         
         query_lower = query.lower()
         definitions_to_add = []
@@ -603,7 +603,9 @@ def enhance_ai_prompt_with_definitions(prompt, query):
         return prompt
         
     except Exception as e:
-        logger.warning(f"Definition enhancement failed: {e}")
+        logger.error(f"❌ DEBUG: Definition enhancement failed with error: {e}")
+        import traceback
+        logger.error(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
         return prompt
 
 def check_common_query(question):
