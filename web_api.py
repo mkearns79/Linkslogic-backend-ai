@@ -941,7 +941,7 @@ def get_general_focused_response(question, verbose=False):
         context = build_enhanced_rule_context(search_results, max_rules=3)
         
         # REMOVED word limit
-        prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer to this golf rules question.
+        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer to this golf rules question.
 
 Question: {question}
 
