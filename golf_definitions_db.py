@@ -465,7 +465,7 @@ GOLF_DEFINITIONS_DATABASE = [
             "penalty area stake",
             "penalty area stakes",
             "penalty stake",
-            "penalty stakes".
+            "penalty stakes",
             "red stakes",
             "red stake",
             "yellow stakes",
