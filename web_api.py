@@ -685,7 +685,7 @@ def get_position_focused_response(question, verbose=False):
         
         context = build_enhanced_rule_context(search_results, max_rules=3)
 
-        base_prompt = f"""Golf rules expert: Determine ball position/status at Columbia Country Club. Be aware that many ball position/status situations are not Columbia-specific, and for these the official golf rules are the more suitable source for the response.
+        base_prompt = f"""Golf rules expert: Determine ball position/status at Columbia Country Club. Be aware that many ball position/status situations are not Columbia-specific, and for these the official golf rules are the more suitable source for the response. Do not reference Columbia local rules unless the local rules apply to the user's specific question.
 
 Question: {question}
 
@@ -717,7 +717,7 @@ If an official rule applies, start with "According to the Rules of Golf, Rule X.
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
-            max_tokens=500
+            max_tokens=300
         )
         
         result = {
@@ -754,7 +754,7 @@ def get_relief_focused_response(question, verbose=False):
         context = build_enhanced_rule_context(search_results, max_rules=3)
         
         # REMOVED word limit - allow complete answers
-        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE and ACCURATE answer about relief options.
+        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE and ACCURATE answer about relief options. Do not reference Columbia Local Rules unless the local rule applies to the user's specific question.
 
 Question: {question}
 
@@ -786,7 +786,7 @@ Provide the complete procedure including:
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
-            max_tokens=500  # Increased from 125 to allow complete answers
+            max_tokens=300  # Increased from 125 to allow complete answers
         )
         
         result = {
@@ -822,7 +822,7 @@ def get_penalty_focused_response(question, verbose=False):
         
         context = build_enhanced_rule_context(search_results, max_rules=3)
         
-        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer about penalties and breaches.
+        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer about penalties and breaches. Do not reference Columbia's local rules unless the local rule applies to the user's specific question.
 
 Question: {question}
 
@@ -848,7 +848,7 @@ Start your response appropriately:
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
-            max_tokens=500  # Increased to allow complete answers
+            max_tokens=300  # Increased to allow complete answers
         )
         
         result = {
@@ -885,7 +885,7 @@ def get_procedure_focused_response(question, verbose=False):
         
         context = build_enhanced_rule_context(search_results, max_rules=3)
         
-        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer about golf procedures.
+        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer about golf procedures. Do not mention Columbia's Local Rules unless a local rule applies to the user's specific question.
 
 Question: {question}
 
@@ -913,7 +913,7 @@ Format the procedure clearly with numbered steps when applicable."""
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
-            max_tokens=500  # Increased to allow complete answers
+            max_tokens=300  # Increased to allow complete answers
         )
         
         result = {
@@ -941,7 +941,7 @@ def get_general_focused_response(question, verbose=False):
         context = build_enhanced_rule_context(search_results, max_rules=3)
         
         # REMOVED word limit
-        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer to this golf rules question.
+        base_prompt = f"""You are a golf rules expert at Columbia Country Club. Provide a COMPLETE answer to this golf rules question. Do not mention Columbia's Local Rules unless a local rule applies to the user's specific question.
 
 Question: {question}
 
@@ -966,7 +966,7 @@ Ensure your answer is complete and would allow a golfer to proceed correctly."""
             model="gpt-4",
             messages=[{"role": "user", "content": enhanced_prompt}],
             temperature=0.1,
-            max_tokens=500  # Increased to allow complete answers
+            max_tokens=300  # Increased to allow complete answers
         )
         
         result = {
