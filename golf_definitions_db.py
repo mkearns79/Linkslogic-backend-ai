@@ -66,6 +66,19 @@ GOLF_DEFINITIONS_DATABASE = [
         "related_rules": ["14.1", "13.1"],
         "category": "equipment"
     },
+
+    {
+        "id": "BOUNDARY_EDGE",
+        "term": "Boundary Edge",
+        "definition": "The line, usually designated by boundary objects or painted white lines, marking the outer boundary of the course. The boundary edge is the course-side of the line represented by boundary objects or white lines. When defined by stakes or fence, the boundary edge is the line between the course-side points at ground level. When defined by painted lines on the ground, the boundary edge is the course-side edge of the line, and the line itself is out of bounds, so if the entire ball is resting on or outside the white line, the ball is out of bounds. If any portion of the ball is inside the boundary edge, it is in bounds. ",
+        "keywords": ["boundary edge", "boundary line", "white line", "inside white stakes", "course side of white stakes"],
+        "examples": [ 
+            "inside edge of white line",
+            "inside edge of boundary object line",
+        ],
+        "related_rules": ["8.1", "18.2a],
+        "category": "boundaries"
+    },
     
     {
         "id": "BOUNDARY_OBJECT",
@@ -497,7 +510,7 @@ GOLF_DEFINITIONS_DATABASE = [
     {
         "id": "OUT_OF_BOUNDS",
         "term": "Out of Bounds",
-        "definition": "All areas outside the boundary edge of the course as defined by the Committee. The boundary edge extends both up above the ground and down below the ground. When defined by stakes or fence, the boundary edge is the line between the course-side points at ground level. When defined by painted lines on the ground, the boundary edge is the course-side edge of the line, and the line itself is out of bounds.",
+        "definition": "All areas outside the boundary edge of the course as defined by the Committee. The boundary edge extends both up above the ground and down below the ground. When defined by stakes or fence, the boundary edge is the line between the course-side points at ground level. When defined by painted lines on the ground, the boundary edge is the course-side edge of the line, and the line itself is out of bounds, so if the entire ball is resting on or outside the white line, the ball is out of bounds. If a portion of the ball is inside the boundary edge, it is in bounds.",
         "keywords": ["out of bounds", "OB", "outside boundary", "committee defined", "above below ground", "white stakes", "white lines", "course side edge", "line is OB"],
         "examples": [
             "beyond white stakes",
