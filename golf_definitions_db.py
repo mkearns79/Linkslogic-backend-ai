@@ -76,7 +76,7 @@ GOLF_DEFINITIONS_DATABASE = [
             "inside edge of white line",
             "inside edge of boundary object line",
         ],
-        "related_rules": ["8.1", "18.2a],
+        "related_rules": ["8.1", "18.2a"],
         "category": "boundaries"
     },
     
