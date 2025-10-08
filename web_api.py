@@ -1003,7 +1003,22 @@ def calculate_template_confidence(question, template_data):
     confidence = 0.0
     matched_keyword = None
     
-    # Check each keyword for positive signals
+    # STEP 1: Extract key concepts and check for critical concept matches
+    concepts = extract_key_concepts(question_lower)
+    
+    # Get template name for critical concept checking
+    template_name = None
+    for name, data in COMMON_QUERY_TEMPLATES.items():
+        if data == template_data:
+            template_name = name
+            break
+    
+    # If critical concepts match, start with base confidence
+    if template_name and check_critical_concepts(concepts, template_name):
+        confidence = 0.55  # Base confidence for critical concept
+        matched_keyword = "critical_concepts"
+
+    # STEP 2: Check each keyword for positive signals
     for keyword_phrase in template_data.get("keywords", []):
         keyword_lower = keyword_phrase.lower()
         
