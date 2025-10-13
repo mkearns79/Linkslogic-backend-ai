@@ -1214,10 +1214,24 @@ def check_critical_concepts(matching_concepts, template_name):
         'purple_line_boundary': {'purple_line', 'purple', 'line', 'boundary'},
     }
     
+    # Define minimum required matches for each template
+    minimum_required = {
+        'clear_lost_ball': 2,  # Need at least 2 concepts (e.g., 'lost' + 'ball')
+        'clear_out_of_bounds': 2,  # Need at least 2 concepts
+        'water_hazard_16': 2,  # Need 'water' + '16'
+        'water_hazard_17': 2,  # Need 'water' + '17'
+        'green_stakes_cart_path': 3,  # Need at least 3 concepts (e.g., 'cart_path' + '14' + 'behind')
+        'maintenance_facility': 1,  # 'maintenance' alone is specific enough
+        'purple_line_boundary': 2,  # Need at least 2 concepts
+
     template_critical = critical_concepts.get(template_name, set())
+    min_required = minimum_required.get(template_name, 2) # Default to 2
+
+    # Count how many critical concepts match
+    matched_count = len(matching_concepts.intersection(template_critical))
     
-    # Check if any critical concept matches
-    return bool(matching_concepts.intersection(template_critical))
+    # Return True only if we meet the minimum threshold
+    return matched_count >= min_required    
 
 def check_common_query_with_confidence(question, confidence_threshold=0.6):
     """
