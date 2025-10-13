@@ -1224,6 +1224,8 @@ def check_critical_concepts(matching_concepts, template_name):
         'maintenance_facility': 1,  # 'maintenance' alone is specific enough
         'purple_line_boundary': 2,  # Need at least 2 concepts
 
+    }
+
     template_critical = critical_concepts.get(template_name, set())
     min_required = minimum_required.get(template_name, 2) # Default to 2
 
