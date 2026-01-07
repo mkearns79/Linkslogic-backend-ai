@@ -10,6 +10,7 @@ from datetime import timedelta
 import logging
 from openai import OpenAI
 from dotenv import load_dotenv
+from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
 
 
 # Import your existing comprehensive databases
@@ -22,6 +23,8 @@ from golf_definitions_db import (
     get_definitions_by_category,
     COMMON_DEFINITION_LOOKUPS
 )
+
+from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -39,6 +42,8 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # Global variables for system status
 ai_system_available = False
 ai_error_message = ""
+USE_SIMPLIFIED_SYSTEM = True  # Set to True to test
+simplified_system = None
 
 # RESTORED: Your Complete Template System (from your original system)
 COMMON_QUERY_TEMPLATES = {
@@ -193,9 +198,9 @@ AFFECTED AREAS:
 NO FREE RELIEF AVAILABLE - Your options:
 • Play the ball as it lies if possible
 • Declare the ball unplayable under Rule 19 (1 penalty stroke)
-   - Drop within two club-lengths, not nearer hole
-• Drop on line from hole through ball, going back as far as desired
-• Return to previous spot where you played
+    - Drop within two club-lengths, not nearer hole
+    - Drop on line from hole through ball, going back as far as desired
+    - Return to previous spot where you played
 Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects."""
     },
 
@@ -1435,7 +1440,7 @@ def validate_response_completeness(response_text, question):
 
 def initialize_ai_system():
     """Initialize the production hybrid system."""
-    global ai_system_available, ai_error_message
+    global ai_system_available, ai_error_message, simplified_system
     
     try:
         logger.info("🤖 Initializing production hybrid AI system...")
@@ -1449,6 +1454,18 @@ def initialize_ai_system():
         if test_response:
             ai_system_available = True
             logger.info("✅ Production hybrid system ready - Templates + AI with Rule Scoring")
+            try:
+                simplified_system = create_simplified_system(
+                    templates=COMMON_QUERY_TEMPLATES,
+                    definitions_db=GOLF_DEFINITIONS_DATABASE,
+                    search_engine=ProductionHybridVectorSearch(),
+                    client=client,
+                    rules_db=RULES_DATABASE,
+                    local_rules=COLUMBIA_CC_LOCAL_RULES
+                )
+                logger.info("✅ Simplified system ready")
+            except Exception as e:
+                logger.error(f"⚠️ Simplified system init failed: {e}")
             return True
         else:
             raise Exception("OpenAI API test failed")
@@ -1520,7 +1537,12 @@ def ask_question():
         if ai_system_available:
             try:
                 # Use restored sophisticated hybrid system
-                result = get_hybrid_interpretation(question, verbose=True)
+                if USE_SIMPLIFIED_SYSTEM and simplified_system:
+                    logger.info("🆕 Using SIMPLIFIED system")
+                    result = simplified_system.process_query(question, verbose=True)
+                else:
+                    logger.info("📦 Using ORIGINAL hybrid system")
+                    result = get_hybrid_interpretation(question, verbose=True)
                 response_time = round(time.time() - start_time, 2)
                 
                 # Determine rule type from response

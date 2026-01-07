@@ -151,10 +151,11 @@ COLUMBIA_CC_LOCAL_RULES = {
         {
             'id': 'CCC-5',
             'title': 'Fenced Young Trees - Hole 3',
-            'text': 'The fenced trees in the penalty area on hole 3 are Temporary Immovable Obstructions (TIO). Free relief may be taken if the TIO interferes with the lie of the ball, stance, or swing, or if the TIO lies directly in the line of sight between the ball and hole.',
+            'text': 'The fenced trees in the penalty area on hole 3 are Temporary Immovable Obstructions (TIO). Because they are designated as "TEMPORARY", free relief may be taken if the TIO interferes with the lie of the ball, stance, or swing, or if the TIO lies directly in the line of sight between the ball and hole. All other immovable obstructions on the course follow relief procedures under Official Rule 16.1',
             'keywords': ['fenced trees', 'temporary immovable obstruction', 'TIO', 'hole 3', 'penalty area', 'line of sight', 'free relief'],
             'examples': [
                 'Ball in penalty area but fenced tree blocks swing - free relief available',
+                'Any other PERMANENT immovable obstructions on the course - free relief if interference with lie of the ball, stance, or swing path only, no free relief from line of sight',
                 'Fenced tree blocks line of sight to hole - free relief for line of sight',
                 'Ball near fenced tree affecting stance - free relief available'
             ],
@@ -371,7 +372,7 @@ COLUMBIA_CC_LOCAL_RULES = {
             'text': 'Bird houses and their posts are immovable obstructions. Free relief is allowed under Rule 16.1.',
             'keywords': ['bird houses', 'posts', 'immovable obstruction', 'free relief'],
             'examples': [
-                'Ball near bird house post - free relief available',
+                'Ball near bird house post - free relief available under Rule 16.1 - free relief if interference with lie of ball, stance, or swing path. No free relief from line of sight',
                 'Bird house interfering with swing - obstruction relief under Rule 16.1'
             ],
             'conditions': [
@@ -384,8 +385,13 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'situation': 'Free relief procedure',
                     'explanation': 'When bird house or post interferes with lie, stance, or swing, free relief is available under Rule 16.1',
                     'examples': ['Drop at nearest point of relief', 'One club-length relief area', 'No penalty for relief']
+                },
+                {
+                    'situation': 'Line of sight relief',
+                    'explanation': 'When an immovable obstruction, like a bird house, intereferes with the players line of sight, no free relief is allowed',
+                    'examples': ['Must play it as it lies', 'May take an unplayable ball with penalty']
                 }
-            ]
+            ]   
         },
         
         {

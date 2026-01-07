@@ -2139,7 +2139,7 @@ RULES_DATABASE = [
         "id": "8.1d",
         "title": "Restoring Conditions Worsened After Ball Came to Rest",
         "text": "When conditions affecting the stroke are worsened after a player's ball came to rest, restoration may or may not be allowed depending on the cause.",
-        "keywords": ["worsened conditions", "restoration allowed", "other person", "animal", "lift clean replace", "most similar conditions", "not allowed", "natural forces", "wind water"],
+        "keywords": ["worsened conditions", "restoration allowed", "other person", "animal", "lift clean replace", "most similar conditions", "not allowed", "natural forces", "wind water", "another player", "pitch mark", "divot", "damage after ball at rest", "conditions worsened", "restore damage", "fringe damage", "line of play damaged", "someone else damaged", "other player caused damage", "fix damage caused by others"],
         "conditions": [
       {
             "situation": "When restoration is allowed",
