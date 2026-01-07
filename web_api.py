@@ -1585,9 +1585,6 @@ def ask_question():
                         "success": response_data.get('success', False)
                     }
                     
-                    # Log to Cloud Logging (persists forever)
-                    logger.info(f"GOLF_QUERY: {json.dumps(comprehensive_log)}")
-                    
                 except Exception as e:
                     logger.error(f"Dashboard logging error: {e}")
 
