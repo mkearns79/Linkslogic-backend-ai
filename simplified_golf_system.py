@@ -304,7 +304,7 @@ class SimplifiedGolfRulesSystem:
                 model=self.model,  # Uses the model set in __init__
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.1,
-                max_tokens=500
+                max_tokens=400
             )
             
             # Determine specific source based on what we found
@@ -465,14 +465,19 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
    - State any penalties (or explicitly note if there's no penalty)
    - If an exception changes the ruling, explain why
 
-IMPORTANT REMINDERS:
-- Rule 8.1 says you can't improve conditions, BUT Rule 8.1d allows restoration if someone else worsened them
-- Rule 13.1c says you can't repair damage off the green, BUT Rule 8.1d overrides this if another person caused the damage after your ball came to rest
-- Moving your ball generally incurs a penalty (Rule 9.4) EXCEPT in many specific situations
-- Different rules apply on the putting green than in general areas
+RESPONSE FORMAT:
+- Start with the direct answer/ruling first (1-2 sentences)
+- Then provide the explanation with rule citations
+- Keep total response concise: 150-250 words
+- Don't explore rules that don't apply to this situation
+- Set max_tokens to 400 in the API call
 
+Start your response appropriately:
+- "According to Columbia's local rules..." (if using local rule)
+- "According to the Rules of Golf, Rule X.X..." (if using official rule)
+        
 Example of complete answer:
-"According to Rule 13.1c, you generally cannot repair damage on the fringe. However, Rule 8.1d provides an exception: since another player caused the damage after your ball came to rest, you ARE allowed to restore the conditions to what they were. You may repair the pitch mark without penalty."
+"According to The Rules of Golf, Rule 13.1c, you generally cannot repair damage on the fringe. However, Rule 8.1d provides an exception: since another player caused the damage after your ball came to rest, you ARE allowed to restore the conditions to what they were. You may repair the pitch mark without penalty."
 
 Now provide your complete ruling:"""
         
