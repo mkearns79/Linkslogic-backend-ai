@@ -293,6 +293,7 @@ class SimplifiedGolfRulesSystem:
             if verbose:
                 context_rules = re.findall(r'Rule [\d\.]+[a-z]?', context)
                 logger.info(f"📚 [{query_id}] Context includes {len(context_rules)} rules")
+                logger.info(f"🔍 [{query_id}] Full context being sent:\n{context[:2000]}")
                 if has_exception_rules:
                     logger.info(f"⚠️ [{query_id}] Exception rules detected in context")
             
