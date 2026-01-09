@@ -272,10 +272,17 @@ class SimplifiedGolfRulesSystem:
             # Get relevant rules from vector search
             search_results = self.search_engine.search_with_precedence(
                 question, 
-                top_n=5,  # Get more rules for better context
+                top_n=8,  # Get more rules for better context
                 verbose=verbose
             )
             
+            # Ensure we have both local and official rules
+            local_rules = [r for r in search_results if r.get('is_local')]
+            official_rules = [r for r in search_results if not r.get('is_local')]
+
+            # Take top 3 local + top 2 official (or whatever we have)
+            search_results = local_rules[:3] + official_rules[:2]
+
             if verbose:
                 logger.info(f"🔍 [{query_id}] Found {len(search_results)} relevant rules")
                 for i, result in enumerate(search_results[:3]):
@@ -572,8 +579,11 @@ Now provide your complete ruling:"""
         """
         answer = result.get('answer', '')
         rule_id = result.get('rule_id', '')
+        rules_used = result.get('rules_used', [])
         
-        if 'CCC-' in rule_id or 'Columbia' in answer[:200]:
+        if any('CCC-' in r for r in rules_used):
+            return 'local'
+        elif 'CCC-' in rule_id or 'Columbia' in answer[:200]:
             return 'local'
         elif result.get('source') == 'definitions_database':
             return 'definition'
