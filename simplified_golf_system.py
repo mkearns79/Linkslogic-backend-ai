@@ -454,6 +454,10 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
      * Accidental movement → Often no penalty or different procedure
      * Deliberate actions → Usually penalties apply
 
+   - EXCEPTIONS WITHIN RULES:
+     * Many rules have exceptions listed within them - check carefully!
+     * Look for "Exception:", "Allowed:", or "Does not apply when:" clauses
+
 3. CHECK COLUMBIA CC LOCAL RULES:
    - If a Columbia local rule applies to this specific situation, it takes precedence
    - Columbia rules are marked as "CCC-" in the context
