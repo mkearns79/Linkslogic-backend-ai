@@ -300,6 +300,15 @@ class SimplifiedGolfRulesSystem:
             
             # Create the unified prompt with explicit exception handling
             prompt = self._create_unified_prompt(question, context)
+
+            # TEMPROARY - REMOVE AFTER TROUBLESHOOTING Right after line 300 where you create the prompt:
+            prompt = self._create_unified_prompt(question, context)
+
+            # TEMPROARY - REMOVE AFTER TROUBLESHOOTING ADD THIS DEBUG LOGGING:
+            if verbose:
+            logger.info(f"🔍 [{query_id}] CONTEXT BEING SENT TO AI:")
+            logger.info(context)
+            logger.info(f"📝 [{query_id}] END CONTEXT")
             
             # Get AI response
             response = self.client.chat.completions.create(
@@ -404,7 +413,7 @@ class SimplifiedGolfRulesSystem:
         
         # Now add related exception rules
         related_rules_to_add = set()
-        for result in search_results[:3]:
+        for result in search_results:
             rule_id = result['rule']['id']
             base_rule = rule_id.split('.')[0] if '.' in rule_id else rule_id
             
