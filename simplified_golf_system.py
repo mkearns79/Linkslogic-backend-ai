@@ -363,7 +363,7 @@ class SimplifiedGolfRulesSystem:
         """
         context_parts = []
         included_rules = set()
-    
+        
         # First, add primary search results
         for i, result in enumerate(search_results):
             rule = result['rule']
@@ -376,7 +376,7 @@ class SimplifiedGolfRulesSystem:
                 context_part = f"COLUMBIA CC LOCAL RULE {rule_id}: {rule['title']}\n"
             else:
                 context_part = f"Rule {rule_id}: {rule['title']}\n"
-        
+            
             # Include full rule text (no truncation for better accuracy)
             context_part += f"{rule.get('text', '')}\n"
             
@@ -406,7 +406,7 @@ class SimplifiedGolfRulesSystem:
                             exceptions.append(condition)
                         else:
                             other_conditions.append(condition)
-                
+                    
                     # Show exceptions FIRST and prominently
                     if exceptions:
                         context_part += "\n⚠️ EXCEPTIONS:\n"
@@ -427,7 +427,7 @@ class SimplifiedGolfRulesSystem:
                     logger.error(f"⚠️ Error formatting conditions for rule {rule_id}: {e}")
             
             context_parts.append(context_part)
-    
+        
         # Now add related exception rules
         related_rules_to_add = set()
         for result in search_results:
@@ -441,21 +441,21 @@ class SimplifiedGolfRulesSystem:
         
         # Remove already included rules
         related_rules_to_add -= included_rules
-    
-            # Fetch and add related rules
-            if related_rules_to_add:
-                context_parts.append("\n--- RELATED EXCEPTION RULES ---")
-                for rule_id in list(related_rules_to_add)[:4]:  # Include up to 4 related rules
-                    rule = self._get_rule_by_id(rule_id)
-                    if rule:
-                        try:
-                            # Build context part for related rule
-                            related_part = f"\nRule {rule_id}: {rule.get('title', '')}\n{rule.get('text', '')}\n"
+        
+        # Fetch and add related rules
+        if related_rules_to_add:
+            context_parts.append("\n--- RELATED EXCEPTION RULES ---")
+            for rule_id in list(related_rules_to_add)[:4]:  # Include up to 4 related rules
+                rule = self._get_rule_by_id(rule_id)
+                if rule:
+                    try:
+                        # Build context part for related rule
+                        related_part = f"\nRule {rule_id}: {rule.get('title', '')}\n{rule.get('text', '')}\n"
+                        
+                        # Add conditions/exceptions for related rules too
+                        if 'conditions' in rule:
+                            conditions_list = rule.get('conditions', [])
                             
-                            # Add conditions/exceptions for related rules too
-                            if 'conditions' in rule:
-                                conditions_list = rule.get('conditions', [])
-                                
                             if isinstance(conditions_list, list):
                                 # Separate exceptions from other conditions
                                 exceptions = []
