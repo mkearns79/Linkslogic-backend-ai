@@ -272,23 +272,16 @@ class SimplifiedGolfRulesSystem:
             # Get relevant rules from vector search
             search_results = self.search_engine.search_with_precedence(
                 question, 
-                top_n=8,  # Get more rules for better context
+                top_n=12,  # Get more rules for better context
                 verbose=verbose
             )
-            
-            # Ensure we have both local and official rules
+
             local_rules = [r for r in search_results if r.get('is_local')]
             official_rules = [r for r in search_results if not r.get('is_local')]
-
-            # Take top 3 local + top 2 official (or whatever we have)
-            search_results = local_rules[:3] + official_rules[:2]
+            search_results = local_rules[:4] + official_rules[:8]
 
             if verbose:
-                logger.info(f"🔍 [{query_id}] Found {len(search_results)} relevant rules")
-                for i, result in enumerate(search_results[:3]):
-                    rule_id = result['rule']['id']
-                    score = result.get('best_similarity', 0)
-                    logger.info(f"  {i+1}. Rule {rule_id}: {score:.3f}")
+                logger.info(f"📊 [{query_id}] Balanced results: {len(local_rules[:4])} local + {len(official_rules[:8])} official")
             
             # Check if we found exception-related rules
             has_exception_rules = self._check_for_exception_rules(search_results)

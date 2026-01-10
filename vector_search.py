@@ -907,7 +907,7 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
             
             # Local rules get priority boost
             if result['is_local']:
-                result['best_similarity'] *= 1.2  # 1.2x boost for local rules
+                result['best_similarity'] *= 1.1  # 1.1x boost for local rules
                 result['precedence_level'] = 'Local Rule'
             else:
                 result['precedence_level'] = 'Official Rule'
