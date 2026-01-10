@@ -335,7 +335,8 @@ class SimplifiedGolfRulesSystem:
             }
             
         except Exception as e:
-            logger.error(f"❌ [{query_id}] Unified AI error: {e}")
+            import traceback
+            logger.error(f"❌ [{query_id}] Unified AI error: {e}\n{traceback.format_exc()}") 
             return {
                 'answer': "I encountered an error processing your question. Please try rephrasing it.",
                 'source': 'error',
