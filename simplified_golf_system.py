@@ -431,8 +431,38 @@ class SimplifiedGolfRulesSystem:
             for rule_id in list(related_rules_to_add)[:4]:  # Include up to 4 related rules
                 rule = self._get_rule_by_id(rule_id)
                 if rule:
-                    # Include full text for exception rules (they're critical)
-                    context_parts.append(f"\nRule {rule_id}: {rule.get('title', '')}\n{rule.get('text', '')}")
+                    # Build context part for related rule
+                    related_part = f"\nRule {rule_id}: {rule.get('title', '')}\n{rule.get('text', '')}\n"
+                    
+                    # Add conditions/exceptions for related rules too
+                    if 'conditions' in rule:
+                        # Separate exceptions from other conditions
+                        exceptions = []
+                        other_conditions = []
+                        
+                        for condition in rule.get('conditions', [])[:5]:
+                            situation = condition.get('situation', '')
+                            if 'exception' in situation.lower():
+                                exceptions.append(condition)
+                            else:
+                                other_conditions.append(condition)
+                        
+                        # Show exceptions FIRST
+                        if exceptions:
+                            related_part += "\n⚠️ EXCEPTIONS:\n"
+                            for exc in exceptions:
+                                related_part += f"  • {exc.get('explanation', '')}\n"
+                                if 'examples' in exc:
+                                    for ex in exc.get('examples', [])[:2]:
+                                        related_part += f"    Example: {ex}\n"
+                        
+                        # Then other conditions
+                        if other_conditions:
+                            related_part += "\nConditions:\n"
+                            for condition in other_conditions:
+                                related_part += f"- {condition.get('situation', '')}: {condition.get('explanation', '')}\n"
+                    
+                    context_parts.append(related_part)
         
         return "\n".join(context_parts)
     
