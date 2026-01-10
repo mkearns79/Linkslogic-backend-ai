@@ -306,9 +306,9 @@ class SimplifiedGolfRulesSystem:
 
             # TEMPROARY - REMOVE AFTER TROUBLESHOOTING ADD THIS DEBUG LOGGING:
             if verbose:
-            logger.info(f"🔍 [{query_id}] CONTEXT BEING SENT TO AI:")
-            logger.info(context)
-            logger.info(f"📝 [{query_id}] END CONTEXT")
+                logger.info(f"🔍 [{query_id}] CONTEXT BEING SENT TO AI:")
+                logger.info(context)
+                logger.info(f"📝 [{query_id}] END CONTEXT")
             
             # Get AI response
             response = self.client.chat.completions.create(
