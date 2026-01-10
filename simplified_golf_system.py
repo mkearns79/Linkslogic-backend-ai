@@ -282,6 +282,7 @@ class SimplifiedGolfRulesSystem:
 
             if verbose:
                 logger.info(f"📊 [{query_id}] Balanced results: {len(local_rules[:4])} local + {len(official_rules[:8])} official")
+                logger.info(f"📋 [{query_id}] After balancing: {[r['rule']['id'] for r in search_results]}")
             
             # Check if we found exception-related rules
             has_exception_rules = self._check_for_exception_rules(search_results)
@@ -319,7 +320,7 @@ class SimplifiedGolfRulesSystem:
                 'source': source,
                 'confidence': self._assess_confidence(search_results),
                 'tokens_used': response.usage.total_tokens if response.usage else 0,
-                'rules_used': [r['rule']['id'] for r in search_results[:3]],
+                'rules_used': [r['rule']['id'] for r in search_results],
                 'has_exceptions': has_exception_rules,
                 'model_used': self.model
             }
@@ -355,7 +356,7 @@ class SimplifiedGolfRulesSystem:
         included_rules = set()
         
         # First, add primary search results
-        for i, result in enumerate(search_results[:3]):
+        for i, result in enumerate(search_results):
             rule = result['rule']
             rule_id = rule['id']
             included_rules.add(rule_id)
