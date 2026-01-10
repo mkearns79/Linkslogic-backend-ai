@@ -498,8 +498,13 @@ class SimplifiedGolfRulesSystem:
         Get a rule by its ID from the database
         """
         # Check local rules first
-        for rule in self.local_rules:
-            if rule.get('id') == rule_id:
+        # Handle both dict and list structures
+        local_rules_list = self.local_rules
+        if isinstance(self.local_rules, dict):
+            local_rules_list = self.local_rules.get('local_rules', [])
+        
+        for rule in local_rules_list:
+            if isinstance(rule, dict) and rule.get('id') == rule_id:
                 return rule
         
         # Check official rules
