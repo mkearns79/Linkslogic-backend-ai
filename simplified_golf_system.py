@@ -363,7 +363,7 @@ class SimplifiedGolfRulesSystem:
         """
         context_parts = []
         included_rules = set()
-        
+    
         # First, add primary search results
         for i, result in enumerate(search_results):
             rule = result['rule']
@@ -376,41 +376,58 @@ class SimplifiedGolfRulesSystem:
                 context_part = f"COLUMBIA CC LOCAL RULE {rule_id}: {rule['title']}\n"
             else:
                 context_part = f"Rule {rule_id}: {rule['title']}\n"
-            
+        
             # Include full rule text (no truncation for better accuracy)
             context_part += f"{rule.get('text', '')}\n"
             
             # Add conditions if available - EXCEPTIONS FIRST
             if 'conditions' in rule:
-                # Separate exceptions from other conditions
-                exceptions = []
-                other_conditions = []
+                try:
+                    conditions_list = rule.get('conditions', [])
+                    
+                    # Safety check - ensure conditions is a list
+                    if not isinstance(conditions_list, list):
+                        logger.error(f"⚠️ Conditions for {rule_id} is not a list: {type(conditions_list)}")
+                        context_parts.append(context_part)
+                        continue
+                    
+                    # Separate exceptions from other conditions
+                    exceptions = []
+                    other_conditions = []
+                    
+                    for condition in conditions_list[:5]:
+                        # Safety check - ensure condition is a dict
+                        if not isinstance(condition, dict):
+                            logger.error(f"⚠️ Condition in {rule_id} is {type(condition)}, not dict")
+                            continue
+                        
+                        situation = condition.get('situation', '')
+                        if 'exception' in situation.lower():
+                            exceptions.append(condition)
+                        else:
+                            other_conditions.append(condition)
                 
-                for condition in rule['conditions'][:5]:
-                    situation = condition.get('situation', '')
-                    if 'exception' in situation.lower():
-                        exceptions.append(condition)
-                    else:
-                        other_conditions.append(condition)
-                
-                # Show exceptions FIRST and prominently
-                if exceptions:
-                    context_part += "\n⚠️ EXCEPTIONS:\n"
-                    for exc in exceptions:
-                        context_part += f"  • {exc.get('explanation', '')}\n"
-                        # Add examples if available
-                        if 'examples' in exc:
-                            for ex in exc['examples'][:2]:
-                                context_part += f"    Example: {ex}\n"
-                
-                # Then show other conditions
-                if other_conditions:
-                    context_part += "\nConditions and Applications:\n"
-                    for condition in other_conditions:
-                        context_part += f"- {condition.get('situation', '')}: {condition.get('explanation', '')}\n"
+                    # Show exceptions FIRST and prominently
+                    if exceptions:
+                        context_part += "\n⚠️ EXCEPTIONS:\n"
+                        for exc in exceptions:
+                            context_part += f"  • {exc.get('explanation', '')}\n"
+                            # Add examples if available
+                            if 'examples' in exc and isinstance(exc.get('examples'), list):
+                                for ex in exc['examples'][:2]:
+                                    context_part += f"    Example: {ex}\n"
+                    
+                    # Then show other conditions
+                    if other_conditions:
+                        context_part += "\nConditions and Applications:\n"
+                        for condition in other_conditions:
+                            context_part += f"- {condition.get('situation', '')}: {condition.get('explanation', '')}\n"
+                            
+                except Exception as e:
+                    logger.error(f"⚠️ Error formatting conditions for rule {rule_id}: {e}")
             
             context_parts.append(context_part)
-        
+    
         # Now add related exception rules
         related_rules_to_add = set()
         for result in search_results:
@@ -424,45 +441,54 @@ class SimplifiedGolfRulesSystem:
         
         # Remove already included rules
         related_rules_to_add -= included_rules
-        
-        # Fetch and add related rules
-        if related_rules_to_add:
-            context_parts.append("\n--- RELATED EXCEPTION RULES ---")
-            for rule_id in list(related_rules_to_add)[:4]:  # Include up to 4 related rules
-                rule = self._get_rule_by_id(rule_id)
-                if rule:
-                    # Build context part for related rule
-                    related_part = f"\nRule {rule_id}: {rule.get('title', '')}\n{rule.get('text', '')}\n"
-                    
-                    # Add conditions/exceptions for related rules too
-                    if 'conditions' in rule:
-                        # Separate exceptions from other conditions
-                        exceptions = []
-                        other_conditions = []
+    
+            # Fetch and add related rules
+            if related_rules_to_add:
+                context_parts.append("\n--- RELATED EXCEPTION RULES ---")
+                for rule_id in list(related_rules_to_add)[:4]:  # Include up to 4 related rules
+                    rule = self._get_rule_by_id(rule_id)
+                    if rule:
+                        try:
+                            # Build context part for related rule
+                            related_part = f"\nRule {rule_id}: {rule.get('title', '')}\n{rule.get('text', '')}\n"
+                            
+                            # Add conditions/exceptions for related rules too
+                            if 'conditions' in rule:
+                                conditions_list = rule.get('conditions', [])
+                                
+                            if isinstance(conditions_list, list):
+                                # Separate exceptions from other conditions
+                                exceptions = []
+                                other_conditions = []
+                                
+                                for condition in conditions_list[:5]:
+                                    if not isinstance(condition, dict):
+                                        continue
+                                    
+                                    situation = condition.get('situation', '')
+                                    if 'exception' in situation.lower():
+                                        exceptions.append(condition)
+                                    else:
+                                        other_conditions.append(condition)
+                                
+                                # Show exceptions FIRST
+                                if exceptions:
+                                    related_part += "\n⚠️ EXCEPTIONS:\n"
+                                    for exc in exceptions:
+                                        related_part += f"  • {exc.get('explanation', '')}\n"
+                                        if 'examples' in exc and isinstance(exc.get('examples'), list):
+                                            for ex in exc['examples'][:2]:
+                                                related_part += f"    Example: {ex}\n"
+                                
+                                # Then other conditions
+                                if other_conditions:
+                                    related_part += "\nConditions:\n"
+                                    for condition in other_conditions:
+                                        related_part += f"- {condition.get('situation', '')}: {condition.get('explanation', '')}\n"
                         
-                        for condition in rule.get('conditions', [])[:5]:
-                            situation = condition.get('situation', '')
-                            if 'exception' in situation.lower():
-                                exceptions.append(condition)
-                            else:
-                                other_conditions.append(condition)
-                        
-                        # Show exceptions FIRST
-                        if exceptions:
-                            related_part += "\n⚠️ EXCEPTIONS:\n"
-                            for exc in exceptions:
-                                related_part += f"  • {exc.get('explanation', '')}\n"
-                                if 'examples' in exc:
-                                    for ex in exc.get('examples', [])[:2]:
-                                        related_part += f"    Example: {ex}\n"
-                        
-                        # Then other conditions
-                        if other_conditions:
-                            related_part += "\nConditions:\n"
-                            for condition in other_conditions:
-                                related_part += f"- {condition.get('situation', '')}: {condition.get('explanation', '')}\n"
-                    
-                    context_parts.append(related_part)
+                        context_parts.append(related_part)
+                    except Exception as e:
+                        logger.error(f"⚠️ Error formatting related rule {rule_id}: {e}")
         
         return "\n".join(context_parts)
     
