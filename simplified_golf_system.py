@@ -371,11 +371,34 @@ class SimplifiedGolfRulesSystem:
             # Include full rule text (no truncation for better accuracy)
             context_part += f"{rule.get('text', '')}\n"
             
-            # Add conditions if available
+            # Add conditions if available - EXCEPTIONS FIRST
             if 'conditions' in rule:
-                context_part += "\nConditions and Applications:\n"
-                for condition in rule['conditions'][:5]:  # Include more conditions
-                    context_part += f"- {condition.get('situation', '')}: {condition.get('explanation', '')}\n"
+                # Separate exceptions from other conditions
+                exceptions = []
+                other_conditions = []
+                
+                for condition in rule['conditions'][:5]:
+                    situation = condition.get('situation', '')
+                    if 'exception' in situation.lower():
+                        exceptions.append(condition)
+                    else:
+                        other_conditions.append(condition)
+                
+                # Show exceptions FIRST and prominently
+                if exceptions:
+                    context_part += "\n⚠️ EXCEPTIONS:\n"
+                    for exc in exceptions:
+                        context_part += f"  • {exc.get('explanation', '')}\n"
+                        # Add examples if available
+                        if 'examples' in exc:
+                            for ex in exc['examples'][:2]:
+                                context_part += f"    Example: {ex}\n"
+                
+                # Then show other conditions
+                if other_conditions:
+                    context_part += "\nConditions and Applications:\n"
+                    for condition in other_conditions:
+                        context_part += f"- {condition.get('situation', '')}: {condition.get('explanation', '')}\n"
             
             context_parts.append(context_part)
         
@@ -458,7 +481,8 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
 
    - EXCEPTIONS WITHIN RULES:
      * Many rules have exceptions listed within them - check carefully!
-     * Look for "Exception:", "Allowed:", or "Does not apply when:" clauses
+     * Look for conditions labeled "Exception:", "Allowed:", or "Does not apply when:" clauses
+     * Read ALL conditions carefully before concluding something is not allowed
 
 3. CHECK COLUMBIA CC LOCAL RULES:
    - If a Columbia local rule applies to this specific situation, it takes precedence
