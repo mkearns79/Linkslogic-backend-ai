@@ -369,7 +369,6 @@ class SimplifiedGolfRulesSystem:
         for i, result in enumerate(search_results):
             rule = result['rule']
             rule_id = rule['id']
-            included_rules.add(rule_id)
             #TEMP - REMOVE
             if rule_id == '11.3':
                 logger.info(f"🔍 DEBUG Rule 11.3: has 'conditions' key = {'conditions' in rule}")
