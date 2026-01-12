@@ -280,6 +280,14 @@ class SimplifiedGolfRulesSystem:
             official_rules = [r for r in search_results if not r.get('is_local')]
             search_results = local_rules[:4] + official_rules[:8]
 
+            for result in search_results:
+                rule_id = result['rule']['id']
+                full_rule = self._get_rule_by_id(rule_id)
+                if full_rule:
+                    if rule_id == '11.3':  #DEBUG - REMOVE AFTER FIX
+                        logger.info(f"🔧 ENRICHMENT: Rule 11.3 full_rule has conditions = {'conditions' in full_rule}")  #DEBUG - REMOVE AFTER FIX
+                    result['rule'] = full_rule
+
             if verbose:
                 logger.info(f"📊 [{query_id}] Balanced results: {len(local_rules[:4])} local + {len(official_rules[:8])} official")
                 logger.info(f"📋 [{query_id}] After balancing: {[r['rule']['id'] for r in search_results]}")
