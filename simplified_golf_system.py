@@ -508,8 +508,13 @@ class SimplifiedGolfRulesSystem:
                 return rule
         
         # Check official rules
-        if rule_id in self.rules_database:
-            return self.rules_database[rule_id]
+        if isinstance(self.rules_database, dict):
+            if rule_id in self.rules_database:
+                return self.rules_database[rule_id]
+        elif isinstance(self.rules_database, list):
+            for rule in self.rules_database:
+                if isinstance(rule, dict) and rule.get('id') == rule_id:
+                    return rule
         
         return None
     
