@@ -370,6 +370,12 @@ class SimplifiedGolfRulesSystem:
             rule = result['rule']
             rule_id = rule['id']
             included_rules.add(rule_id)
+            #TEMP - REMOVE
+            if rule_id == '11.3':
+                logger.info(f"🔍 DEBUG Rule 11.3: has 'conditions' key = {'conditions' in rule}")
+                logger.info(f"🔍 DEBUG Rule 11.3: rule keys = {rule.keys()}")
+                if 'conditions' in rule:
+                    logger.info(f"🔍 DEBUG Rule 11.3: num conditions = {len(rule['conditions'])}")
             
             is_local = result.get('is_local', False)
             
