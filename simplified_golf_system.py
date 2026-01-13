@@ -38,7 +38,7 @@ class SimplifiedGolfRulesSystem:
         self.local_rules = local_rules
         
         # Model selection - UPDATE THIS based on check_openai_models.py results
-        self.model = "gpt-4-turbo-preview"
+        self.model = "gpt-4o"
         
         # Related rules mapping for exception handling
         self.RELATED_RULES = {
@@ -278,7 +278,7 @@ class SimplifiedGolfRulesSystem:
 
             local_rules = [r for r in search_results if r.get('is_local')]
             official_rules = [r for r in search_results if not r.get('is_local')]
-            search_results = local_rules[:4] + official_rules[:8]
+            search_results = local_rules[:3] + official_rules[:9]
 
             for result in search_results:
                 rule_id = result['rule']['id']
@@ -288,9 +288,11 @@ class SimplifiedGolfRulesSystem:
                         logger.info(f"🔧 ENRICHMENT: Rule 11.3 full_rule has conditions = {'conditions' in full_rule}")  #DEBUG - REMOVE AFTER FIX
                     result['rule'] = full_rule
 
+            search_results = [r for r in search_results if r.get('best_similarity', 0) >= 0.5]
+            
             if verbose:
-                logger.info(f"📊 [{query_id}] Balanced results: {len(local_rules[:4])} local + {len(official_rules[:8])} official")
-                logger.info(f"📋 [{query_id}] After balancing: {[r['rule']['id'] for r in search_results]}")
+                logger.info(f"📊 [{query_id}] Balanced results: {len(local_rules[:3])} local + {len(official_rules[:9])} official")
+                logger.info(f"📊 After 0.5 threshold filter: {len(search_results)} rules")
             
             # Check if we found exception-related rules
             has_exception_rules = self._check_for_exception_rules(search_results)
@@ -459,7 +461,7 @@ class SimplifiedGolfRulesSystem:
         # Fetch and add related rules
         if related_rules_to_add:
             context_parts.append("\n--- RELATED EXCEPTION RULES ---")
-            for rule_id in list(related_rules_to_add)[:4]:  # Include up to 4 related rules
+            for rule_id in list(related_rules_to_add)[:3]:  # Include up to 3 related rules
                 rule = self._get_rule_by_id(rule_id)
                 if rule:
                     try:

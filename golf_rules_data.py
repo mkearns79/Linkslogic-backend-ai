@@ -3343,12 +3343,14 @@ RULES_DATABASE = [
       },
       {
             "situation": "Exception for moving specific items",
-            "explanation": "Under Rule 11.3 Exception and Rules 9.4, 9.5, 13.2, 14.1, Rule does not prohibit lifting/moving removed flagstick, ball at rest on putting green, or equipment (except ball at rest off green or ball-marker).",
+            "explanation": "EXCEPTION TO RULE 11.3: You ARE ALLOWED to move equipment (including ANY golf bag, clubs, or other equipment belonging to any player) while a ball is in motion. You may also move a removed flagstick or a ball at rest on the putting green. You CANNOT move a ball at rest anywhere off the putting green, or a ball-marker.",
             "examples": [
-              "Moving removed flagstick while ball in motion - allowed exception",
-              "Lifting ball at rest on green while another ball rolling - allowed",
-              "Moving player equipment (clubs, bag) while ball in motion - permitted",
-              "Cannot move ball at rest off green or ball-marker anywhere"
+                "Moving another player's golf bag while ball in motion - ALLOWED",
+                "Moving your own clubs while ball rolling - ALLOWED", 
+                "Moving any player's equipment to prevent ball hitting it - ALLOWED",
+                "Moving removed flagstick while ball in motion - ALLOWED",
+                "Lifting ball at rest on green while another ball rolling - ALLOWED",
+                "CANNOT move ball at rest off green or ball-marker anywhere"
             ]
       },
       {
