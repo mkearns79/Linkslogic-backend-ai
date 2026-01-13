@@ -246,9 +246,9 @@ class SimplifiedGolfRulesSystem:
         
         for term in golf_terms:
             if term in question_lower:
-                definitions = search_definitions_by_keyword(term)
+                definitions = search_definitions_by_keyword([term])  # Note: expects list
                 if definitions:
-                    definition = definitions[0]
+                    definition = definitions[0]['definition']  # Extract the actual definition object
                     answer = f"**{definition['term']}**: {definition['definition']}"
                     if definition.get('examples'):
                         answer += f"\n\n**Examples**: {', '.join(definition['examples'][:3])}"
