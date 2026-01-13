@@ -288,7 +288,15 @@ class SimplifiedGolfRulesSystem:
                         logger.info(f"🔧 ENRICHMENT: Rule 11.3 full_rule has conditions = {'conditions' in full_rule}")  #DEBUG - REMOVE AFTER FIX
                     result['rule'] = full_rule
 
-            search_results = [r for r in search_results if r.get('best_similarity', 0) >= 0.5]
+            filtered_results = [r for r in search_results if r.get('best_similarity', 0) >= 0.5]
+
+            # Fallback: if nothing scores >0.5, keep top 3-5 anyway
+            if not filtered_results:
+                filtered_results = search_results[:5]  # At least give AI something to work with
+                if verbose:
+                    logger.info(f"⚠️ No rules scored >0.5, using top {len(filtered_results)} as fallback")
+
+            search_results = filtered_results
             
             if verbose:
                 logger.info(f"📊 [{query_id}] Balanced results: {len(local_rules[:3])} local + {len(official_rules[:9])} official")
@@ -708,7 +716,8 @@ Now provide your complete ruling:"""
             "gpt-4-turbo-preview": 0.01,
             "gpt-4-0125-preview": 0.01,
             "gpt-4": 0.03,
-            "gpt-3.5-turbo": 0.001
+            "gpt-3.5-turbo": 0.001,
+            "gpt-4o": .0025
         }
         
         cost_per_1k = pricing.get(self.model, 0.01)
