@@ -717,7 +717,7 @@ Now provide your complete ruling:"""
             "gpt-4-0125-preview": 0.01,
             "gpt-4": 0.03,
             "gpt-3.5-turbo": 0.001,
-            "gpt-4o": .0025
+            "gpt-4o": .0036
         }
         
         cost_per_1k = pricing.get(self.model, 0.01)
