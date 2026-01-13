@@ -217,7 +217,7 @@ class SimplifiedGolfRulesSystem:
         question_lower = question.lower()
         definition_indicators = [
             'what is a', 'what is an', 'what are',
-            'what does', 'what do',
+            'what does',
             'define', 'definition of',
             'meaning of', 'means',
             'what constitutes', 'explain what'
