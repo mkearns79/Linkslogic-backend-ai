@@ -156,7 +156,7 @@ class SimplifiedGolfRulesSystem:
             },
             'purple_line_boundary': {
                 'required': ['purple'],
-                'any_of': ['line', 'boundary', 'out of bounds', 'ob', 'construction', 'train', 'tracks', 'wall'],
+                'any_of': ['line', 'boundary', 'construction', 'train', 'tracks', 'wall'],
                 'min_matches': 1
             },
             'green_stakes_cart_path': {
