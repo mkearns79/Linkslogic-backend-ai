@@ -216,7 +216,7 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
     "quick_response": """According to Columbia Country Club's local rules, the Purple Line wall is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
-• NO RELIEF for balls near or against Purple Line boundary wall or temporary fence
+• NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
 • Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
 • This applies EVEN IF the ball comes to rest in a seemingly playable position
 • This includes balls that end up on the other side of the boundary
@@ -231,7 +231,7 @@ OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
 • Must not be closer to the hole than where ball crossed boundary
 OPTION 2 - Standard Rule (1 penalty stroke):
 • Return to where you last played and hit again (stroke and distance)
-Remember: The Purple Line boundary fence (including any mesh) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
+Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
     }
 }
 

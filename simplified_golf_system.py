@@ -116,7 +116,7 @@ class SimplifiedGolfRulesSystem:
         template_patterns = {
             'clear_lost_ball': {
                 'required': ['lost', 'ball'],
-                'any_of': ['woods', 'rough', 'fescue', 'trees', 'cannot find', "can't find"],
+                'any_of': ['in the rough', 'in the fescue', 'cannot find', "can't find"],
                 'min_matches': 2
             },
             'clear_out_of_bounds': {
