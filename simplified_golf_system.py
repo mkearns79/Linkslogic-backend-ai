@@ -153,6 +153,21 @@ class SimplifiedGolfRulesSystem:
                 'required': ['fence'],
                 'any_of': ['purple line', 'construction', 'mesh', 'relief'],
                 'min_matches': 2
+            },
+            'purple_line_boundary': {
+                'required': ['purple'],
+                'any_of': ['line', 'boundary', 'out of bounds', 'ob', 'construction', 'train', 'tracks', 'wall'],
+                'min_matches': 1
+            },
+            'green_stakes_cart_path': {
+                'required': ['path', 'green'],
+                'any_of': ['14', '17', 'behind', 'stakes', 'cart path', 'cart', 'marked'],
+                'min_matches': 2
+            },
+            'OB_lines': {
+                'required': ['line'],
+                'any_of': ['white', 'boundary', 'touching', 'on the', 'painted', 'ob'],
+                'min_matches': 2
             }
         }
         
@@ -585,10 +600,10 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
 
 3. CHECK COLUMBIA CC LOCAL RULES:
    - If a Columbia local rule applies to this specific situation, it takes precedence
-   - Columbia rules are marked as "CCC-" in the context
+   - Columbia rules are marked as "CCC-" in the context, but do not cite the rule number in your response
 
 4. PROVIDE YOUR ANSWER:
-   - State the applicable rule(s) clearly with rule numbers
+   - State the applicable rule(s) clearly; include rule numbers for Official Rules of Golf but not local rules
    - Mention ANY exceptions or special cases that apply
    - Specify the correct procedure step by step
    - State any penalties (or explicitly note if there's no penalty)
