@@ -210,13 +210,13 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
         "purple line construction", "construction boundary", "ball in tunnel", "ball past purple line",
         "purple line area", "construction area boundary", "ball beyond purple line", "crossed construction line",
         "purple boundary line", "construction zone boundary", "ball in construction area",
-        "over the purple line", "past the purple line", "through purple line", "across purple line", "across the train tracks"
+        "over the purple line", "past the purple line", "through purple line", "across purple line", "across the train tracks", "purple line wall", "ball over purple line wall"
     ],
     "local_rule": "CCC-6",
-    "quick_response": """According to Columbia Country Club's local rules, the Purple Line construction fence is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
+    "quick_response": """According to Columbia Country Club's local rules, the Purple Line wall is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
-• NO RELIEF for balls near or against Purple Line boundary fence
+• NO RELIEF for balls near or against Purple Line boundary wall or temporary fence
 • Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
 • This applies EVEN IF the ball comes to rest in a seemingly playable position
 • This includes balls that end up on the other side of the boundary
