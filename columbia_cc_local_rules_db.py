@@ -68,8 +68,8 @@ COLUMBIA_CC_LOCAL_RULES = {
                 },
                 {
                     'situation': 'Hole 17 penalty area relief options',
-                    'explanation': 'When ball is in penalty area on hole 17, player has relief options for one penalty stroke: (1) Standard relief under Rule 17.1, or (2) If ball is in pond area west of footbridge, drop in designated dropping zone near the foot bridge',
-                    'examples': ['Ball in pond west of footbridge', 'Dropping zone only for main pond area']
+                    'explanation': 'When ball is in penalty area on hole 17, player has relief options for one penalty stroke: (1) Standard relief under Rule 17.1, or (2) If ball is in pond area west (left) of footbridge, drop in designated dropping zone near the foot bridge',
+                    'examples': ['Ball in pond west of footbridge', 'Dropping zone only for main pond area', 'Ball in pond left of footbridge']
                 },
                 {
                     'situation': 'Ball on cart bridge over penalty area',

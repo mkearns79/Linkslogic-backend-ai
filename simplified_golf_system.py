@@ -1,6 +1,13 @@
 """
 Simplified Golf Rules System - Version 2 with Enhanced Logging
 Updated with better source tracking and no character limits
+
+FIXES APPLIED:
+- Fix 1: Template topic-gating to prevent hole-number-only matches
+- Fix 4: Definition stage negative patterns to prevent over-triggering
+- Fix 7: Expanded lost ball template patterns
+- Fix 8: AI prompt clarification for accidental contact vs stroke
+- Fix 11: Removed debug logging and duplicate prompt creation
 """
 
 import time
@@ -108,15 +115,28 @@ class SimplifiedGolfRulesSystem:
     
     def _check_template_strict(self, question: str, verbose: bool = False) -> Optional[Dict]:
         """
-        Stricter template matching - only return if we're very confident
+        Stricter template matching - only return if we're very confident.
+        
+        FIX 1: Added 'topic_words' to each template. If the query contains required 
+        location keywords (like a hole number) but NONE of the topic words, the template 
+        is skipped. This prevents a flagstick question mentioning "16" from triggering 
+        the water hazard template.
+        
+        FIX 7: Expanded clear_lost_ball patterns to catch more natural phrasings.
         """
         question_lower = question.lower().strip()
         
         # Define strict patterns for each template
+        # FIX 1: 'topic_words' = at least one must appear for the template to match.
+        #         This gates templates so that mentioning a hole number alone isn't enough.
+        #         Set to None/omitted for templates where required words already imply the topic.
         template_patterns = {
             'clear_lost_ball': {
-                'required': ['lost', 'ball'],
-                'any_of': ['in the rough', 'in the fescue', 'cannot find', "can't find"],
+                # FIX 7: Relaxed — only 'ball' required; 'lost' moved to any_of with synonyms
+                'required': ['ball'],
+                'any_of': ['lost', "can't find", 'cannot find', 'missing', 'disappeared',
+                           'in the rough', 'in the fescue', 'in the woods', 'in the trees',
+                           'went into the woods', 'never found'],
                 'min_matches': 2
             },
             'clear_out_of_bounds': {
@@ -127,11 +147,17 @@ class SimplifiedGolfRulesSystem:
             'water_hazard_16': {
                 'required': ['16'],
                 'any_of': ['water', 'penalty area', 'hazard', 'pond', 'sixteenth'],
+                # FIX 1: Topic gate — query must be about water/penalty area, not just hole 16
+                'topic_words': ['water', 'penalty area', 'hazard', 'pond', 'lake', 'creek',
+                                'drop zone', 'dropping zone'],
                 'min_matches': 2
             },
             'water_hazard_17': {
                 'required': ['17'],
                 'any_of': ['water', 'penalty area', 'hazard', 'pond', 'seventeenth'],
+                # FIX 1: Topic gate
+                'topic_words': ['water', 'penalty area', 'hazard', 'pond', 'lake', 'creek',
+                                'drop zone', 'dropping zone'],
                 'min_matches': 2
             },
             'turf_nursery': {
@@ -190,6 +216,15 @@ class SimplifiedGolfRulesSystem:
                 
             matches += required_found
             
+            # FIX 1: Topic gate check — if topic_words defined, at least one must appear
+            topic_words = patterns.get('topic_words')
+            if topic_words:
+                topic_found = any(tw in question_lower for tw in topic_words)
+                if not topic_found:
+                    if verbose:
+                        logger.info(f"🚫 Template '{template_name}' skipped: required words matched but no topic words found")
+                    continue
+            
             # Check any_of patterns
             any_of_found = 0
             for pattern in patterns.get('any_of', []):
@@ -227,9 +262,28 @@ class SimplifiedGolfRulesSystem:
     
     def _is_definition_query(self, question: str) -> bool:
         """
-        Check if this is asking for a definition
+        Check if this is asking for a definition.
+        
+        FIX 4: Added negative patterns to prevent procedural questions from being 
+        routed to the definitions stage. "What is the ruling if my ball is in a bunker?"
+        is procedural, not definitional, even though it contains "what is" and "bunker."
         """
         question_lower = question.lower()
+        
+        # FIX 4: Negative patterns — these are procedural, not definitional
+        procedural_indicators = [
+            'what do i do', 'what should i do', 'what happens',
+            'what are my options', 'what is the ruling', 'what is the rule',
+            'what is the penalty', 'what is the procedure',
+            'what are the steps', 'what is a player supposed to',
+            'what are the options', 'what is the correct',
+            'what are the rules', 'what is the best',
+            'how do i', 'how should i', 'can i', 'am i allowed',
+            'do i get', 'is there a penalty'
+        ]
+        if any(indicator in question_lower for indicator in procedural_indicators):
+            return False
+        
         definition_indicators = [
             'what is a', 'what is an', 'what are',
             'what does',
@@ -281,7 +335,9 @@ class SimplifiedGolfRulesSystem:
     
     def _get_unified_ai_response(self, question: str, verbose: bool = False, query_id: str = "") -> Dict:
         """
-        Unified AI response with explicit exception checking and comprehensive logging
+        Unified AI response with explicit exception checking and comprehensive logging.
+        
+        FIX 11: Removed duplicate _create_unified_prompt() call and debug logging.
         """
         try:
             # Get relevant rules from vector search
@@ -299,8 +355,6 @@ class SimplifiedGolfRulesSystem:
                 rule_id = result['rule']['id']
                 full_rule = self._get_rule_by_id(rule_id)
                 if full_rule:
-                    if rule_id == '11.3':  #DEBUG - REMOVE AFTER FIX
-                        logger.info(f"🔧 ENRICHMENT: Rule 11.3 full_rule has conditions = {'conditions' in full_rule}")  #DEBUG - REMOVE AFTER FIX
                     result['rule'] = full_rule
 
             filtered_results = [r for r in search_results if r.get('best_similarity', 0) >= 0.5]
@@ -327,21 +381,13 @@ class SimplifiedGolfRulesSystem:
             if verbose:
                 context_rules = re.findall(r'Rule [\d\.]+[a-z]?', context)
                 logger.info(f"📚 [{query_id}] Context includes {len(context_rules)} rules")
-                logger.info(f"🔍 [{query_id}] Full context being sent:\n{context[:2000]}")
+                logger.info(f"📝 [{query_id}] Full context being sent:\n{context[:2000]}")
                 if has_exception_rules:
                     logger.info(f"⚠️ [{query_id}] Exception rules detected in context")
             
             # Create the unified prompt with explicit exception handling
+            # FIX 11: Single call (was duplicated before)
             prompt = self._create_unified_prompt(question, context)
-
-            # TEMPROARY - REMOVE AFTER TROUBLESHOOTING Right after line 300 where you create the prompt:
-            prompt = self._create_unified_prompt(question, context)
-
-            # TEMPROARY - REMOVE AFTER TROUBLESHOOTING ADD THIS DEBUG LOGGING:
-            if verbose:
-                logger.info(f"🔍 [{query_id}] CONTEXT BEING SENT TO AI:")
-                logger.info(context)
-                logger.info(f"📝 [{query_id}] END CONTEXT")
             
             # Get AI response
             response = self.client.chat.completions.create(
@@ -393,7 +439,9 @@ class SimplifiedGolfRulesSystem:
     
     def _build_enhanced_context(self, search_results: List[Dict], question: str) -> str:
         """
-        Build context with primary rules and related exception rules
+        Build context with primary rules and related exception rules.
+        
+        FIX 11: Removed Rule 11.3 debug logging.
         """
         context_parts = []
         included_rules = set()
@@ -402,12 +450,6 @@ class SimplifiedGolfRulesSystem:
         for i, result in enumerate(search_results):
             rule = result['rule']
             rule_id = rule['id']
-            #TEMP - REMOVE
-            if rule_id == '11.3':
-                logger.info(f"🔍 DEBUG Rule 11.3: has 'conditions' key = {'conditions' in rule}")
-                logger.info(f"🔍 DEBUG Rule 11.3: rule keys = {rule.keys()}")
-                if 'conditions' in rule:
-                    logger.info(f"🔍 DEBUG Rule 11.3: num conditions = {len(rule['conditions'])}")
             
             is_local = result.get('is_local', False)
             
@@ -558,7 +600,10 @@ class SimplifiedGolfRulesSystem:
     
     def _create_unified_prompt(self, question: str, context: str) -> str:
         """
-        Create the unified prompt with explicit exception handling instructions
+        Create the unified prompt with explicit exception handling instructions.
+        
+        FIX 8: Added clarification about accidental contact vs intentional stroke,
+        and an additional example about teeing area exceptions.
         """
         prompt = f"""You are an expert golf rules official at Columbia Country Club with complete knowledge of both USGA Rules and Columbia's local rules.
 
@@ -582,16 +627,18 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
      * During the stroke → Rule 9.1b
      * While ball in motion → Rules 11.1-11.3
      * After marking and lifting → Rule 14.2d
+     * IMPORTANT: If ball was lifted and replaced BEFORE natural forces moved it → Rule 9.3 Exception applies (replace ball, not play as it lies)
    
    - WHERE on the course:
      * Putting green → Special rules under Rule 13
      * Penalty area → Rule 17 procedures
      * Bunker → Rule 12 specific rules
-     * Teeing area → Rule 6 applies
+     * Teeing area → Rule 6 applies (including Rule 6.2b(5): no penalty for accidentally moving ball on tee)
    
    - INTENT (accidental vs. deliberate):
      * Accidental movement → Often no penalty or different procedure
      * Deliberate actions → Usually penalties apply
+     * IMPORTANT: Accidental contact during backswing or practice swing is NOT a stroke — a stroke requires intent to hit the ball forward. If the ball was accidentally knocked off the tee during a backswing, it is NOT a stroke and Rule 6.2b(5) applies.
 
    - EXCEPTIONS WITHIN RULES:
      * Many rules have exceptions listed within them - check carefully!
