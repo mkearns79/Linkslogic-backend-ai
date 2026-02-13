@@ -1018,44 +1018,44 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
                     print(f"   🎯 CCC-6: {old_score:.3f} → {new_score:.3f} (3.0x purple line boost)")
 
         # BRIDGE BOOSTING - integral object on holes 17/18
+        # Must come BEFORE cart path boosting so we can skip cart path logic for bridge queries
         bridge_terms = ['bridge', 'cart bridge', 'footbridge']
-        has_bridge = any(term in query_lower for term in bridge_terms)
-        if has_bridge and (hole_number in [17, 18] or '17' in query_lower or '18' in query_lower):
+        is_bridge_query = any(term in query_lower for term in bridge_terms)
+        if is_bridge_query and (hole_number in [17, 18] or '17' in query_lower or '18' in query_lower):
             if verbose:
                 print(f"🎯 Columbia CC: Detected bridge query on hole {hole_number or '17/18'}")
-                    
+            
             if 'CCC-2' in rule_results:
                 old_score = rule_results['CCC-2']['best_similarity']
                 rule_results['CCC-2']['best_similarity'] *= 4.0
-                        
+                
                 if verbose:
                     new_score = rule_results['CCC-2']['best_similarity']
                     print(f"   🎯 CCC-2: {old_score:.3f} → {new_score:.3f} (4.0x bridge boost)")
-
-        # De-boost CCC-4 (cart paths rule - wrong rule for bridge)
-        if 'CCC-4' in rule_results:
-            old_score = rule_results['CCC-4']['best_similarity']
-            rule_results['CCC-4']['best_similarity'] *= 0.3
+            
+            # De-boost CCC-4 (cart paths rule - wrong rule for bridge)
+            if 'CCC-4' in rule_results:
+                old_score = rule_results['CCC-4']['best_similarity']
+                rule_results['CCC-4']['best_similarity'] *= 0.3
                 
-            if verbose:
-                new_score = rule_results['CCC-4']['best_similarity']
-                print(f"   🔻 CCC-4: {old_score:.3f} → {new_score:.3f} (0.3x de-boost, bridge ≠ cart path)")
-
-        # De-boost generic obstruction/cart path relief rules
-        for rule_id in rule_results:
-            if not rule_results[rule_id].get('is_local') and '16.1' in rule_id:
-                if 'relief' in rule_results[rule_id]['rule'].get('text', '').lower()[:200]:
-                    old_score = rule_results[rule_id]['best_similarity']
-                    rule_results[rule_id]['best_similarity'] *= 0.4
+                if verbose:
+                    new_score = rule_results['CCC-4']['best_similarity']
+                    print(f"   🔻 CCC-4: {old_score:.3f} → {new_score:.3f} (0.3x de-boost, bridge ≠ cart path)")
+            
+            # De-boost generic obstruction/cart path relief rules
+            for rule_id in rule_results:
+                if not rule_results[rule_id].get('is_local') and '16.1' in rule_id:
+                    if 'relief' in rule_results[rule_id]['rule'].get('text', '').lower()[:200]:
+                        old_score = rule_results[rule_id]['best_similarity']
+                        rule_results[rule_id]['best_similarity'] *= 0.4
                         
-                    if verbose:
-                        new_score = rule_results[rule_id]['best_similarity']
-                        print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.4x de-boost)")    
+                        if verbose:
+                            new_score = rule_results[rule_id]['best_similarity']
+                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.4x de-boost)")
 
-        # PROBLEM FIX: Cart path behind holes 12, 14, 17 (integral objects)
-        is_bridge_query = any(term in query_lower for term in ['bridge', 'cart bridge', 'footbridge'])
+        # CART PATH behind holes 12, 14, 17 (integral objects)
+        # Skip if this is a bridge query — bridge is CCC-2, not CCC-4
         if hole_number in [12, 14, 17] and not is_bridge_query:
-        
             cart_path_terms = ['cart path', 'path', 'road', 'unpaved road']
             has_cart_path = any(term in query_lower for term in cart_path_terms)
             behind_green = 'behind' in query_lower and 'green' in query_lower
@@ -1087,27 +1087,7 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
                         new_score = rule_results['CCC-10']['best_similarity']
                         print(f"   🔻 CCC-10: {old_score:.3f} → {new_score:.3f} (0.3x de-boost)")
         
-            # De-boost CCC-4 (cart paths rule - wrong rule for bridge)
-            if 'CCC-4' in rule_results:
-                old_score = rule_results['CCC-4']['best_similarity']
-                rule_results['CCC-4']['best_similarity'] *= 0.3
-                
-                if verbose:
-                    new_score = rule_results['CCC-4']['best_similarity']
-                    print(f"   🔻 CCC-4: {old_score:.3f} → {new_score:.3f} (0.3x de-boost, bridge ≠ cart path)")
-
-            # De-boost generic obstruction/cart path relief rules
-            for rule_id in rule_results:
-                if not rule_results[rule_id].get('is_local') and 'relief' in rule_results[rule_id]['rule'].get('text', '').lower()[:200]:
-                    if '16.1' in rule_id:
-                        old_score = rule_results[rule_id]['best_similarity']
-                        rule_results[rule_id]['best_similarity'] *= 0.4
-                        
-                        if verbose:
-                            new_score = rule_results[rule_id]['best_similarity']
-                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.4x de-boost)")
-
-        # WATER HAZARD BOOSTING - ADD THIS SECTION
+        # WATER HAZARD BOOSTING
         if hole_number in [15, 16, 17, 18]:
             water_terms = ['water', 'penalty area', 'pond', 'creek', 'hazard']
             has_water = any(term in query_lower for term in water_terms)
@@ -1160,14 +1140,6 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
                             print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.4x de-boost)")
         
         return rule_results
-
-        sorted_results = sorted(
-            rule_results.values(),
-            key=lambda x: (x['similarity'], -x['priority']),
-            reverse=True
-        )
-        
-        return sorted_results[:top_n]
 
     def search_basic(self, query, top_n=3):
         """
