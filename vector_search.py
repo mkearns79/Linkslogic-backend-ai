@@ -1002,6 +1002,9 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
             hole_number = extract_hole_number_simple(query)
         
         query_lower = query.lower()
+        print(f"🔧 BRIDGE DEBUG: query_lower='{query_lower}'")
+        print(f"🔧 BRIDGE DEBUG: 'bridge' in query_lower = {'bridge' in query_lower}")
+        print(f"🔧 BRIDGE DEBUG: '17' in query_lower = {'17' in query_lower}")
         
         # Simple purple line detection and boost
         if 'purple line' in query_lower:
