@@ -1019,7 +1019,9 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
 
 
         # PROBLEM FIX: Cart path behind holes 12, 14, 17 (integral objects)
-        if hole_number in [12, 14, 17]:
+            is_bridge_query = any(term in query_lower for term in ['bridge', 'cart bridge', 'footbridge'])
+            if hole_number in [12, 14, 17] and not is_bridge_query:
+        
             cart_path_terms = ['cart path', 'path', 'road', 'unpaved road']
             has_cart_path = any(term in query_lower for term in cart_path_terms)
             behind_green = 'behind' in query_lower and 'green' in query_lower
@@ -1066,6 +1068,15 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
                         new_score = rule_results['CCC-2']['best_similarity']
                         print(f"   🎯 CCC-2: {old_score:.3f} → {new_score:.3f} (4.0x bridge boost)")
             
+            # De-boost CCC-4 (cart paths rule - wrong rule for bridge)
+            if 'CCC-4' in rule_results:
+                old_score = rule_results['CCC-4']['best_similarity']
+                rule_results['CCC-4']['best_similarity'] *= 0.3
+                
+                if verbose:
+                    new_score = rule_results['CCC-4']['best_similarity']
+                    print(f"   🔻 CCC-4: {old_score:.3f} → {new_score:.3f} (0.3x de-boost, bridge ≠ cart path)")
+
             # De-boost generic obstruction/cart path relief rules
             for rule_id in rule_results:
                 if not rule_results[rule_id].get('is_local') and 'relief' in rule_results[rule_id]['rule'].get('text', '').lower()[:200]:
