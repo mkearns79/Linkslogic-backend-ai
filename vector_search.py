@@ -1051,6 +1051,32 @@ class ClubSpecificVectorSearch(RulesVectorSearch):
                         new_score = rule_results['CCC-10']['best_similarity']
                         print(f"   🔻 CCC-10: {old_score:.3f} → {new_score:.3f} (0.3x de-boost)")
         
+            # BRIDGE BOOSTING - integral object on holes 17/18
+            bridge_terms = ['bridge', 'cart bridge', 'footbridge']
+            has_bridge = any(term in query_lower for term in bridge_terms)
+            if has_bridge and (hole_number in [17, 18] or '17' in query_lower or '18' in query_lower):
+                if verbose:
+                    print(f"🎯 Columbia CC: Detected bridge query on hole {hole_number or '17/18'}")
+                
+                if 'CCC-2' in rule_results:
+                    old_score = rule_results['CCC-2']['best_similarity']
+                    rule_results['CCC-2']['best_similarity'] *= 4.0
+                    
+                    if verbose:
+                        new_score = rule_results['CCC-2']['best_similarity']
+                        print(f"   🎯 CCC-2: {old_score:.3f} → {new_score:.3f} (4.0x bridge boost)")
+            
+            # De-boost generic obstruction/cart path relief rules
+            for rule_id in rule_results:
+                if not rule_results[rule_id].get('is_local') and 'relief' in rule_results[rule_id]['rule'].get('text', '').lower()[:200]:
+                    if '16.1' in rule_id:
+                        old_score = rule_results[rule_id]['best_similarity']
+                        rule_results[rule_id]['best_similarity'] *= 0.4
+                        
+                        if verbose:
+                            new_score = rule_results[rule_id]['best_similarity']
+                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.4x de-boost)")
+
         # WATER HAZARD BOOSTING - ADD THIS SECTION
         if hole_number in [15, 16, 17, 18]:
             water_terms = ['water', 'penalty area', 'pond', 'creek', 'hazard']

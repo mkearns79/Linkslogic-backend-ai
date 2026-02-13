@@ -221,6 +221,7 @@ IMPORTANT BOUNDARY RULE:
 • This applies EVEN IF the ball comes to rest in a seemingly playable position
 • This includes balls that end up on the other side of the boundary
 • This includes balls that come to rest inside tunnels or other areas beyond the line
+• EXCEPTION: if your ball bounces back into play on the same side of the train tracks that it originally crossed, your ball is IN PLAY with NO PENALTY
 OUT OF BOUNDS RELIEF OPTIONS:
 You have TWO options under Columbia CC's local rules:
 

@@ -48,7 +48,7 @@ COLUMBIA_CC_LOCAL_RULES = {
             'id': 'CCC-2',
             'title': 'Penalty Areas - Holes 15, 16, 17, 18',
             'text': 'Special relief options for penalty areas on holes 15, 16, 17, and 18. Players have additional dropping zone options beyond standard penalty area relief.',
-            'keywords': ['penalty area', 'dropping zone', 'red penalty area', 'water hazard', 'holes 15 16 17 18', 'extra relief'],
+            'keywords': ['penalty area', 'dropping zone', 'red penalty area', 'water hazard', 'holes 15 16 17 18', 'extra relief', 'bridge', 'cart bridge', 'footbridge', 'creek', 'pond', 'integral object'],
             'examples': [
                 'Ball in water on 16th - can use dropping zone instead of going back',
                 'Ball in pond on 17th west of bridge - dropping zone available',
@@ -68,13 +68,13 @@ COLUMBIA_CC_LOCAL_RULES = {
                 },
                 {
                     'situation': 'Hole 17 penalty area relief options',
-                    'explanation': 'When ball is in penalty area on hole 17, player has relief options for one penalty stroke: (1) Standard relief under Rule 17.1, or (2) If ball is in pond area west (left) of footbridge, drop in designated dropping zone near the foot bridge',
-                    'examples': ['Ball in pond west of footbridge', 'Dropping zone only for main pond area', 'Ball in pond left of footbridge']
+                    'explanation': 'When ball is in penalty area on hole 17, player has relief options for one penalty stroke: (1) Standard relief under Rule 17.1, or (2) If ball is in the pond or creek area to the LEFT of the footbridge (west side, when viewed from the tee), drop in designated dropping zone near the footbridge. The dropping zone is NOT available for balls in the creek or penalty area to the RIGHT of the footbridge (east side).',
+                    'examples': ['Ball in pond west of footbridge - dropping zone available', 'Ball in creek left of bridge - dropping zone available', 'Ball in creek right of bridge - NO dropping zone, standard relief only', 'Dropping zone only for main pond area left/west side of footbridge']
                 },
                 {
                     'situation': 'Ball on cart bridge over penalty area',
                     'explanation': 'When ball comes to rest on the cart bridge between the 17th and 18th holes that crosses over the penalty area, player gets NO RELIEF from the bridge. The ball is considered to be above the penalty area in accordance with Rule 17.1(a), and the bridge is an integral object of the penalty area. Player must play the ball as it lies or proceed under penalty area relief options.',
-                    'examples': ['Ball on bridge between 17th and 18th', 'Ball resting on cart bridge over water', 'Bridge over penalty area - no free relief', 'Must play from bridge or take penalty relief']
+                    'examples': ['Ball on bridge between 17th and 18th', 'Ball resting on cart bridge over water', 'Bridge over penalty area - no free relief', 'Must play from bridge or take penalty relief', 'Ball on bridge - integral object', 'No free relief from bridge']
                 },
                 {
                     'situation': 'Hole 18 penalty area relief',
