@@ -127,9 +127,11 @@ class SimplifiedGolfRulesSystem:
         question_lower = question.lower().strip()
         
         # Define strict patterns for each template
-        # FIX 1: 'topic_words' = at least one must appear for the template to match.
-        #         This gates templates so that mentioning a hole number alone isn't enough.
-        #         Set to None/omitted for templates where required words already imply the topic.
+        # FIX 1 (revised): 'exclude' = if ANY of these words appear, skip the template
+        #         and let the AI handle the complex query. This prevents hole-number-only
+        #         matches when the query is really about something else (e.g., flagstick on 16).
+        #         The AI enrichment step will append local rule details if relevant.
+        # FIX 7: Expanded lost ball patterns.
         template_patterns = {
             'clear_lost_ball': {
                 # FIX 7: Relaxed — only 'ball' required; 'lost' moved to any_of with synonyms
@@ -147,17 +149,21 @@ class SimplifiedGolfRulesSystem:
             'water_hazard_16': {
                 'required': ['16'],
                 'any_of': ['water', 'penalty area', 'hazard', 'pond', 'sixteenth'],
-                # FIX 1: Topic gate — query must be about water/penalty area, not just hole 16
-                'topic_words': ['water', 'penalty area', 'hazard', 'pond', 'lake', 'creek',
-                                'drop zone', 'dropping zone'],
+                # FIX 1: Exclude — if query is about a non-water topic, let AI handle it
+                'exclude': ['flagstick', 'flag stick', 'flag', 'pin', 'putt', 'green',
+                            'bunker', 'sand', 'tree', 'fence', 'cart path', 'obstruction',
+                            'unplayable', 'embedded', 'lost', 'out of bounds', 'tee',
+                            'fairway', 'rough', 'stance', 'swing'],
                 'min_matches': 2
             },
             'water_hazard_17': {
                 'required': ['17'],
                 'any_of': ['water', 'penalty area', 'hazard', 'pond', 'seventeenth'],
-                # FIX 1: Topic gate
-                'topic_words': ['water', 'penalty area', 'hazard', 'pond', 'lake', 'creek',
-                                'drop zone', 'dropping zone'],
+                # FIX 1: Exclude
+                'exclude': ['flagstick', 'flag stick', 'flag', 'pin', 'putt', 'green',
+                            'bunker', 'sand', 'tree', 'fence', 'cart path', 'obstruction',
+                            'unplayable', 'embedded', 'lost', 'out of bounds', 'tee',
+                            'fairway', 'rough', 'stance', 'swing'],
                 'min_matches': 2
             },
             'turf_nursery': {
@@ -216,13 +222,15 @@ class SimplifiedGolfRulesSystem:
                 
             matches += required_found
             
-            # FIX 1: Topic gate check — if topic_words defined, at least one must appear
-            topic_words = patterns.get('topic_words')
-            if topic_words:
-                topic_found = any(tw in question_lower for tw in topic_words)
-                if not topic_found:
+            # FIX 1 (revised): Exclusion check — if query contains words indicating
+            # a different topic, skip this template and let AI handle the complex query.
+            # The enrichment step will append local rule details if the AI's answer warrants it.
+            exclude_words = patterns.get('exclude')
+            if exclude_words:
+                excluded = any(ew in question_lower for ew in exclude_words)
+                if excluded:
                     if verbose:
-                        logger.info(f"🚫 Template '{template_name}' skipped: required words matched but no topic words found")
+                        logger.info(f"🚫 Template '{template_name}' skipped: exclude word found, routing to AI + enrichment")
                     continue
             
             # Check any_of patterns
@@ -403,8 +411,12 @@ class SimplifiedGolfRulesSystem:
             else:
                 source = 'ai_unified'
             
+            # Enrich AI response with local rule templates where relevant
+            answer = response.choices[0].message.content
+            answer = self._enrich_ai_response(answer, question)
+            
             return {
-                'answer': response.choices[0].message.content,
+                'answer': answer,
                 'source': source,
                 'confidence': self._assess_confidence(search_results),
                 'tokens_used': response.usage.total_tokens if response.usage else 0,
@@ -423,6 +435,59 @@ class SimplifiedGolfRulesSystem:
                 'tokens_used': 0,
                 'error': str(e)
             }
+    
+    def _enrich_ai_response(self, ai_answer: str, question: str) -> str:
+        """
+        After AI generates its ruling, check if the answer references a situation
+        where a Columbia CC local rule template would add value. If so, append the 
+        relevant local rule detail to give the user complete information.
+        
+        This solves two problems:
+        1. Complex queries that bypass templates (Fix 1) still get local rule detail
+        2. AI answers that mention penalty areas, lost balls, or OB get Columbia-specific options
+        """
+        answer_lower = ai_answer.lower()
+        question_lower = question.lower()
+        combined = question_lower + ' ' + answer_lower
+        
+        # Define triggers: conditions under which a template should be appended
+        # Each trigger checks both the AI answer and the original question
+        enrichment_triggers = [
+            {
+                'template_name': 'water_hazard_16',
+                'condition': ('penalty area' in answer_lower and '16' in question_lower),
+                'header': "\n\n---\n**Columbia CC Local Rule — Hole 16 Penalty Area Options:**\n\n"
+            },
+            {
+                'template_name': 'water_hazard_17',
+                'condition': ('penalty area' in answer_lower and '17' in question_lower),
+                'header': "\n\n---\n**Columbia CC Local Rule — Hole 17 Penalty Area Options:**\n\n"
+            },
+            {
+                'template_name': 'clear_lost_ball',
+                'condition': ('lost ball' in answer_lower or 'stroke and distance' in answer_lower or 'ball is lost' in answer_lower) and 'columbia' not in answer_lower,
+                'header': "\n\n---\n**Columbia CC Local Rule — Lost Ball Alternative:**\n\n"
+            },
+            {
+                'template_name': 'clear_out_of_bounds',
+                'condition': ('out of bounds' in answer_lower or 'stroke and distance' in answer_lower) and 'ob' in combined and 'columbia' not in answer_lower,
+                'header': "\n\n---\n**Columbia CC Local Rule — Out of Bounds Alternative:**\n\n"
+            },
+            {
+                'template_name': 'maintenance_facility',
+                'condition': 'maintenance' in answer_lower and ('10' in question_lower or 'tenth' in question_lower or '9' in question_lower or 'ninth' in question_lower),
+                'header': "\n\n---\n**Columbia CC Local Rule — Maintenance Facility:**\n\n"
+            },
+        ]
+        
+        for trigger in enrichment_triggers:
+            if trigger['condition']:
+                template = self.templates.get(trigger['template_name'])
+                if template:
+                    logger.info(f"📎 Enriching AI response with template: {trigger['template_name']}")
+                    return ai_answer + trigger['header'] + template.get('quick_response', '')
+        
+        return ai_answer
     
     def _check_for_exception_rules(self, search_results: List[Dict]) -> bool:
         """
