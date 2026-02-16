@@ -11,7 +11,6 @@ import logging
 from openai import OpenAI
 from dotenv import load_dotenv
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
-from vector_search import apply_columbia_boosting
 
 
 # Import your existing comprehensive databases
@@ -236,6 +235,139 @@ OPTION 2 - Standard Rule (1 penalty stroke):
 Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
     }
 }
+
+def extract_hole_number_from_query(query: str):
+    """Simple hole number extraction."""
+    import re
+    patterns = [
+        r'\b(\d{1,2})(?:th|st|nd|rd)?\s+(?:hole|green)\b',
+        r'\bhole\s+(\d{1,2})\b',
+        r'\b(\d{1,2})(?:th|st|nd|rd)\b'
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, query.lower())
+        if match:
+            hole_num = int(match.group(1))
+            if 1 <= hole_num <= 18:
+                return hole_num
+    return None
+
+def apply_columbia_boosting(results, query, verbose=False):
+    """
+    Columbia CC boosting for known problem scenarios.
+    Works with list-of-dicts format from ProductionHybridVectorSearch.
+    """
+    if not results:
+        return results
+    
+    query_lower = query.lower()
+    hole_number = extract_hole_number_from_query(query)
+    
+    def get_result_by_id(rule_id):
+        for r in results:
+            if r.get('rule', {}).get('id') == rule_id:
+                return r
+        return None
+    
+    # --- PURPLE LINE ---
+    if 'purple line' in query_lower:
+        r = get_result_by_id('CCC-6')
+        if r:
+            if verbose:
+                logger.info(f"🎯 CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*3.0:.3f} (3.0x purple line boost)")
+            r['best_similarity'] *= 3.0
+    
+    # --- BRIDGE (must come before cart path) ---
+    bridge_terms = ['bridge', 'cart bridge', 'footbridge']
+    is_bridge_query = any(term in query_lower for term in bridge_terms)
+    
+    if is_bridge_query and (hole_number in [17, 18] or '17' in query_lower or '18' in query_lower):
+        if verbose:
+            logger.info(f"🎯 Columbia CC: Detected bridge query on hole {hole_number or '17/18'}")
+        
+        r = get_result_by_id('CCC-2')
+        if r:
+            if verbose:
+                logger.info(f"   🎯 CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
+            r['best_similarity'] *= 4.0
+        
+        r = get_result_by_id('CCC-4')
+        if r:
+            if verbose:
+                logger.info(f"   🔻 CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+            r['best_similarity'] *= 0.3
+        
+        for r in results:
+            rid = r.get('rule', {}).get('id', '')
+            if '16.1' in rid and not r.get('is_local'):
+                if verbose:
+                    logger.info(f"   🔻 {rid}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                r['best_similarity'] *= 0.4
+    
+    # --- CART PATH behind holes 12, 14, 17 ---
+    if hole_number in [12, 14, 17] and not is_bridge_query:
+        cart_path_terms = ['cart path', 'path', 'road', 'unpaved road']
+        has_cart_path = any(term in query_lower for term in cart_path_terms)
+        behind_green = 'behind' in query_lower and 'green' in query_lower
+        
+        if has_cart_path and behind_green:
+            if verbose:
+                logger.info(f"🎯 Columbia CC: Detected cart path behind hole {hole_number} green")
+            
+            r = get_result_by_id('CCC-4')
+            if r:
+                boost = 5.0 if hole_number == 12 else 3.0
+                if verbose:
+                    logger.info(f"   🎯 CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*boost:.3f} ({boost}x boost)")
+                r['best_similarity'] *= boost
+            
+            r = get_result_by_id('CCC-10')
+            if r:
+                if verbose:
+                    logger.info(f"   🔻 CCC-10: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+                r['best_similarity'] *= 0.3
+    
+    # --- WATER HAZARD on holes 15-18 ---
+    if hole_number in [15, 16, 17, 18]:
+        water_terms = ['water', 'penalty area', 'pond', 'creek', 'hazard']
+        has_water = any(term in query_lower for term in water_terms)
+        
+        if has_water:
+            if verbose:
+                logger.info(f"🎯 Columbia CC: Detected water question on hole {hole_number}")
+            
+            r = get_result_by_id('CCC-2')
+            if r:
+                if verbose:
+                    logger.info(f"   🎯 CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
+                r['best_similarity'] *= 4.0
+            
+            r = get_result_by_id('CCC-1')
+            if r:
+                if verbose:
+                    logger.info(f"   🔻 CCC-1: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                r['best_similarity'] *= 0.4
+    
+    # --- CONSTRUCTION FENCE ---
+    if 'fence' in query_lower and any(term in query_lower for term in ['construction', 'purple line', 'boundary']):
+        if verbose:
+            logger.info("🎯 Columbia CC: Detected construction fence question")
+        
+        r = get_result_by_id('CCC-6')
+        if r:
+            if verbose:
+                logger.info(f"   🎯 CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
+            r['best_similarity'] *= 4.0
+        
+        for r in results:
+            title = r.get('rule', {}).get('title', '').lower()
+            text = r.get('rule', {}).get('text', '').lower()
+            if 'obstruction' in title and 'free relief' in text:
+                if verbose:
+                    logger.info(f"   🔻 {r['rule']['id']}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                r['best_similarity'] *= 0.4
+    
+    return results
 
 class ProductionHybridVectorSearch:
     """FIXED: Production hybrid search with proper caching to prevent API loops."""
