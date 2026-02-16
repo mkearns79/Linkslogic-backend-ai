@@ -11,6 +11,7 @@ import logging
 from openai import OpenAI
 from dotenv import load_dotenv
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
+from vector_search import apply_columbia_boosting
 
 
 # Import your existing comprehensive databases
@@ -445,17 +446,9 @@ class ProductionHybridVectorSearch:
                     rule_type = "LOCAL" if result['is_local'] else "OFFICIAL"
                     logger.info(f"  {i+1}. {rule_type} - {result['rule']['id']}: {result['best_similarity']:.3f}")
             
-            # Purple line boost
-            if 'purple line' in query.lower():
-                for result in results:
-                    if result.get('rule', {}).get('id') == 'CCC-6':
-                        result['best_similarity'] *= 3.0
-                        break
-                # Re-sort after boosting
-                results.sort(key=sort_key, reverse=True)
-                
-                if verbose:
-                    logger.info("🎯 Applied purple line boost to CCC-6")
+            # Apply Columbia CC boosting (bridge, cart path, water, purple line, etc.)
+            results = apply_columbia_boosting(results, query, verbose=verbose)
+            results.sort(key=sort_key, reverse=True)
 
             return results[:top_n]
             
