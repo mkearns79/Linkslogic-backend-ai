@@ -1,4 +1,21 @@
-"""LLM-optimized semantic search for golf rules with hybrid AI systems."""
+"""
+LLM-optimized semantic search for golf rules with hybrid AI systems.
+
+REFACTORED: February 17, 2026
+- Removed ClubSpecificVectorSearch (dead code in production)
+- Removed stale standalone apply_columbia_boosting() (production version lives in web_api.py)
+- Removed test_local_rules() auto-running debug code
+- Kept RulesVectorSearch base class with universal golf boosting logic
+- Kept helper functions: extract_hole_number_simple, detect_wrong_ball_scenario
+
+NOTE: This module requires sentence-transformers and sklearn, which are NOT in the
+production container. It is used only by golf_rules_hybrid.py for local development/testing.
+Production uses ProductionHybridVectorSearch in web_api.py (OpenAI embeddings API).
+
+If you need Columbia CC-specific boosting in production, use apply_columbia_boosting() in web_api.py.
+If you need universal golf boosting (wrong ball, provisional ball, bounce-back) in production,
+port apply_universal_golf_boosting() from RulesVectorSearch to web_api.py.
+"""
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -84,124 +101,10 @@ def detect_wrong_ball_scenario(query_lower):
     
     return False
 
-def apply_columbia_boosting(results, query, verbose=False):
-    """
-    Standalone Columbia CC boosting function that works with any search result format.
-    Expects results as a list of dicts with 'rule' (containing 'id'), 'best_similarity', and 'is_local'.
-    Modifies results in-place and returns them.
-    """
-    if not results:
-        return results
-    
-    query_lower = query.lower()
-    hole_number = extract_hole_number_simple(query)
-    
-    def get_result_by_id(rule_id):
-        for r in results:
-            if r.get('rule', {}).get('id') == rule_id:
-                return r
-        return None
-    
-    # --- PURPLE LINE ---
-    if 'purple line' in query_lower:
-        r = get_result_by_id('CCC-6')
-        if r:
-            if verbose:
-                logger.info(f"🎯 CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*3.0:.3f} (3.0x purple line boost)")
-            r['best_similarity'] *= 3.0
-    
-    # --- BRIDGE (must come before cart path) ---
-    bridge_terms = ['bridge', 'cart bridge', 'footbridge']
-    is_bridge_query = any(term in query_lower for term in bridge_terms)
-    
-    if is_bridge_query and (hole_number in [17, 18] or '17' in query_lower or '18' in query_lower):
-        if verbose:
-            logger.info(f"🎯 Columbia CC: Detected bridge query on hole {hole_number or '17/18'}")
-        
-        r = get_result_by_id('CCC-2')
-        if r:
-            if verbose:
-                logger.info(f"   🎯 CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
-            r['best_similarity'] *= 4.0
-        
-        r = get_result_by_id('CCC-4')
-        if r:
-            if verbose:
-                logger.info(f"   🔻 CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
-            r['best_similarity'] *= 0.3
-        
-        # De-boost Rule 16.1 (free relief from obstructions — wrong for integral objects)
-        for r in results:
-            rid = r.get('rule', {}).get('id', '')
-            if '16.1' in rid and not r.get('is_local'):
-                if verbose:
-                    logger.info(f"   🔻 {rid}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
-                r['best_similarity'] *= 0.4
-    
-    # --- CART PATH behind holes 12, 14, 17 (integral objects) ---
-    if hole_number in [12, 14, 17] and not is_bridge_query:
-        cart_path_terms = ['cart path', 'path', 'road', 'unpaved road']
-        has_cart_path = any(term in query_lower for term in cart_path_terms)
-        behind_green = 'behind' in query_lower and 'green' in query_lower
-        
-        if has_cart_path and behind_green:
-            if verbose:
-                logger.info(f"🎯 Columbia CC: Detected cart path behind hole {hole_number} green")
-            
-            r = get_result_by_id('CCC-4')
-            if r:
-                boost = 5.0 if hole_number == 12 else 3.0
-                if verbose:
-                    logger.info(f"   🎯 CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*boost:.3f} ({boost}x boost)")
-                r['best_similarity'] *= boost
-            
-            r = get_result_by_id('CCC-10')
-            if r:
-                if verbose:
-                    logger.info(f"   🔻 CCC-10: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
-                r['best_similarity'] *= 0.3
-    
-    # --- WATER HAZARD on holes 15-18 ---
-    if hole_number in [15, 16, 17, 18]:
-        water_terms = ['water', 'penalty area', 'pond', 'creek', 'hazard']
-        has_water = any(term in query_lower for term in water_terms)
-        
-        if has_water:
-            if verbose:
-                logger.info(f"🎯 Columbia CC: Detected water question on hole {hole_number}")
-            
-            r = get_result_by_id('CCC-2')
-            if r:
-                if verbose:
-                    logger.info(f"   🎯 CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
-                r['best_similarity'] *= 4.0
-            
-            r = get_result_by_id('CCC-1')
-            if r:
-                if verbose:
-                    logger.info(f"   🔻 CCC-1: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
-                r['best_similarity'] *= 0.4
-    
-    # --- CONSTRUCTION FENCE ---
-    if 'fence' in query_lower and any(term in query_lower for term in ['construction', 'purple line', 'boundary']):
-        if verbose:
-            logger.info("🎯 Columbia CC: Detected construction fence question")
-        
-        r = get_result_by_id('CCC-6')
-        if r:
-            if verbose:
-                logger.info(f"   🎯 CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
-            r['best_similarity'] *= 4.0
-        
-        for r in results:
-            title = r.get('rule', {}).get('title', '').lower()
-            text = r.get('rule', {}).get('text', '').lower()
-            if 'obstruction' in title and 'free relief' in text:
-                if verbose:
-                    logger.info(f"   🔻 {r['rule']['id']}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
-                r['best_similarity'] *= 0.4
-    
-    return results
+
+# NOTE: Standalone apply_columbia_boosting() was removed in refactor (Feb 2026).
+# The production version lives in web_api.py -> apply_columbia_boosting()
+# and is called from ProductionHybridVectorSearch.search_with_precedence().
 
 class RulesVectorSearch:
     """Original search class - keep all existing functionality"""
@@ -234,7 +137,7 @@ class RulesVectorSearch:
             self._prepare_documents()
             self._load_or_compute_embeddings()
             
-            print(f"✅ Search engine ready with {len(self.documents)} documents")
+            print(f"âœ… Search engine ready with {len(self.documents)} documents")
             
         except Exception as e:
             print(f"Error initializing semantic search: {str(e)}")
@@ -302,7 +205,7 @@ class RulesVectorSearch:
                 if (cache_data.get('model_name') == self.model_name and 
                     len(cache_data.get('embeddings', [])) == len(self.documents)):
                     self.document_embeddings = cache_data['embeddings']
-                    print("✅ Cached embeddings loaded successfully!")
+                    print("âœ… Cached embeddings loaded successfully!")
                     return
                 else:
                     print("Cache invalid, recomputing embeddings...")
@@ -328,7 +231,7 @@ class RulesVectorSearch:
             }
             with open(cache_file, 'wb') as f:
                 pickle.dump(cache_data, f)
-            print(f"✅ Embeddings cached to {cache_file}")
+            print(f"âœ… Embeddings cached to {cache_file}")
         except Exception as e:
             print(f"Warning: Could not cache embeddings: {e}")
     
@@ -704,7 +607,7 @@ class RulesVectorSearch:
         
         if has_provisional and has_identification_issue:
             if verbose:
-                print("🎯 Universal Golf: Detected provisional ball identification scenario")
+                print("ðŸŽ¯ Universal Golf: Detected provisional ball identification scenario")
             
             # Boost Rule 18.3c(2) and related provisional rules
             for rule_id in rule_results:
@@ -751,7 +654,7 @@ class RulesVectorSearch:
                     
                     if verbose:
                         new_score = rule_results[rule_id]['best_similarity']
-                        print(f"   🎯 {rule_id}: {old_score:.3f} → {new_score:.3f} (8.0x boost - provisional ID rule)")
+                        print(f"   ðŸŽ¯ {rule_id}: {old_score:.3f} â†’ {new_score:.3f} (8.0x boost - provisional ID rule)")
             
             # De-boost rules that don't address this specific scenario
             irrelevant_rule_types = ['lost ball', 'out of bounds', 'penalty area', 'unplayable']
@@ -767,12 +670,12 @@ class RulesVectorSearch:
                         
                         if verbose:
                             new_score = rule_results[rule_id]['best_similarity']
-                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.3x de-boost - irrelevant context)")
+                            print(f"   ðŸ”» {rule_id}: {old_score:.3f} â†’ {new_score:.3f} (0.3x de-boost - irrelevant context)")
 
         # WRONG BALL SCENARIO BOOSTING (universal across all courses)
         if detect_wrong_ball_scenario(query_lower):
             if verbose:
-                print("🎯 Universal Golf: Detected wrong ball scenario")
+                print("ðŸŽ¯ Universal Golf: Detected wrong ball scenario")
             
             # Boost rules about playing wrong ball (Rule 6.3c and similar)
             wrong_ball_rule_indicators = [
@@ -792,7 +695,7 @@ class RulesVectorSearch:
                     
                     if verbose:
                         new_score = rule_results[rule_id]['best_similarity']
-                        print(f"   🎯 {rule_id}: {old_score:.3f} → {new_score:.3f} (5.0x boost - wrong ball rule)")
+                        print(f"   ðŸŽ¯ {rule_id}: {old_score:.3f} â†’ {new_score:.3f} (5.0x boost - wrong ball rule)")
             
             # De-boost ball in motion rules (common wrong match)
             ball_in_motion_indicators = [
@@ -812,7 +715,7 @@ class RulesVectorSearch:
                     
                     if verbose:
                         new_score = rule_results[rule_id]['best_similarity']
-                        print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.3x de-boost - ball in motion conflict)")
+                        print(f"   ðŸ”» {rule_id}: {old_score:.3f} â†’ {new_score:.3f} (0.3x de-boost - ball in motion conflict)")
         
         # BALL BOUNCED BACK IN BOUNDS SCENARIO BOOSTING
         out_of_bounds_keywords = ['out of bounds', 'ob', 'out-of-bounds']
@@ -829,7 +732,7 @@ class RulesVectorSearch:
         
         if has_out_of_bounds and (has_bounce_back or has_in_bounds):
             if verbose:
-                print("🎯 Universal Golf: Detected ball bounced back in bounds scenario")
+                print("ðŸŽ¯ Universal Golf: Detected ball bounced back in bounds scenario")
             
             # This is about ball position, not OB relief - boost official boundary rules
             for rule_id in rule_results:
@@ -843,7 +746,7 @@ class RulesVectorSearch:
                     
                     if verbose:
                         new_score = rule_results[rule_id]['best_similarity']
-                        print(f"   🎯 {rule_id}: {old_score:.3f} → {new_score:.3f} (6.0x boost - boundary definition rule)")
+                        print(f"   ðŸŽ¯ {rule_id}: {old_score:.3f} â†’ {new_score:.3f} (6.0x boost - boundary definition rule)")
             
             # De-boost local rules about OB relief (this isn't about relief procedures)
             for rule_id in rule_results:
@@ -859,485 +762,24 @@ class RulesVectorSearch:
                         
                         if verbose:
                             new_score = rule_results[rule_id]['best_similarity']
-                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.2x de-boost - OB relief not applicable)")
+                            print(f"   ðŸ”» {rule_id}: {old_score:.3f} â†’ {new_score:.3f} (0.2x de-boost - OB relief not applicable)")
         
         return rule_results
 
-class ClubSpecificVectorSearch(RulesVectorSearch):
-    """
-    Enhanced search that prioritizes club-specific local rules
-    """
-    
-    def __init__(self, club_id='columbia_cc', model_name='all-MiniLM-L6-v2'):
-        # Initialize base class
-        super().__init__(model_name)
-        
-        self.club_id = club_id
-        self.local_rules = None
-        self.combined_rules = []
-        
-        # Load club-specific rules
-        self._load_club_rules()
-        
-        # Build combined index with both local and official rules
-        self._build_club_specific_index()
-    
-    def _load_club_rules(self):
-        """Load local rules for the specified club"""
-        if self.club_id == 'columbia_cc':
-            self.local_rules = COLUMBIA_CC_LOCAL_RULES
-        else:
-            # Future: Add other clubs here
-            print(f"Warning: No local rules found for club_id: {self.club_id}")
-            self.local_rules = None
-    
-    def _build_club_specific_index(self):
-        """Build search index with both local and official rules"""
-        self.combined_rules = []
-        self.documents = []
-        self.metadata = []
-        
-        # Add local rules first (higher priority)
-        if self.local_rules:
-            for rule_data in self.local_rules['local_rules']:  # ← Changed to iterate over list
-                self._add_rule_to_index(rule_data, is_local=True)
-        
-        # Add official rules (RULES_DATABASE is a list of rules)
-        for rule_data in RULES_DATABASE:
-            self._add_rule_to_index(rule_data, is_local=False)
-        
-        # Generate embeddings for all documents
-        if self.documents:
-            self.embeddings = self.model.encode(self.documents)
-        else:
-            self.embeddings = np.array([])
-        
-        print(f"Built club-specific index with {len(self.documents)} documents")
-        if self.local_rules:
-            local_count = len(self.local_rules['local_rules'])
-            print(f"  - {local_count} local rules for {self.club_id}")
-        print(f"  - {len(self.documents) - (local_count if self.local_rules else 0)} official rules")
-    
-    def _add_rule_to_index(self, rule_data, is_local=False):
-        """Add a rule to the search index"""
-        # Add main rule text
-        self.documents.append(rule_data['text'])
-        self.metadata.append({
-            'rule_id': rule_data['id'],
-            'type': 'main_text',
-            'is_local': is_local,
-            'priority': rule_data.get('priority', 999) if is_local else 999,
-            'rule_data': rule_data
-        })
-        
-        # Add keywords
-        if 'keywords' in rule_data:
-            keyword_text = ' '.join(rule_data['keywords'])
-            self.documents.append(keyword_text)
-            self.metadata.append({
-                'rule_id': rule_data['id'],
-                'type': 'keywords',
-                'is_local': is_local,
-                'priority': rule_data.get('priority', 999) if is_local else 999,
-                'rule_data': rule_data
-            })
-        
-        # Add conditions if local rule
-        if is_local and 'conditions' in rule_data:
-            conditions = rule_data['conditions']
-            if isinstance(conditions, dict):
-                for condition_key, condition_data in conditions.items():
-                    if isinstance(condition_data, list):
-                        condition_text = ' '.join(condition_data)
-                    elif isinstance(condition_data, str):
-                        condition_text = condition_data
-                    else:
-                        continue
-                    
-                    self.documents.append(condition_text)
-                    self.metadata.append({
-                        'rule_id': rule_data['id'],
-                        'type': 'condition',
-                        'is_local': is_local,
-                        'priority': rule_data.get('priority', 999),
-                        'rule_data': rule_data,
-                        'condition_key': condition_key
-                    })
-    
-    def search_with_precedence(self, query, hole_number=None, top_n=5, verbose=False):
-        """
-        Search with club rule precedence AND universal golf rule intelligence.
-        """
-        if len(self.documents) == 0:
-            return []
-        
-        # Generate query embedding
-        query_embedding = self.model.encode([query])
-        
-        # Calculate similarities
-        similarities = cosine_similarity(query_embedding, self.embeddings)[0]
-        
-        # Group results by rule
-        rule_results = {}
-        
-        for idx, similarity in enumerate(similarities):
-            if similarity < 0.1:  # Skip very low relevance
-                continue
-                
-            metadata = self.metadata[idx]
-            rule_id = metadata['rule_id']
-            
-            if rule_id not in rule_results:
-                rule_results[rule_id] = {
-                    'rule': metadata['rule_data'],
-                    'best_similarity': similarity,
-                    'is_local': metadata['is_local'],
-                    'priority': metadata['priority'],
-                    'matches': []
-                }
-            else:
-                if similarity > rule_results[rule_id]['best_similarity']:
-                    rule_results[rule_id]['best_similarity'] = similarity
-            
-            rule_results[rule_id]['matches'].append({
-                'similarity': similarity,
-                'type': metadata['type'],
-                'text': self.documents[idx]
-            })
-        
-        # Filter by hole if specified
-        if hole_number and self.local_rules:
-            hole_str = str(hole_number)
-            hole_specific_rules = self.local_rules.get('hole_specific_rules', {})
-            
-            # Boost rules that apply to this hole
-            for rule_id in rule_results:
-                rule_data = rule_results[rule_id]['rule']
-                
-                # Check if rule applies to specific hole
-                if (rule_id in hole_specific_rules.get(hole_str, []) or 
-                    rule_data.get('holes') == 'all' or
-                    hole_str in rule_data.get('holes', [])):
-                    
-                    # Boost similarity for hole-specific rules
-                    rule_results[rule_id]['best_similarity'] *= 1.5
-        
-        # Apply precedence weighting
-        for rule_id in rule_results:
-            result = rule_results[rule_id]
-            
-            # Local rules get priority boost
-            if result['is_local']:
-                result['best_similarity'] *= 1.1  # 1.1x boost for local rules
-                result['precedence_level'] = 'Local Rule'
-            else:
-                result['precedence_level'] = 'Official Rule'
 
-        # Apply universal golf boosting FIRST
-        rule_results = self.apply_universal_golf_boosting(rule_results, query, verbose)
+# NOTE: ClubSpecificVectorSearch was removed in refactor (Feb 2026).
+# It was dead code — never instantiated in production (web_api.py uses
+# ProductionHybridVectorSearch with OpenAI embeddings instead).
+# Its Columbia CC boosting logic was stale; the production version is
+# apply_columbia_boosting() in web_api.py.
+#
+# If you need local development search with sentence-transformers,
+# use RulesVectorSearch directly with apply_universal_golf_boosting().
+#
+# The old golf_rules_hybrid.py also imported ClubSpecificVectorSearch;
+# that file is legacy code superseded by simplified_golf_system.py.
 
-        # Apply Columbia CC specific boosting SECOND
-        rule_results = self.apply_columbia_cc_boosting(rule_results, query, hole_number, verbose)
-        
-        # Sort by weighted similarity
-        sorted_results = sorted(
-            rule_results.values(),
-            key=lambda x: x['best_similarity'],
-            reverse=True
-        )
-        
-        return sorted_results[:top_n]
-    
-    def get_local_rules_for_hole(self, hole_number):
-        """Get all local rules that apply to a specific hole"""
-        if not self.local_rules:
-            return []
-        
-        hole_str = str(hole_number)
-        applicable_rules = []
-        
-        # Get hole-specific rules
-        hole_specific_rules = self.local_rules.get('hole_specific_rules', {})
-        if hole_str in hole_specific_rules:
-            for rule_id in hole_specific_rules[hole_str]:
-                if rule_id in self.local_rules['local_rules']:
-                    applicable_rules.append(self.local_rules['local_rules'][rule_id])
-        
-        # Add rules that apply to all holes
-        for rule_data in self.local_rules['local_rules']:  # ← Changed to iterate over list
-            if rule_data.get('holes') == 'all':
-                applicable_rules.append(rule_data)
-        
-        # Sort by priority
-        return sorted(applicable_rules, key=lambda x: x.get('priority', 999))
-    
-    def search_local_rules_only(self, query, top_n=3):
-        """Search only local rules"""
-        if not self.local_rules:
-            return []
-        
-        # Filter to only local rule documents
-        local_docs = []
-        local_metadata = []
-        
-        for idx, metadata in enumerate(self.metadata):
-            if metadata['is_local']:
-                local_docs.append(self.documents[idx])
-                local_metadata.append(metadata)
-        
-        if not local_docs:
-            return []
-        
-        # Generate embeddings for local docs only
-        local_embeddings = self.model.encode(local_docs)
-        query_embedding = self.model.encode([query])
-        
-        # Calculate similarities
-        similarities = cosine_similarity(query_embedding, local_embeddings)[0]
-        
-        # Group and sort results
-        rule_results = {}
-        for idx, similarity in enumerate(similarities):
-            metadata = local_metadata[idx]
-            rule_id = metadata['rule_id']
-            
-            if rule_id not in rule_results:
-                rule_results[rule_id] = {
-                    'rule': metadata['rule_data'],
-                    'similarity': similarity,
-                    'priority': metadata['priority']
-                }
-            else:
-                if similarity > rule_results[rule_id]['similarity']:
-                    rule_results[rule_id]['similarity'] = similarity
-
-    def apply_columbia_cc_boosting(self, rule_results, query, hole_number=None, verbose=False):
-        """
-        Columbia CC specific boosting for known problem scenarios.
-        """
-        if not rule_results:
-            return rule_results
-        
-        # Auto-detect hole if not provided
-        if hole_number is None:
-            hole_number = extract_hole_number_simple(query)
-        
-        query_lower = query.lower()
-        print(f"🔧 BRIDGE DEBUG: query_lower='{query_lower}'")
-        print(f"🔧 BRIDGE DEBUG: 'bridge' in query_lower = {'bridge' in query_lower}")
-        print(f"🔧 BRIDGE DEBUG: '17' in query_lower = {'17' in query_lower}")
-        
-        # Simple purple line detection and boost
-        if 'purple line' in query_lower:
-            if verbose:
-                print("🎯 Columbia CC: Purple line query detected")
-            
-            # Give CCC-6 a strong boost to ensure it ranks highest
-            if 'CCC-6' in rule_results:
-                old_score = rule_results['CCC-6']['best_similarity']
-                rule_results['CCC-6']['best_similarity'] *= 3.0
-                
-                if verbose:
-                    new_score = rule_results['CCC-6']['best_similarity']
-                    print(f"   🎯 CCC-6: {old_score:.3f} → {new_score:.3f} (3.0x purple line boost)")
-
-        # BRIDGE BOOSTING - integral object on holes 17/18
-        # Must come BEFORE cart path boosting so we can skip cart path logic for bridge queries
-        bridge_terms = ['bridge', 'cart bridge', 'footbridge']
-        is_bridge_query = any(term in query_lower for term in bridge_terms)
-        if is_bridge_query and (hole_number in [17, 18] or '17' in query_lower or '18' in query_lower):
-            if verbose:
-                print(f"🎯 Columbia CC: Detected bridge query on hole {hole_number or '17/18'}")
-            
-            if 'CCC-2' in rule_results:
-                old_score = rule_results['CCC-2']['best_similarity']
-                rule_results['CCC-2']['best_similarity'] *= 4.0
-                
-                if verbose:
-                    new_score = rule_results['CCC-2']['best_similarity']
-                    print(f"   🎯 CCC-2: {old_score:.3f} → {new_score:.3f} (4.0x bridge boost)")
-            
-            # De-boost CCC-4 (cart paths rule - wrong rule for bridge)
-            if 'CCC-4' in rule_results:
-                old_score = rule_results['CCC-4']['best_similarity']
-                rule_results['CCC-4']['best_similarity'] *= 0.3
-                
-                if verbose:
-                    new_score = rule_results['CCC-4']['best_similarity']
-                    print(f"   🔻 CCC-4: {old_score:.3f} → {new_score:.3f} (0.3x de-boost, bridge ≠ cart path)")
-            
-            # De-boost generic obstruction/cart path relief rules
-            for rule_id in rule_results:
-                if not rule_results[rule_id].get('is_local') and '16.1' in rule_id:
-                    if 'relief' in rule_results[rule_id]['rule'].get('text', '').lower()[:200]:
-                        old_score = rule_results[rule_id]['best_similarity']
-                        rule_results[rule_id]['best_similarity'] *= 0.4
-                        
-                        if verbose:
-                            new_score = rule_results[rule_id]['best_similarity']
-                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.4x de-boost)")
-
-        # CART PATH behind holes 12, 14, 17 (integral objects)
-        # Skip if this is a bridge query — bridge is CCC-2, not CCC-4
-        if hole_number in [12, 14, 17] and not is_bridge_query:
-            cart_path_terms = ['cart path', 'path', 'road', 'unpaved road']
-            has_cart_path = any(term in query_lower for term in cart_path_terms)
-            behind_green = 'behind' in query_lower and 'green' in query_lower
-            
-            if has_cart_path and behind_green:
-                if verbose:
-                    print(f"🎯 Columbia CC: Detected cart path behind hole {hole_number} green")
-                
-                # Massive boost for CCC-4 (integral objects - no relief)
-                if 'CCC-4' in rule_results:
-                    old_score = rule_results['CCC-4']['best_similarity']
-                    if hole_number == 12:
-                        rule_results['CCC-4']['best_similarity'] *= 5.0
-                        boost_factor = 5.0
-                    else:  # holes 14, 17
-                        rule_results['CCC-4']['best_similarity'] *= 3.0
-                        boost_factor = 3.0
-                    
-                    if verbose:
-                        new_score = rule_results['CCC-4']['best_similarity']
-                        print(f"   🎯 CCC-4: {old_score:.3f} → {new_score:.3f} ({boost_factor}x boost)")
-                
-                # De-boost CCC-10 (conflicting rule that provides relief)
-                if 'CCC-10' in rule_results:
-                    old_score = rule_results['CCC-10']['best_similarity']
-                    rule_results['CCC-10']['best_similarity'] *= 0.3
-                    
-                    if verbose:
-                        new_score = rule_results['CCC-10']['best_similarity']
-                        print(f"   🔻 CCC-10: {old_score:.3f} → {new_score:.3f} (0.3x de-boost)")
-        
-        # WATER HAZARD BOOSTING
-        if hole_number in [15, 16, 17, 18]:
-            water_terms = ['water', 'penalty area', 'pond', 'creek', 'hazard']
-            has_water = any(term in query_lower for term in water_terms)
-            
-            if has_water:
-                if verbose:
-                    print(f"🎯 Columbia CC: Detected water question on hole {hole_number}")
-                
-                # Boost CCC-2 (penalty areas with dropping zones)
-                if 'CCC-2' in rule_results:
-                    old_score = rule_results['CCC-2']['best_similarity']
-                    rule_results['CCC-2']['best_similarity'] *= 4.0
-                    
-                    if verbose:
-                        new_score = rule_results['CCC-2']['best_similarity']
-                        print(f"   🎯 CCC-2: {old_score:.3f} → {new_score:.3f} (4.0x boost)")
-                
-                # De-boost CCC-1 (lost ball rule that shouldn't apply to water)
-                if 'CCC-1' in rule_results:
-                    old_score = rule_results['CCC-1']['best_similarity']
-                    rule_results['CCC-1']['best_similarity'] *= 0.4
-                    
-                    if verbose:
-                        new_score = rule_results['CCC-1']['best_similarity']
-                        print(f"   🔻 CCC-1: {old_score:.3f} → {new_score:.3f} (0.4x de-boost)")
-        
-        # BONUS FIX: Construction fence (boundary - no relief)
-        if 'fence' in query_lower and any(term in query_lower for term in ['construction', 'purple line', 'boundary']):
-            if verbose:
-                print("🎯 Columbia CC: Detected construction fence question")
-            
-            # Boost CCC-6 (boundary fence - no relief)
-            if 'CCC-6' in rule_results:
-                old_score = rule_results['CCC-6']['best_similarity']
-                rule_results['CCC-6']['best_similarity'] *= 4.0
-                
-                if verbose:
-                    new_score = rule_results['CCC-6']['best_similarity']
-                    print(f"   🎯 CCC-6: {old_score:.3f} → {new_score:.3f} (4.0x boost)")
-            
-            # De-boost generic obstruction rules
-            for rule_id in rule_results:
-                if 'obstruction' in rule_results[rule_id]['rule'].get('title', '').lower():
-                    if 'free relief' in rule_results[rule_id]['rule'].get('text', '').lower():
-                        old_score = rule_results[rule_id]['best_similarity']
-                        rule_results[rule_id]['best_similarity'] *= 0.4
-                        
-                        if verbose:
-                            new_score = rule_results[rule_id]['best_similarity']
-                            print(f"   🔻 {rule_id}: {old_score:.3f} → {new_score:.3f} (0.4x de-boost)")
-        
-        return rule_results
-
-    def search_basic(self, query, top_n=3):
-        """
-        Basic search without complex boosting or optimization.
-        Returns local rules first, then official rules.
-        """
-        try:
-            # Encode the query
-            query_embedding = self.model.encode([query])
-            
-            # Calculate similarities
-            similarities = cosine_similarity(query_embedding, self.embeddings)[0]
-            
-            # Group results by rule
-            rule_results = {}
-            
-            for idx, similarity in enumerate(similarities):
-                if similarity < 0.1:  # Basic threshold
-                    continue
-                    
-                metadata = self.metadata[idx]
-                rule_id = metadata['rule_id']
-                
-                if rule_id not in rule_results:
-                    rule_results[rule_id] = {
-                        'rule': metadata['rule_data'],
-                        'best_similarity': similarity,
-                        'is_local': metadata['is_local'],
-                        'priority': metadata['priority']
-                    }
-                else:
-                    # Keep the best similarity for this rule
-                    if similarity > rule_results[rule_id]['best_similarity']:
-                        rule_results[rule_id]['best_similarity'] = similarity
-            
-            # Sort: Local rules first, then by similarity
-            sorted_results = sorted(
-                rule_results.values(),
-                key=lambda x: (not x['is_local'], -x['best_similarity'])  # Local first, then by score
-            )
-            
-            return sorted_results[:top_n]
-            
-        except Exception as e:
-            print(f"Error in basic search: {str(e)}")
-            return []
 
 # Backward compatibility
 if __name__ == "__main__":
     pass
-
-# Add this at the very bottom of vector_search.py for quick debugging
-def test_local_rules():
-    print("🔍 QUICK LOCAL RULES TEST")
-    search = ClubSpecificVectorSearch(club_id='columbia_cc')
-    
-    # Test maintenance facility search
-    print("\nTesting: 'maintenance facility'")
-    results = search.search_with_precedence("maintenance facility", top_n=3, verbose=False)
-    
-    for i, result in enumerate(results):
-        rule_type = "LOCAL" if result.get('is_local', False) else "OFFICIAL"
-        print(f"{i+1}. {rule_type} - {result['rule']['id']}: {result['best_similarity']:.3f}")
-    
-    # Check if CCC-7 exists in metadata
-    ccc7_found = False
-    for meta in search.metadata:
-        if meta.get('rule_id') == 'CCC-7':
-            ccc7_found = True
-            print(f"\nCCC-7 found: is_local = {meta.get('is_local')}")
-            break
-    
-    if not ccc7_found:
-        print("\n❌ CCC-7 NOT found in metadata!")
-
-# Uncomment this line to run the test:
-test_local_rules()

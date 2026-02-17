@@ -790,7 +790,7 @@ RULES_DATABASE = [
         },
         {
             "situation": "When another ball may be substituted for cut/cracked",
-            "explanation": "Under Rule 4.2c(2), player may substitute another ball only if it can be clearly seen that original ball is cut or cracked and this damage happened during hole being played – but not if only scratched or scraped or paint only damaged or discoloured.",
+            "explanation": "Under Rule 4.2c(2), player may substitute another ball only if it can be clearly seen that original ball is cut or cracked and this damage happened during hole being played â€“ but not if only scratched or scraped or paint only damaged or discoloured.",
             "examples": ["clearly seen cut or cracked", "damage during hole", "not scratched or scraped", "not paint damage"]
         },
         {
@@ -919,7 +919,7 @@ RULES_DATABASE = [
     {
         "id": "5",
         "title": "Playing the Round",
-        "text": "Rule 5 covers how to play a round – such as where and when a player may practice on the course before or during a round, when a round starts and ends and what happens when play has to stop or resume. Players are expected to: Start each round on time, and play continuously and at a prompt pace during each hole until the round is completed.",
+        "text": "Rule 5 covers how to play a round â€“ such as where and when a player may practice on the course before or during a round, when a round starts and ends and what happens when play has to stop or resume. Players are expected to: Start each round on time, and play continuously and at a prompt pace during each hole until the round is completed.",
         "keywords": ["playing the round", "practise on course", "round starts ends", "play stops resume", "start on time", "continuously", "prompt pace", "round completed"],
         "examples": [
             "round procedures",
@@ -2401,7 +2401,7 @@ RULES_DATABASE = [
         "id": "9.3",
         "title": "Ball Moved by Natural Forces",
         "text": "If natural forces cause a player's ball at rest to move, there is no penalty and the ball must be played from its new spot, with specific exceptions.",
-        "keywords": ["natural forces", "wind water", "no penalty", "play from new spot", "putting green exception", "lifted and replaced", "dropped placed replaced"],
+        "keywords": ["natural forces", "wind water", "no penalty", "play from new spot", "putting green exception", "lifted and replaced", "dropped placed replaced", "wind blew ball", "ball moved by wind", "replaced ball moved", "wind on putting green"],
         "conditions": [
       {
             "situation": "General rule for natural forces movement",
@@ -2414,13 +2414,13 @@ RULES_DATABASE = [
             ]
       },
       {
-            "situation": "Exception for ball on putting green previously lifted",
-            "explanation": "Under Rule 9.3 Exception 1 and Rule 13.1d, if ball on putting green moves after having been lifted and replaced, must replace on original spot regardless of cause.",
+            "situation": "Exception for ball on putting green previously lifted and replaced",
+            "explanation": "Under Rule 9.3 Exception 1 and Rule 13.1d, if ball on putting green moves after having been lifted and replaced, must replace on original spot regardless of cause. This is a critical exception: even though the general rule says play from the new spot, a replaced ball on the putting green MUST be put back where it was.",
             "examples": [
-              "Ball marked, cleaned, replaced on green, then wind moves it - must replace on original spot",
+              "Ball marked, cleaned, replaced on green, then wind blows it into bunker - must replace on original spot on green, NO penalty",
               "Ball replaced on green after repair, gravity moves it down slope - replace on original spot",
-              "Any movement after replacement on green requires re-replacement, even if natural forces",
-              "This exception applies no matter what caused the movement on green"
+              "Wind blows replaced ball off putting green - replace where it was, no penalty",
+              "After replacing ball on putting green, natural forces move it to new location - ALWAYS replace on original spot"
             ]
       },
       {
@@ -3631,17 +3631,17 @@ RULES_DATABASE = [
         },
         {
             "situation": "Exception for ball moving during stroke",
-            "explanation": "Under Rule 13.1d(1), Exception – Ball Must Be Played as It Lies When Ball Begins to Move During Backswing or Stroke and Stroke Is Made (see Rule 9.1b).",
+            "explanation": "Under Rule 13.1d(1), Exception â€“ Ball Must Be Played as It Lies When Ball Begins to Move During Backswing or Stroke and Stroke Is Made (see Rule 9.1b).",
             "examples": ["ball moves during backswing", "stroke is made", "play as it lies", "see Rule 9.1b"]
         },
         {
-            "situation": "Ball moved by natural forces - previously lifted and replaced",
-            "explanation": "Under Rule 13.1d(2), if natural forces cause a ball on the putting green to move, and the ball had already been lifted and replaced on the putting green, the ball must be replaced on the spot it moved from (estimated if unknown), even though moved by natural forces (see Rule 9.3, Exception).",
-            "examples": ["ball previously lifted and replaced", "wind moves ball", "must replace again", "estimate spot if unknown"]
+            "situation": "EXCEPTION: Ball on putting green moved by natural forces after being lifted and replaced",
+            "explanation": "Under Rule 13.1d(2), if natural forces cause a ball on the putting green to move, and the ball had already been lifted and replaced on the putting green, the ball must be replaced on the spot it moved from (estimated if unknown), even though moved by natural forces (see Rule 9.3, Exception). This means if wind blows a replaced ball off the green or into a bunker, replace it on the original spot with NO penalty.",
+            "examples": ["ball marked and replaced on green, then wind blows it into bunker - MUST replace on original spot, no penalty", "ball replaced after cleaning on green, gravity moves it down slope - replace on original spot", "any movement after replacement on putting green requires re-replacement, even if caused by wind, rain, or gravity", "wind blows replaced ball off green - replace where it was, no penalty"]
         },
         {
-            "situation": "Ball moved by natural forces - not previously lifted",
-            "explanation": "Under Rule 13.1d(2), if natural forces move a ball that was not already lifted and replaced, the ball must be played from its new spot (see Rule 9.3).",
+            "situation": "Ball moved by natural forces on putting green - NOT previously lifted and replaced (general rule applies)",
+            "explanation": "Under Rule 13.1d(2), if natural forces move a ball on the putting green that was NOT previously lifted and replaced, the ball must be played from its new spot (see Rule 9.3 general rule). Only balls that were lifted and replaced get the exception treatment.",
             "examples": ["ball not previously lifted", "wind moves ball", "play from new spot", "see Rule 9.3"]
         },
         {
@@ -3888,7 +3888,7 @@ RULES_DATABASE = [
     {
         "id": "14.2a",
         "title": "Original Ball Must Be Used",
-        "text": "The original ball must be used when replacing a ball. Exception – Another Ball May Be Used When: The original ball cannot be recovered with reasonable effort and in a few seconds, so long as the player did not deliberately cause the ball to become unrecoverable, the original ball is cut or cracked, play resumes after it had been stopped, or the original ball was played by another player as a wrong ball.",
+        "text": "The original ball must be used when replacing a ball. Exception â€“ Another Ball May Be Used When: The original ball cannot be recovered with reasonable effort and in a few seconds, so long as the player did not deliberately cause the ball to become unrecoverable, the original ball is cut or cracked, play resumes after it had been stopped, or the original ball was played by another player as a wrong ball.",
         "keywords": ["original ball", "must be used", "replacing", "exception", "another ball", "recovered", "reasonable effort", "few seconds", "cut", "cracked", "play resumes", "wrong ball"],
         "examples": [
             "using same ball after marking",
@@ -4550,7 +4550,7 @@ RULES_DATABASE = [
         {
         "id": "14.7b", 
         "title": "How to Complete a Hole after Playing from Wrong Place in Stroke Play",
-        "text": "What a player does next depends on whether it was a serious breach – that is, whether the player could have gained a significant advantage by playing from a wrong place. The player must decide whether to play out the hole with the ball played from wrong place or to correct the mistake.",
+        "text": "What a player does next depends on whether it was a serious breach â€“ that is, whether the player could have gained a significant advantage by playing from a wrong place. The player must decide whether to play out the hole with the ball played from wrong place or to correct the mistake.",
         "keywords": ["complete hole", "stroke play", "serious breach", "significant advantage", "play out hole", "correct mistake", "wrong place"],
         "examples": [
             "completing hole after wrong place error",
@@ -5290,7 +5290,7 @@ RULES_DATABASE = [
     {
         "id": "17.1b",
         "title": "Player May Play Ball as It Lies in Penalty Area or Take Penalty Relief",
-        "text": "The player may either: Play the ball as it lies without penalty, under the same Rules that apply to a ball in the general area (which means there are no special Rules limiting how a ball may be played from a penalty area), or Play a ball from outside the penalty area by taking penalty relief under Rule 17.1d or 17.2. Exception – Relief Must Be Taken from Interference by No Play Zone in Penalty Area (see Rule 17.1e).",
+        "text": "The player may either: Play the ball as it lies without penalty, under the same Rules that apply to a ball in the general area (which means there are no special Rules limiting how a ball may be played from a penalty area), or Play a ball from outside the penalty area by taking penalty relief under Rule 17.1d or 17.2. Exception â€“ Relief Must Be Taken from Interference by No Play Zone in Penalty Area (see Rule 17.1e).",
         "keywords": ["play as it lies", "without penalty", "general area rules", "no special rules", "penalty relief", "outside penalty area", "no play zone"],
         "examples": [
             "playing ball from water",
@@ -5772,7 +5772,7 @@ RULES_DATABASE = [
     {
         "id": "19",
         "title": "Unplayable Ball",
-        "text": "Rule 19 covers the player's several relief options for an unplayable ball. This allows the player to choose which option to use – normally with one penalty stroke – to get out of a difficult situation anywhere on the course (except in a penalty area).",
+        "text": "Rule 19 covers the player's several relief options for an unplayable ball. This allows the player to choose which option to use â€“ normally with one penalty stroke â€“ to get out of a difficult situation anywhere on the course (except in a penalty area).",
         "keywords": ["unplayable ball", "relief options", "player choice", "one penalty stroke", "difficult situation", "anywhere on course", "except penalty area"],
         "examples": [
             "declaring ball unplayable",
@@ -6406,7 +6406,7 @@ RULES_DATABASE = [
         },
         {
             "situation": "Any player deliberately deflects or stops a player's ball in motion ",
-            "explanation": "Under Rule 21.3d, If a player’s ball in motion needs to be holed to tie the hole and any person deliberately deflects or stops the ball at a time when there is no reasonable chance it can be holed, there is no penalty to that person and the player loses the hole.",
+            "explanation": "Under Rule 21.3d, If a playerâ€™s ball in motion needs to be holed to tie the hole and any person deliberately deflects or stops the ball at a time when there is no reasonable chance it can be holed, there is no penalty to that person and the player loses the hole.",
             "examples": ["picks up", "already at maximum score", "doesn't hole out"]
         },
     ]
