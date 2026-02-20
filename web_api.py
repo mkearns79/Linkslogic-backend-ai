@@ -73,11 +73,11 @@ Most golfers prefer the Columbia CC option since you don't have to walk back."""
 
 OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
 Instead of going back to where you last played, you can:
-- Estimate where your ball crossed out of bounds or was lost
-- Find the nearest fairway point to that spot
-- Drop anywhere between two imaginary lines: one from the hole through where your ball was lost, and one from the hole through the nearest fairway point
-- Stay within two club-lengths of those lines
-- Must not be closer to the hole than where ball was lost
+• Estimate where your ball crossed out of bounds or was lost
+• Find the nearest fairway point to that spot
+• Drop anywhere between two imaginary lines: one from the hole through where your ball was lost, and one from the hole through the nearest fairway point
+• Stay within two club-lengths of those lines
+• Must not be closer to the hole than where ball was lost
 
 OPTION 2 - Standard Rule (1 penalty stroke):
 Return to where you last played and hit again (stroke and distance).
@@ -91,9 +91,9 @@ Exception: player gets FREE RELIEF from a ball hit into the maintenance area to 
         "quick_response": """On the 16th hole at Columbia CC, your options under Rule 17.1 depend on where the ball entered the water:
 
 If your ball went into the water/penalty area on the south side of the footbridge marked by yellow stakes:
-- Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
-- Back-on-the-Line Relief (1 penalty stroke), OR
-- Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
+• Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
+• Back-on-the-Line Relief (1 penalty stroke), OR
+• Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
 
 If your ball went into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
     },
@@ -104,10 +104,10 @@ If your ball went into the water/penalty area on the north side of the footbridg
         "quick_response": """On the 17th hole at Columbia CC:
 
 If your ball goes in the POND (west of the footbridge):
-- Standard relief under Rule 17.1 (1 penalty stroke), OR  
-- Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
+• Standard relief under Rule 17.1 (1 penalty stroke), OR  
+• Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
 If your ball is in other penalty areas on 17th, including on the cart bridge:
-- Standard relief under Rule 17.1 only
+• Standard relief under Rule 17.1 only
 The dropping zone is only available for the main pond area, not other penalty areas on the hole."""
     },
 
@@ -132,11 +132,11 @@ This is different from regular ground under repair - relief is mandatory, not op
         "quick_response": """Maintenance facility at Columbia CC (near holes 9 & 10):
 
 FREE RELIEF available from:
-- All maintenance buildings
-- Storage tanks and sheds  
-- Paved and gravel areas
-- Retention ponds
-- Equipment
+• All maintenance buildings
+• Storage tanks and sheds  
+• Paved and gravel areas
+• Retention ponds
+• Equipment
 The entire maintenance complex is treated as one large immovable obstruction. Drop within one club-length of your nearest point of complete relief, no closer to the hole."""
     },
     
@@ -154,12 +154,12 @@ When stakes are used to define or show the boundary edge, they are boundary obje
         "quick_response": """Aeration holes at Columbia CC:
 
 FREE RELIEF available when:
-- Ball is IN an aeration hole
-- Ball TOUCHES an aeration hole  
-- Aeration hole interferes with your swing
+• Ball is IN an aeration hole
+• Ball TOUCHES an aeration hole  
+• Aeration hole interferes with your swing
 NO RELIEF when:
-- Aeration hole only affects your stance
-- On putting green: only affects your line of putt
+• Aeration hole only affects your stance
+• On putting green: only affects your line of putt
 Relief: Drop/place within one club-length of nearest point of relief. If you get relief and the ball rolls into another aeration hole, you get relief again."""
     },
 
@@ -192,12 +192,12 @@ The construction fence is treated as a boundary, not a regular obstruction."""
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
-- Cart path sections behind 14th green marked by green stakes
-- Cart path sections behind 17th green marked by green stakes  
-- Unpaved road behind 12th green
+• Cart path sections behind 14th green marked by green stakes
+• Cart path sections behind 17th green marked by green stakes  
+• Unpaved road behind 12th green
 NO FREE RELIEF AVAILABLE - Your options:
-- Play the ball as it lies if possible
-- Declare the ball unplayable under Rule 19 (1 penalty stroke)
+• Play the ball as it lies if possible
+• Declare the ball unplayable under Rule 19 (1 penalty stroke)
     - Drop within two club-lengths, not nearer hole
     - Drop on line from hole through ball, going back as far as desired
     - Return to previous spot where you played
@@ -216,22 +216,22 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
     "quick_response": """According to Columbia Country Club's local rules, the Purple Line wall is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
-- NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
-- Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
-- This applies EVEN IF the ball comes to rest in a seemingly playable position
-- This includes balls that end up on the other side of the boundary
-- This includes balls that come to rest inside tunnels or other areas beyond the line
-- EXCEPTION: if your ball bounces back into play on the same side of the train tracks that it originally crossed, your ball is IN PLAY with NO PENALTY
+• NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
+• Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
+• This applies EVEN IF the ball comes to rest in a seemingly playable position
+• This includes balls that end up on the other side of the boundary
+• This includes balls that come to rest inside tunnels or other areas beyond the line
+• EXCEPTION: if your ball bounces back into play on the same side of the train tracks that it originally crossed, your ball is IN PLAY with NO PENALTY
 OUT OF BOUNDS RELIEF OPTIONS:
 You have TWO options under Columbia CC's local rules:
 
 OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
-- Estimate where your ball crossed the Purple Line boundary
-- Find the nearest fairway point to that crossing point
-- Drop within two club-lengths of the line between the hole and those reference points
-- Must not be closer to the hole than where ball crossed boundary
+• Estimate where your ball crossed the Purple Line boundary
+• Find the nearest fairway point to that crossing point
+• Drop within two club-lengths of the line between the hole and those reference points
+• Must not be closer to the hole than where ball crossed boundary
 OPTION 2 - Standard Rule (1 penalty stroke):
-- Return to where you last played and hit again (stroke and distance)
+• Return to where you last played and hit again (stroke and distance)
 Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
     }
 }
@@ -274,7 +274,7 @@ def apply_columbia_boosting(results, query, verbose=False):
         r = get_result_by_id('CCC-6')
         if r:
             if verbose:
-                logger.info(f" CCC-6: {r['best_similarity']:.3f}  ->  {r['best_similarity']*3.0:.3f} (3.0x purple line boost)")
+                logger.info(f"🎯 CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*3.0:.3f} (3.0x purple line boost)")
             r['best_similarity'] *= 3.0
     
     # --- BRIDGE (must come before cart path) ---
@@ -283,25 +283,25 @@ def apply_columbia_boosting(results, query, verbose=False):
     
     if is_bridge_query and (hole_number in [17, 18] or '17' in query_lower or '18' in query_lower):
         if verbose:
-            logger.info(f" Columbia CC: Detected bridge query on hole {hole_number or '17/18'}")
+            logger.info(f"🎯 Columbia CC: Detected bridge query on hole {hole_number or '17/18'}")
         
         r = get_result_by_id('CCC-2')
         if r:
             if verbose:
-                logger.info(f"   - CCC-2: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
+                logger.info(f"   🎯 CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
             r['best_similarity'] *= 4.0
         
         r = get_result_by_id('CCC-4')
         if r:
             if verbose:
-                logger.info(f"   - CCC-4: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+                logger.info(f"   🔻 CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
             r['best_similarity'] *= 0.3
         
         for r in results:
             rid = r.get('rule', {}).get('id', '')
             if '16.1' in rid and not r.get('is_local'):
                 if verbose:
-                    logger.info(f"   - {rid}: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   🔻 {rid}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
     
     # --- CART PATH behind holes 12, 14, 17 ---
@@ -312,19 +312,19 @@ def apply_columbia_boosting(results, query, verbose=False):
         
         if has_cart_path and behind_green:
             if verbose:
-                logger.info(f" Columbia CC: Detected cart path behind hole {hole_number} green")
+                logger.info(f"🎯 Columbia CC: Detected cart path behind hole {hole_number} green")
             
             r = get_result_by_id('CCC-4')
             if r:
                 boost = 5.0 if hole_number == 12 else 3.0
                 if verbose:
-                    logger.info(f"   - CCC-4: {r['best_similarity']:.3f}  ->  {r['best_similarity']*boost:.3f} ({boost}x boost)")
+                    logger.info(f"   🎯 CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*boost:.3f} ({boost}x boost)")
                 r['best_similarity'] *= boost
             
             r = get_result_by_id('CCC-10')
             if r:
                 if verbose:
-                    logger.info(f"   - CCC-10: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+                    logger.info(f"   🔻 CCC-10: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
                 r['best_similarity'] *= 0.3
     
     # --- WATER HAZARD on holes 15-18 ---
@@ -334,29 +334,29 @@ def apply_columbia_boosting(results, query, verbose=False):
         
         if has_water:
             if verbose:
-                logger.info(f" Columbia CC: Detected water question on hole {hole_number}")
+                logger.info(f"🎯 Columbia CC: Detected water question on hole {hole_number}")
             
             r = get_result_by_id('CCC-2')
             if r:
                 if verbose:
-                    logger.info(f"   - CCC-2: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x boost)")
+                    logger.info(f"   🎯 CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
                 r['best_similarity'] *= 4.0
             
             r = get_result_by_id('CCC-1')
             if r:
                 if verbose:
-                    logger.info(f"   - CCC-1: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   🔻 CCC-1: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
     
     # --- CONSTRUCTION FENCE ---
     if 'fence' in query_lower and any(term in query_lower for term in ['construction', 'purple line', 'boundary']):
         if verbose:
-            logger.info(" Columbia CC: Detected construction fence question")
+            logger.info("🎯 Columbia CC: Detected construction fence question")
         
         r = get_result_by_id('CCC-6')
         if r:
             if verbose:
-                logger.info(f"   - CCC-6: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x boost)")
+                logger.info(f"   🎯 CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
             r['best_similarity'] *= 4.0
         
         for r in results:
@@ -364,29 +364,8 @@ def apply_columbia_boosting(results, query, verbose=False):
             text = r.get('rule', {}).get('text', '').lower()
             if 'obstruction' in title and 'free relief' in text:
                 if verbose:
-                    logger.info(f"   - {r['rule']['id']}: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   🔻 {r['rule']['id']}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
-    
-    # --- HOLES 2-4 LEFT SIDE PENALTY AREA ---
-    if hole_number in [2, 3, 4]:
-        left_terms = ['left', 'left side', 'left of', 'tall grass', 'unmaintained', 'fescue']
-        has_left = any(term in query_lower for term in left_terms)
-        
-        if has_left:
-            if verbose:
-                logger.info(f"Columbia CC: Detected left side query on hole {hole_number}")
-            
-            r = get_result_by_id('CCC-3')
-            if r:
-                if verbose:
-                    logger.info(f"   CCC-3: {r['best_similarity']:.3f} -> {r['best_similarity']*4.0:.3f} (4.0x boost)")
-                r['best_similarity'] *= 4.0
-            
-            r = get_result_by_id('CCC-1')
-            if r:
-                if verbose:
-                    logger.info(f"   CCC-1: {r['best_similarity']:.3f} -> {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
-                r['best_similarity'] *= 0.3
     
     return results
 
@@ -465,12 +444,12 @@ class ProductionHybridVectorSearch:
                 })
                 remaining_count += 1
     
-        logger.info(f" Processed {len(processed_rules)} official rules for embedding")
+        logger.info(f"📚 Processed {len(processed_rules)} official rules for embedding")
         return processed_rules
     
     def _precompute_rule_embeddings(self):
         """Pre-compute embeddings for all rules to avoid repeated API calls."""
-        logger.info(" Pre-computing rule embeddings (one-time startup cost)...")
+        logger.info("🔄 Pre-computing rule embeddings (one-time startup cost)...")
         
         all_rules = self.local_rules + self.official_rules
         rule_texts = [rule['search_text'][:500] for rule in all_rules]  # Limit text length
@@ -483,12 +462,12 @@ class ProductionHybridVectorSearch:
                 for i, rule in enumerate(all_rules):
                     self.rule_embeddings_cache[rule['id']] = embeddings[i]
                 
-                logger.info(f" Pre-computed embeddings for {len(all_rules)} rules")
+                logger.info(f"✅ Pre-computed embeddings for {len(all_rules)} rules")
             else:
-                logger.error(" Failed to pre-compute rule embeddings")
+                logger.error("❌ Failed to pre-compute rule embeddings")
                 
         except Exception as e:
-            logger.error(f" Error pre-computing embeddings: {e}")
+            logger.error(f"❌ Error pre-computing embeddings: {e}")
     
     def get_embeddings_batch(self, texts, max_batch_size=100):
         """Get embeddings for multiple texts in batches."""
@@ -510,7 +489,7 @@ class ProductionHybridVectorSearch:
                 batch_embeddings = [d.embedding for d in response.data]
                 all_embeddings.extend(batch_embeddings)
                 
-                logger.info(f" Processed embedding batch {i//max_batch_size + 1}")
+                logger.info(f"📊 Processed embedding batch {i//max_batch_size + 1}")
             
             return all_embeddings
             
@@ -551,7 +530,7 @@ class ProductionHybridVectorSearch:
         """FIXED: Search with precedence using pre-computed embeddings."""
         try:
             if verbose:
-                logger.info(f" Searching with precedence for: {query}")
+                logger.info(f"🔍 Searching with precedence for: {query}")
                 
             # Get query embedding (only 1 API call per query now)
             query_embedding = self.get_embeddings(query)
@@ -594,7 +573,7 @@ class ProductionHybridVectorSearch:
             results.sort(key=sort_key, reverse=True)
             
             if verbose:
-                logger.info(f" Found {len(results)} total rules, returning top {top_n}")
+                logger.info(f"✅ Found {len(results)} total rules, returning top {top_n}")
                 for i, result in enumerate(results[:top_n]):
                     rule_type = "LOCAL" if result['is_local'] else "OFFICIAL"
                     logger.info(f"  {i+1}. {rule_type} - {result['rule']['id']}: {result['best_similarity']:.3f}")
@@ -694,7 +673,7 @@ def create_definition_response(definition_id, query):
 {definition['definition']}
 
 **Examples:**
-{chr(10).join([f' {example}' for example in definition['examples'][:4]])}
+{chr(10).join([f'• {example}' for example in definition['examples'][:4]])}
 
 **Related Rules:** {', '.join(definition['related_rules'])}"""
     
@@ -714,7 +693,7 @@ def enhance_ai_prompt_with_definitions(prompt, query):
     For stake queries, includes both movable obstruction and penalty area definitions.
     """
     try:
-        logger.info(f" DEBUG: enhance_ai_prompt_with_definitions called for query: {query}")
+        logger.info(f"🔍 DEBUG: enhance_ai_prompt_with_definitions called for query: {query}")
         
         query_lower = query.lower()
         definitions_to_add = []
@@ -755,9 +734,9 @@ def enhance_ai_prompt_with_definitions(prompt, query):
         return prompt
         
     except Exception as e:
-        logger.error(f" DEBUG: Definition enhancement failed with error: {e}")
+        logger.error(f"❌ DEBUG: Definition enhancement failed with error: {e}")
         import traceback
-        logger.error(f" DEBUG: Traceback: {traceback.format_exc()}")
+        logger.error(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
         return prompt
 
 def check_common_query(question):
@@ -827,7 +806,7 @@ def get_position_focused_response(question, verbose=False):
         
         # TEMPORARY DEBUG LOGGING
         if verbose:
-            logger.info(f" Position search results for '{question}':")
+            logger.info(f"🔍 Position search results for '{question}':")
             for i, result in enumerate(search_results):
                 rule_id = result['rule']['id']
                 title = result['rule']['title']
@@ -855,7 +834,7 @@ Focus on:
 - Columbia-specific areas (maintenance zones, construction boundaries, integral cart paths)
 
 Key distinctions:
-- Ball position -- relief procedures (focus on WHERE not HOW to get relief)
+- Ball position ≠ relief procedures (focus on WHERE not HOW to get relief)
 - Different course areas have different rules
 - Local boundaries may differ from standard golf boundaries
 
@@ -880,7 +859,7 @@ If an official rule applies, start with "According to the Rules of Golf, Rule X.
         }
 
         # Log token usage
-        logger.info(f" General response tokens used: {result['tokens_used']}")
+        logger.info(f"📊 General response tokens used: {result['tokens_used']}")
 
         return result
         
@@ -895,7 +874,7 @@ def get_relief_focused_response(question, verbose=False):
         search_results = search_engine.search_with_precedence(question, top_n=4, verbose=verbose)
         
         if verbose:
-            logger.info(f" Relief search results for '{question}':")
+            logger.info(f"🔍 Relief search results for '{question}':")
             for i, result in enumerate(search_results):
                 rule_id = result['rule']['id']
                 title = result['rule']['title']
@@ -949,7 +928,7 @@ Provide the complete procedure including:
         }
         
         # Log token usage
-        logger.info(f" General response tokens used: {result['tokens_used']}")
+        logger.info(f"📊 General response tokens used: {result['tokens_used']}")
 
         return result
 
@@ -964,7 +943,7 @@ def get_penalty_focused_response(question, verbose=False):
         search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
         
         if verbose:
-            logger.info(f" Penalty search results for '{question}':")
+            logger.info(f"🔍 Penalty search results for '{question}':")
             for i, result in enumerate(search_results):
                 rule_id = result['rule']['id']
                 title = result['rule']['title']
@@ -1011,7 +990,7 @@ Start your response appropriately:
         }
         
         # Log token usage
-        logger.info(f" Penalty response tokens used: {result['tokens_used']}")
+        logger.info(f"📊 Penalty response tokens used: {result['tokens_used']}")
         
         return result
         
@@ -1027,7 +1006,7 @@ def get_procedure_focused_response(question, verbose=False):
         search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
         
         if verbose:
-            logger.info(f" Procedure search results for '{question}':")
+            logger.info(f"🔍 Procedure search results for '{question}':")
             for i, result in enumerate(search_results):
                 rule_id = result['rule']['id']
                 title = result['rule']['title']
@@ -1076,7 +1055,7 @@ Format the procedure clearly with numbered steps when applicable."""
         }
         
         # Log token usage
-        logger.info(f" Procedure response tokens used: {result['tokens_used']}")
+        logger.info(f"📊 Procedure response tokens used: {result['tokens_used']}")
         
         return result
         
@@ -1129,7 +1108,7 @@ Ensure your answer is complete and would allow a golfer to proceed correctly."""
         }
 
         # Log token usage
-        logger.info(f" General response tokens used: {result['tokens_used']}")
+        logger.info(f"📊 General response tokens used: {result['tokens_used']}")
         
         return result
         
@@ -1412,9 +1391,9 @@ def check_common_query_with_confidence(question, confidence_threshold=0.6):
             }
     
     # Debug print (like your verbose mode in vector search)
-    print(f"\n Template matching for: '{question[:40]}...'")
+    print(f"\n🔍 Template matching for: '{question[:40]}...'")
     for name, conf in sorted(debug_matches, key=lambda x: x[1], reverse=True)[:3]:
-        status = "--" if conf >= confidence_threshold else "  "
+        status = "✅" if conf >= confidence_threshold else "  "
         print(f"  {status} {name}: {conf:.3f}")
     
     # Apply threshold (like similarity < 0.1 skip in vector search)
@@ -1452,12 +1431,12 @@ def get_hybrid_interpretation(question, verbose=False):
             if verbose:
                 template_name = template.get('template_name', 'unknown')
                 rule_id = template.get('local_rule', 'unknown')
-                logger.info(f" Template match: {template_name} (Rule {rule_id}) with confidence {confidence:.3f}")
+                logger.info(f"📊 Template match: {template_name} (Rule {rule_id}) with confidence {confidence:.3f}")
             
             # High confidence: Use template immediately
             if confidence >= 0.75:
                 if verbose:
-                    logger.info(f" High confidence ({confidence:.3f}) - using template")
+                    logger.info(f"✅ High confidence ({confidence:.3f}) - using template")
                 
                 result = {
                     'answer': template["quick_response"],
@@ -1473,7 +1452,7 @@ def get_hybrid_interpretation(question, verbose=False):
             # Medium confidence: Use template but note uncertainty
             elif confidence >= 0.5:
                 if verbose:
-                    logger.info(f" Medium confidence ({confidence:.3f}) - using template with note")
+                    logger.info(f"⚠️ Medium confidence ({confidence:.3f}) - using template with note")
                 
                 # Add a note about confidence
                 modified_answer = template["quick_response"]
@@ -1494,12 +1473,12 @@ def get_hybrid_interpretation(question, verbose=False):
             # Low confidence: Fall through to AI
             else:
                 if verbose:
-                    logger.info(f" Low confidence ({confidence:.3f}) - routing to AI")
+                    logger.info(f"❌ Low confidence ({confidence:.3f}) - routing to AI")
         
         # STEP 2: No good template match, classify intent for AI routing
         intent = classify_intent_enhanced(question)
         if verbose:
-            logger.info(f" Intent classified as: {intent}")
+            logger.info(f"🎯 Intent classified as: {intent}")
         
         # STEP 3: Route to appropriate AI handler
         if intent == 'position':
@@ -1519,7 +1498,7 @@ def get_hybrid_interpretation(question, verbose=False):
         result['intent_detected'] = intent
         
         if verbose:
-            logger.info(f" AI response completed in {response_time}s")
+            logger.info(f"✅ AI response completed in {response_time}s")
         
         return result
                 
@@ -1590,7 +1569,7 @@ def initialize_ai_system():
     global ai_system_available, ai_error_message, simplified_system
     
     try:
-        logger.info(" Initializing production hybrid AI system...")
+        logger.info("🤖 Initializing production hybrid AI system...")
         
         # Test OpenAI connection
         test_response = client.embeddings.create(
@@ -1600,7 +1579,7 @@ def initialize_ai_system():
         
         if test_response:
             ai_system_available = True
-            logger.info(" Production hybrid system ready - Templates + AI with Rule Scoring")
+            logger.info("✅ Production hybrid system ready - Templates + AI with Rule Scoring")
             try:
                 simplified_system = create_simplified_system(
                     templates=COMMON_QUERY_TEMPLATES,
@@ -1610,9 +1589,9 @@ def initialize_ai_system():
                     rules_db=RULES_DATABASE,
                     local_rules=COLUMBIA_CC_LOCAL_RULES
                 )
-                logger.info(" Simplified system ready")
+                logger.info("✅ Simplified system ready")
             except Exception as e:
-                logger.error(f" Simplified system init failed: {e}")
+                logger.error(f"⚠️ Simplified system init failed: {e}")
             return True
         else:
             raise Exception("OpenAI API test failed")
@@ -1620,7 +1599,7 @@ def initialize_ai_system():
     except Exception as e:
         ai_system_available = False
         ai_error_message = f"AI initialization error: {str(e)}"
-        logger.error(f" AI initialization failed: {str(e)}")
+        logger.error(f"❌ AI initialization failed: {str(e)}")
         return False
 
 @app.route('/api/ask', methods=['POST'])
@@ -1636,12 +1615,12 @@ def ask_question():
                 'error': 'Question is required'
             }), 400
         
-        logger.info(f" Question: {question}")
+        logger.info(f"🔍 Question: {question}")
         start_time = time.time()
 
         definition_id = detect_definition_query(question)
         if definition_id:
-            logger.info(f" Definition query detected: {definition_id}")
+            logger.info(f"📖 Definition query detected: {definition_id}")
             response_data = create_definition_response(definition_id, question)
             if response_data:
                 response_time = round(time.time() - start_time, 2)
@@ -1678,17 +1657,17 @@ def ask_question():
                 except Exception as e:
                     logger.error(f"Dashboard logging error for definitions: {e}")
                 
-                logger.info(f" Definition response in {response_time}s")
+                logger.info(f"✅ Definition response in {response_time}s")
                 return jsonify(response_data)
             
         if ai_system_available:
             try:
                 # Use restored sophisticated hybrid system
                 if USE_SIMPLIFIED_SYSTEM and simplified_system:
-                    logger.info(" Using SIMPLIFIED system")
+                    logger.info("🆕 Using SIMPLIFIED system")
                     result = simplified_system.process_query(question, verbose=True)
                 else:
-                    logger.info(" Using ORIGINAL hybrid system")
+                    logger.info("📦 Using ORIGINAL hybrid system")
                     result = get_hybrid_interpretation(question, verbose=True)
                 response_time = round(time.time() - start_time, 2)
                 
@@ -1716,7 +1695,7 @@ def ask_question():
                 if 'rule_id' in result:
                     response_data['rule_id'] = result['rule_id']
                 
-                logger.info(f" Production hybrid response ({result['source']}) in {response_time}s")
+                logger.info(f"✅ Production hybrid response ({result['source']}) in {response_time}s")
                 try:
                     comprehensive_log = {
                         "timestamp": datetime.now().isoformat(),
@@ -1738,7 +1717,7 @@ def ask_question():
                 return jsonify(response_data)
                 
             except Exception as e:
-                logger.error(f" Hybrid system error: {str(e)}")
+                logger.error(f"⚠️ Hybrid system error: {str(e)}")
                 # Fall through to fallback
         
         # Fallback if AI unavailable
@@ -1758,12 +1737,12 @@ def ask_question():
             'timestamp': datetime.now().isoformat()
         }
         
-        logger.info(f" Fallback response in {response_time}s") 
+        logger.info(f"✅ Fallback response in {response_time}s") 
         
         return jsonify(response_data)
         
     except Exception as e:
-        logger.error(f" API Error: {str(e)}")
+        logger.error(f"❌ API Error: {str(e)}")
         return jsonify({
             'success': False,
             'error': f'Failed to process question: {str(e)}',
@@ -1817,7 +1796,7 @@ def get_definitions():
             })
     
     except Exception as e:
-        logger.error(f" Definitions API Error: {str(e)}")
+        logger.error(f"❌ Definitions API Error: {str(e)}")
         return jsonify({
             'success': False,
             'error': f'Failed to get definitions: {str(e)}'
@@ -1865,28 +1844,28 @@ def get_quick_questions():
                 'id': 'maintenance_facility',
                 'text': 'Maintenance facility on #10',
                 'category': 'local_rules',
-                'icon': '[M]',
+                'icon': '🏗️',
                 'expected_source': 'template'
             },
             {
                 'id': 'purple_line_boundary',
                 'text': 'Purple Line',
                 'category': 'local_rules',
-                'icon': '[P]',
+                'icon': '🚆',
                 'expected_source': 'template'
             },
             {
                 'id': 'water_hazard_17',
                 'text': 'Water on #17',
                 'category': 'local_rules',
-                'icon': '[W]',
+                'icon': '💧',
                 'expected_source': 'template'
             },
             {
                 'id': 'green_stakes_cart_path',
                 'text': 'Path behind #14 & #17 green',
                 'category': 'local_rules',
-                'icon': '[R]',
+                'icon': '🚫',
                 'expected_source': 'template'
             }
         ],
@@ -1958,13 +1937,13 @@ def view_all_queries():
             </style>
         </head>
         <body>
-            <h1> Golf Rules Query Dashboard (Persistent)</h1>
+            <h1>🌏️ Golf Rules Query Dashboard (Persistent)</h1>
             
             <div class="summary">
                 <h3>Summary (Last 7 Days)</h3>
                 <p><strong>Total Queries:</strong> {len(all_queries)}</p>
                 <p><strong>Template Responses:</strong> {template_count}</p>
-                <p><strong>Definitions Database:</strong> {definitions_count} -- NEW</p>
+                <p><strong>Definitions Database:</strong> {definitions_count} ✨ NEW</p>
                 <p><strong>AI Responses:</strong> {ai_count}</p>
                 <p><strong>Total Cost:</strong> ${sum([q.get('estimated_cost', 0) for q in all_queries]):.4f}</p>
                 <p><strong>Data Source:</strong> Cloud Logging (Persistent)</p>
@@ -2024,7 +2003,7 @@ def view_all_queries():
             <div style="margin-top: 20px; font-size: 12px; color: #666;">
                 <p><strong>Color coding:</strong></p>
                 <p><span style="background-color: #e8f5e8; padding: 2px 6px;">Green</span> = Template (Free)</p>
-                <p><span style="background-color: #fff5e6; padding: 2px 6px;">Orange</span> = Definitions Database (Free) -- NEW</p>
+                <p><span style="background-color: #fff5e6; padding: 2px 6px;">Orange</span> = Definitions Database (Free) ✨ NEW</p>
                 <p><span style="background-color: #e8f0ff; padding: 2px 6px;">Blue</span> = AI Response (Costs tokens)</p>
                 <p><span style="background-color: #ffe8e8; padding: 2px 6px;">Red</span> = Error/Fallback</p>
                 <p><strong>Data persists across container restarts!</strong></p>
@@ -2065,18 +2044,18 @@ def view_all_queries():
         """
 
 # Initialize the production hybrid system
-logger.info(" Starting Production Hybrid Golf Rules System...")
-logger.info(" System includes:")
-logger.info(f"  - {len(COMMON_QUERY_TEMPLATES)} comprehensive templates")
-logger.info(f"  - {len(COLUMBIA_CC_LOCAL_RULES.get('local_rules', []))} Columbia CC local rules")  
-logger.info(f"  - {len(RULES_DATABASE)} official golf rules")
+logger.info("🚀 Starting Production Hybrid Golf Rules System...")
+logger.info("📊 System includes:")
+logger.info(f"  • {len(COMMON_QUERY_TEMPLATES)} comprehensive templates")
+logger.info(f"  • {len(COLUMBIA_CC_LOCAL_RULES.get('local_rules', []))} Columbia CC local rules")  
+logger.info(f"  • {len(RULES_DATABASE)} official golf rules")
 
 ai_initialized = initialize_ai_system()
 
 if ai_initialized: 
-    logger.info(" Production Hybrid System Ready - Templates + AI + Rule Scoring + Local Precedence!")
+    logger.info("🎯 Production Hybrid System Ready - Templates + AI + Rule Scoring + Local Precedence!")
 else:
-    logger.warning(" Running in template-only mode")
+    logger.warning("⚠️ Running in template-only mode")
 
         
 if __name__ == '__main__':
