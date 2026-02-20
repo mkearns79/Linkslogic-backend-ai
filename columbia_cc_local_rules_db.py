@@ -9,7 +9,7 @@ COLUMBIA_CC_LOCAL_RULES = {
         'contact': 'your_contact@columbiacc.org'
     },
     
-    'local_rules': [  # ← Changed to LIST like official rules
+    'local_rules': [  # - Changed to LIST like official rules
         {
             'id': 'CCC-1',
             'title': 'Ball Lost or Out of Bounds (Alternative Relief)',
@@ -20,7 +20,7 @@ COLUMBIA_CC_LOCAL_RULES = {
                 'Ball lost in rough - estimate where it came to rest and take relief',
                 'Ball crosses boundary line - use reference point system for relief'
             ],
-            'conditions': [  # ← Standardized LIST format
+            'conditions': [  # - Standardized LIST format
                 {
                     'situation': 'When ball has not been found',
                     'explanation': 'Ball has not been found within three-minute search time and player chooses alternative to stroke and distance relief',
@@ -62,9 +62,14 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'examples': ['Ball in water on 15th', 'Ball in penalty area on 15th']
                 },
                 {
-                    'situation': 'Hole 16 penalty area relief options',
-                    'explanation': 'When ball is in penalty area on hole 16, player has two relief options for one penalty stroke: (1) Standard relief under Rule 17.1, or (2) Drop in designated dropping zone near 16th green',
-                    'examples': ['Ball in water on 16th', 'Ball in water on number 16']
+                    'situation': 'Hole 16 yellow penalty area (south side of footbridge)',
+                    'explanation': 'When ball enters the YELLOW stake penalty area on the south side of the footbridge on hole 16, player has these options for one penalty stroke: (1) Stroke-and-distance relief, (2) Back-on-the-line relief, or (3) Drop in designated dropping zone near the 16th green. Lateral relief is NOT available from a yellow penalty area.',
+                    'examples': ['Ball in water south of footbridge on 16 - yellow stakes', 'No lateral relief from yellow penalty area', 'Dropping zone available as additional option']
+                },
+                {
+                    'situation': 'Hole 16 red penalty area (north side of footbridge)',
+                    'explanation': 'When ball enters the RED stake penalty area on the north side of the footbridge on hole 16, player has all yellow penalty area options PLUS lateral relief: drop within two club-lengths of where the ball last crossed the edge of the penalty area, not nearer the hole, for one penalty stroke. The dropping zone near the 16th green is also available.',
+                    'examples': ['Ball in water north of footbridge on 16 - red stakes', 'Lateral relief IS available from red penalty area', 'Drop within 2 club-lengths of crossing point', 'Dropping zone also available']
                 },
                 {
                     'situation': 'Hole 17 penalty area relief options',
@@ -93,11 +98,13 @@ COLUMBIA_CC_LOCAL_RULES = {
             'id': 'CCC-3',
             'title': 'Penalty Areas - Holes 2, 3, 4',
             'text': 'The entire left side of holes 2, 3, and 4 is a red penalty area. In the absence of painted lines and/or stakes, the edge of the penalty area is defined as the edge of the unmaintained area. Players may play their ball as it lies or take penalty relief under Rule 17.1d.',
-            'keywords': ['penalty area', 'red penalty area', 'left side', 'holes 2 3 4', 'unmaintained area', 'stakes', 'painted lines'],
+            'keywords': ['penalty area', 'red penalty area', 'left side', 'holes 2 3 4', 'unmaintained area', 'stakes', 'painted lines', 'tall grass left', 'left rough', 'left of fairway', 'fescue left', 'hole 2', 'hole 3', 'hole 4', 'second hole', 'third hole', 'fourth hole'],
             'examples': [
                 'Ball rolls left into rough area on hole 2 - red penalty area relief available',
                 'Ball in unmaintained area on left side of hole 3',
-                'Ball in fescue area left of fairway on hole 4'
+                'Ball in fescue area left of fairway on hole 4',
+                'Ball went left into tall grass on hole 3 - this is a red penalty area',
+                'Ball in deep rough on left of hole 2 - penalty area, play as lies or take relief'
             ],
             'conditions': [
                 {
