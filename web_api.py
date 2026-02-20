@@ -274,7 +274,7 @@ def apply_columbia_boosting(results, query, verbose=False):
         r = get_result_by_id('CCC-6')
         if r:
             if verbose:
-                logger.info(f"ðŸŽ¯ CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*3.0:.3f} (3.0x purple line boost)")
+                logger.info(f"ðŸŽ¯ CCC-6: {r['best_similarity']:.3f}  ->  {r['best_similarity']*3.0:.3f} (3.0x purple line boost)")
             r['best_similarity'] *= 3.0
     
     # --- BRIDGE (must come before cart path) ---
@@ -288,20 +288,20 @@ def apply_columbia_boosting(results, query, verbose=False):
         r = get_result_by_id('CCC-2')
         if r:
             if verbose:
-                logger.info(f"   ðŸŽ¯ CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
+                logger.info(f"   ðŸŽ¯ CCC-2: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
             r['best_similarity'] *= 4.0
         
         r = get_result_by_id('CCC-4')
         if r:
             if verbose:
-                logger.info(f"   ðŸ”» CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+                logger.info(f"   [v] CCC-4: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
             r['best_similarity'] *= 0.3
         
         for r in results:
             rid = r.get('rule', {}).get('id', '')
             if '16.1' in rid and not r.get('is_local'):
                 if verbose:
-                    logger.info(f"   ðŸ”» {rid}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   [v] {rid}: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
     
     # --- CART PATH behind holes 12, 14, 17 ---
@@ -318,13 +318,13 @@ def apply_columbia_boosting(results, query, verbose=False):
             if r:
                 boost = 5.0 if hole_number == 12 else 3.0
                 if verbose:
-                    logger.info(f"   ðŸŽ¯ CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*boost:.3f} ({boost}x boost)")
+                    logger.info(f"   ðŸŽ¯ CCC-4: {r['best_similarity']:.3f}  ->  {r['best_similarity']*boost:.3f} ({boost}x boost)")
                 r['best_similarity'] *= boost
             
             r = get_result_by_id('CCC-10')
             if r:
                 if verbose:
-                    logger.info(f"   ðŸ”» CCC-10: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+                    logger.info(f"   [v] CCC-10: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
                 r['best_similarity'] *= 0.3
     
     # --- WATER HAZARD on holes 15-18 ---
@@ -339,13 +339,13 @@ def apply_columbia_boosting(results, query, verbose=False):
             r = get_result_by_id('CCC-2')
             if r:
                 if verbose:
-                    logger.info(f"   ðŸŽ¯ CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
+                    logger.info(f"   ðŸŽ¯ CCC-2: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x boost)")
                 r['best_similarity'] *= 4.0
             
             r = get_result_by_id('CCC-1')
             if r:
                 if verbose:
-                    logger.info(f"   ðŸ”» CCC-1: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   [v] CCC-1: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
     
     # --- CONSTRUCTION FENCE ---
@@ -356,7 +356,7 @@ def apply_columbia_boosting(results, query, verbose=False):
         r = get_result_by_id('CCC-6')
         if r:
             if verbose:
-                logger.info(f"   ðŸŽ¯ CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
+                logger.info(f"   ðŸŽ¯ CCC-6: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x boost)")
             r['best_similarity'] *= 4.0
         
         for r in results:
@@ -364,7 +364,7 @@ def apply_columbia_boosting(results, query, verbose=False):
             text = r.get('rule', {}).get('text', '').lower()
             if 'obstruction' in title and 'free relief' in text:
                 if verbose:
-                    logger.info(f"   ðŸ”» {r['rule']['id']}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   [v] {r['rule']['id']}: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
     
     # --- HOLES 2-4 LEFT SIDE PENALTY AREA ---
@@ -374,19 +374,19 @@ def apply_columbia_boosting(results, query, verbose=False):
         
         if has_left:
             if verbose:
-                logger.info(f"🎯 Columbia CC: Detected left side query on hole {hole_number}")
+                logger.info(f"[>] Columbia CC: Detected left side query on hole {hole_number}")
             
             r = get_result_by_id('CCC-3')
             if r:
                 if verbose:
-                    logger.info(f"   🎯 CCC-3: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
+                    logger.info(f"   [>] CCC-3: {r['best_similarity']:.3f} -> {r['best_similarity']*4.0:.3f} (4.0x boost)")
                 r['best_similarity'] *= 4.0
             
             # De-boost CCC-1 (lost ball rule - not applicable if ball is in penalty area)
             r = get_result_by_id('CCC-1')
             if r:
                 if verbose:
-                    logger.info(f"   📻 CCC-1: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+                    logger.info(f"   [v] CCC-1: {r['best_similarity']:.3f} -> {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
                 r['best_similarity'] *= 0.3
     
     return results
@@ -471,7 +471,7 @@ class ProductionHybridVectorSearch:
     
     def _precompute_rule_embeddings(self):
         """Pre-compute embeddings for all rules to avoid repeated API calls."""
-        logger.info("ðŸ”„ Pre-computing rule embeddings (one-time startup cost)...")
+        logger.info("[~] Pre-computing rule embeddings (one-time startup cost)...")
         
         all_rules = self.local_rules + self.official_rules
         rule_texts = [rule['search_text'][:500] for rule in all_rules]  # Limit text length
@@ -484,12 +484,12 @@ class ProductionHybridVectorSearch:
                 for i, rule in enumerate(all_rules):
                     self.rule_embeddings_cache[rule['id']] = embeddings[i]
                 
-                logger.info(f"🤖 Pre-computed embeddings for {len(all_rules)} rules")
+                logger.info(f"âœ… Pre-computed embeddings for {len(all_rules)} rules")
             else:
-                logger.error("❌ Failed to pre-compute rule embeddings")
+                logger.error("[ERR] Failed to pre-compute rule embeddings")
                 
         except Exception as e:
-            logger.error(f"❌ Error pre-computing embeddings: {e}")
+            logger.error(f"[ERR] Error pre-computing embeddings: {e}")
     
     def get_embeddings_batch(self, texts, max_batch_size=100):
         """Get embeddings for multiple texts in batches."""
@@ -552,7 +552,7 @@ class ProductionHybridVectorSearch:
         """FIXED: Search with precedence using pre-computed embeddings."""
         try:
             if verbose:
-                logger.info(f"ðŸ” Searching with precedence for: {query}")
+                logger.info(f"[?] Searching with precedence for: {query}")
                 
             # Get query embedding (only 1 API call per query now)
             query_embedding = self.get_embeddings(query)
@@ -595,7 +595,7 @@ class ProductionHybridVectorSearch:
             results.sort(key=sort_key, reverse=True)
             
             if verbose:
-                logger.info(f"🤖 Found {len(results)} total rules, returning top {top_n}")
+                logger.info(f"âœ… Found {len(results)} total rules, returning top {top_n}")
                 for i, result in enumerate(results[:top_n]):
                     rule_type = "LOCAL" if result['is_local'] else "OFFICIAL"
                     logger.info(f"  {i+1}. {rule_type} - {result['rule']['id']}: {result['best_similarity']:.3f}")
@@ -715,7 +715,7 @@ def enhance_ai_prompt_with_definitions(prompt, query):
     For stake queries, includes both movable obstruction and penalty area definitions.
     """
     try:
-        logger.info(f"ðŸ” DEBUG: enhance_ai_prompt_with_definitions called for query: {query}")
+        logger.info(f"[?] DEBUG: enhance_ai_prompt_with_definitions called for query: {query}")
         
         query_lower = query.lower()
         definitions_to_add = []
@@ -756,9 +756,9 @@ def enhance_ai_prompt_with_definitions(prompt, query):
         return prompt
         
     except Exception as e:
-        logger.error(f"❌ DEBUG: Definition enhancement failed with error: {e}")
+        logger.error(f"[ERR] DEBUG: Definition enhancement failed with error: {e}")
         import traceback
-        logger.error(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
+        logger.error(f"[ERR] DEBUG: Traceback: {traceback.format_exc()}")
         return prompt
 
 def check_common_query(question):
@@ -828,7 +828,7 @@ def get_position_focused_response(question, verbose=False):
         
         # TEMPORARY DEBUG LOGGING
         if verbose:
-            logger.info(f"ðŸ” Position search results for '{question}':")
+            logger.info(f"[?] Position search results for '{question}':")
             for i, result in enumerate(search_results):
                 rule_id = result['rule']['id']
                 title = result['rule']['title']
@@ -856,7 +856,7 @@ Focus on:
 - Columbia-specific areas (maintenance zones, construction boundaries, integral cart paths)
 
 Key distinctions:
-- Ball position ≈ relief procedures (focus on WHERE not HOW to get relief)
+- Ball position  ~=  relief procedures (focus on WHERE not HOW to get relief)
 - Different course areas have different rules
 - Local boundaries may differ from standard golf boundaries
 
@@ -896,7 +896,7 @@ def get_relief_focused_response(question, verbose=False):
         search_results = search_engine.search_with_precedence(question, top_n=4, verbose=verbose)
         
         if verbose:
-            logger.info(f"ðŸ” Relief search results for '{question}':")
+            logger.info(f"[?] Relief search results for '{question}':")
             for i, result in enumerate(search_results):
                 rule_id = result['rule']['id']
                 title = result['rule']['title']
@@ -965,7 +965,7 @@ def get_penalty_focused_response(question, verbose=False):
         search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
         
         if verbose:
-            logger.info(f"ðŸ” Penalty search results for '{question}':")
+            logger.info(f"[?] Penalty search results for '{question}':")
             for i, result in enumerate(search_results):
                 rule_id = result['rule']['id']
                 title = result['rule']['title']
@@ -1028,7 +1028,7 @@ def get_procedure_focused_response(question, verbose=False):
         search_results = search_engine.search_with_precedence(question, top_n=3, verbose=verbose)
         
         if verbose:
-            logger.info(f"ðŸ” Procedure search results for '{question}':")
+            logger.info(f"[?] Procedure search results for '{question}':")
             for i, result in enumerate(search_results):
                 rule_id = result['rule']['id']
                 title = result['rule']['title']
@@ -1413,9 +1413,9 @@ def check_common_query_with_confidence(question, confidence_threshold=0.6):
             }
     
     # Debug print (like your verbose mode in vector search)
-    print(f"\nðŸ” Template matching for: '{question[:40]}...'")
+    print(f"\n[?] Template matching for: '{question[:40]}...'")
     for name, conf in sorted(debug_matches, key=lambda x: x[1], reverse=True)[:3]:
-        status = "🤖" if conf >= confidence_threshold else "  "
+        status = "âœ…" if conf >= confidence_threshold else "  "
         print(f"  {status} {name}: {conf:.3f}")
     
     # Apply threshold (like similarity < 0.1 skip in vector search)
@@ -1458,7 +1458,7 @@ def get_hybrid_interpretation(question, verbose=False):
             # High confidence: Use template immediately
             if confidence >= 0.75:
                 if verbose:
-                    logger.info(f"🤖 High confidence ({confidence:.3f}) - using template")
+                    logger.info(f"âœ… High confidence ({confidence:.3f}) - using template")
                 
                 result = {
                     'answer': template["quick_response"],
@@ -1474,7 +1474,7 @@ def get_hybrid_interpretation(question, verbose=False):
             # Medium confidence: Use template but note uncertainty
             elif confidence >= 0.5:
                 if verbose:
-                    logger.info(f"✅ Medium confidence ({confidence:.3f}) - using template with note")
+                    logger.info(f"[OK] Medium confidence ({confidence:.3f}) - using template with note")
                 
                 # Add a note about confidence
                 modified_answer = template["quick_response"]
@@ -1495,7 +1495,7 @@ def get_hybrid_interpretation(question, verbose=False):
             # Low confidence: Fall through to AI
             else:
                 if verbose:
-                    logger.info(f"❌ Low confidence ({confidence:.3f}) - routing to AI")
+                    logger.info(f"[ERR] Low confidence ({confidence:.3f}) - routing to AI")
         
         # STEP 2: No good template match, classify intent for AI routing
         intent = classify_intent_enhanced(question)
@@ -1520,7 +1520,7 @@ def get_hybrid_interpretation(question, verbose=False):
         result['intent_detected'] = intent
         
         if verbose:
-            logger.info(f"🤖 AI response completed in {response_time}s")
+            logger.info(f"âœ… AI response completed in {response_time}s")
         
         return result
                 
@@ -1601,7 +1601,7 @@ def initialize_ai_system():
         
         if test_response:
             ai_system_available = True
-            logger.info("🤖 Production hybrid system ready - Templates + AI with Rule Scoring")
+            logger.info("âœ… Production hybrid system ready - Templates + AI with Rule Scoring")
             try:
                 simplified_system = create_simplified_system(
                     templates=COMMON_QUERY_TEMPLATES,
@@ -1611,9 +1611,9 @@ def initialize_ai_system():
                     rules_db=RULES_DATABASE,
                     local_rules=COLUMBIA_CC_LOCAL_RULES
                 )
-                logger.info("🤖 Simplified system ready")
+                logger.info("âœ… Simplified system ready")
             except Exception as e:
-                logger.error(f"✅ Simplified system init failed: {e}")
+                logger.error(f"[OK] Simplified system init failed: {e}")
             return True
         else:
             raise Exception("OpenAI API test failed")
@@ -1621,7 +1621,7 @@ def initialize_ai_system():
     except Exception as e:
         ai_system_available = False
         ai_error_message = f"AI initialization error: {str(e)}"
-        logger.error(f"❌ AI initialization failed: {str(e)}")
+        logger.error(f"[ERR] AI initialization failed: {str(e)}")
         return False
 
 @app.route('/api/ask', methods=['POST'])
@@ -1637,7 +1637,7 @@ def ask_question():
                 'error': 'Question is required'
             }), 400
         
-        logger.info(f"ðŸ” Question: {question}")
+        logger.info(f"[?] Question: {question}")
         start_time = time.time()
 
         definition_id = detect_definition_query(question)
@@ -1679,7 +1679,7 @@ def ask_question():
                 except Exception as e:
                     logger.error(f"Dashboard logging error for definitions: {e}")
                 
-                logger.info(f"🤖 Definition response in {response_time}s")
+                logger.info(f"âœ… Definition response in {response_time}s")
                 return jsonify(response_data)
             
         if ai_system_available:
@@ -1717,7 +1717,7 @@ def ask_question():
                 if 'rule_id' in result:
                     response_data['rule_id'] = result['rule_id']
                 
-                logger.info(f"🤖 Production hybrid response ({result['source']}) in {response_time}s")
+                logger.info(f"âœ… Production hybrid response ({result['source']}) in {response_time}s")
                 try:
                     comprehensive_log = {
                         "timestamp": datetime.now().isoformat(),
@@ -1739,7 +1739,7 @@ def ask_question():
                 return jsonify(response_data)
                 
             except Exception as e:
-                logger.error(f"✅ Hybrid system error: {str(e)}")
+                logger.error(f"[OK] Hybrid system error: {str(e)}")
                 # Fall through to fallback
         
         # Fallback if AI unavailable
@@ -1759,12 +1759,12 @@ def ask_question():
             'timestamp': datetime.now().isoformat()
         }
         
-        logger.info(f"🤖 Fallback response in {response_time}s") 
+        logger.info(f"âœ… Fallback response in {response_time}s") 
         
         return jsonify(response_data)
         
     except Exception as e:
-        logger.error(f"❌ API Error: {str(e)}")
+        logger.error(f"[ERR] API Error: {str(e)}")
         return jsonify({
             'success': False,
             'error': f'Failed to process question: {str(e)}',
@@ -1818,7 +1818,7 @@ def get_definitions():
             })
     
     except Exception as e:
-        logger.error(f"❌ Definitions API Error: {str(e)}")
+        logger.error(f"[ERR] Definitions API Error: {str(e)}")
         return jsonify({
             'success': False,
             'error': f'Failed to get definitions: {str(e)}'
@@ -1873,14 +1873,14 @@ def get_quick_questions():
                 'id': 'purple_line_boundary',
                 'text': 'Purple Line',
                 'category': 'local_rules',
-                'icon': 'ðŸš†',
+                'icon': '[>]',
                 'expected_source': 'template'
             },
             {
                 'id': 'water_hazard_17',
                 'text': 'Water on #17',
                 'category': 'local_rules',
-                'icon': 'ðŸ’§',
+                'icon': '[#]',
                 'expected_source': 'template'
             },
             {
@@ -1965,7 +1965,7 @@ def view_all_queries():
                 <h3>Summary (Last 7 Days)</h3>
                 <p><strong>Total Queries:</strong> {len(all_queries)}</p>
                 <p><strong>Template Responses:</strong> {template_count}</p>
-                <p><strong>Definitions Database:</strong> {definitions_count} 🔎 NEW</p>
+                <p><strong>Definitions Database:</strong> {definitions_count} [NEW] NEW</p>
                 <p><strong>AI Responses:</strong> {ai_count}</p>
                 <p><strong>Total Cost:</strong> ${sum([q.get('estimated_cost', 0) for q in all_queries]):.4f}</p>
                 <p><strong>Data Source:</strong> Cloud Logging (Persistent)</p>
@@ -2025,7 +2025,7 @@ def view_all_queries():
             <div style="margin-top: 20px; font-size: 12px; color: #666;">
                 <p><strong>Color coding:</strong></p>
                 <p><span style="background-color: #e8f5e8; padding: 2px 6px;">Green</span> = Template (Free)</p>
-                <p><span style="background-color: #fff5e6; padding: 2px 6px;">Orange</span> = Definitions Database (Free) 🔎 NEW</p>
+                <p><span style="background-color: #fff5e6; padding: 2px 6px;">Orange</span> = Definitions Database (Free) [NEW] NEW</p>
                 <p><span style="background-color: #e8f0ff; padding: 2px 6px;">Blue</span> = AI Response (Costs tokens)</p>
                 <p><span style="background-color: #ffe8e8; padding: 2px 6px;">Red</span> = Error/Fallback</p>
                 <p><strong>Data persists across container restarts!</strong></p>
@@ -2077,7 +2077,7 @@ ai_initialized = initialize_ai_system()
 if ai_initialized: 
     logger.info("ðŸŽ¯ Production Hybrid System Ready - Templates + AI + Rule Scoring + Local Precedence!")
 else:
-    logger.warning("✅ Running in template-only mode")
+    logger.warning("[OK] Running in template-only mode")
 
         
 if __name__ == '__main__':

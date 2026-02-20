@@ -9,7 +9,7 @@ COLUMBIA_CC_LOCAL_RULES = {
         'contact': 'your_contact@columbiacc.org'
     },
     
-    'local_rules': [  # ← Changed to LIST like official rules
+    'local_rules': [  #  <-  Changed to LIST like official rules
         {
             'id': 'CCC-1',
             'title': 'Ball Lost or Out of Bounds (Alternative Relief)',
@@ -20,7 +20,7 @@ COLUMBIA_CC_LOCAL_RULES = {
                 'Ball lost in rough - estimate where it came to rest and take relief',
                 'Ball crosses boundary line - use reference point system for relief'
             ],
-            'conditions': [  # ← Standardized LIST format
+            'conditions': [  #  <-  Standardized LIST format
                 {
                     'situation': 'When ball has not been found',
                     'explanation': 'Ball has not been found within three-minute search time and player chooses alternative to stroke and distance relief',
