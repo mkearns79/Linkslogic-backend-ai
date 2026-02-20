@@ -90,7 +90,7 @@ class SimplifiedGolfRulesSystem:
         template_result = self._check_template_strict(question, verbose)
         if template_result and template_result['confidence'] >= 0.3:
             if verbose:
-                logger.info(f"âœ… [{query_id}] Using template with confidence {template_result['confidence']:.2f}")
+                logger.info(f" [{query_id}] Using template with confidence {template_result['confidence']:.2f}")
             result = self._format_response(template_result, start_time, query_id)
             self._log_query_complete(query_id, question, result)
             return result
@@ -100,14 +100,14 @@ class SimplifiedGolfRulesSystem:
             definition_result = self._get_definition_response(question)
             if definition_result:
                 if verbose:
-                    logger.info(f"âœ… [{query_id}] Using definitions database")
+                    logger.info(f" [{query_id}] Using definitions database")
                 result = self._format_response(definition_result, start_time, query_id)
                 self._log_query_complete(query_id, question, result)
                 return result
         
         # STAGE 3: Unified AI with exception handling
         if verbose:
-            logger.info(f"ðŸ¤– [{query_id}] Using unified AI with exception checking")
+            logger.info(f" [{query_id}] Using unified AI with exception checking")
         ai_result = self._get_unified_ai_response(question, verbose, query_id)
         result = self._format_response(ai_result, start_time, query_id)
         self._log_query_complete(query_id, question, result)
@@ -134,7 +134,7 @@ class SimplifiedGolfRulesSystem:
         # FIX 7: Expanded lost ball patterns.
         template_patterns = {
             'clear_lost_ball': {
-                # FIX 7: Relaxed  -  only 'ball' required; 'lost' moved to any_of with synonyms
+                # FIX 7: Relaxed -- only 'ball' required; 'lost' moved to any_of with synonyms
                 'required': ['ball'],
                 'any_of': ['lost', "can't find", 'cannot find', 'missing', 'disappeared',
                            'in the rough', 'in the fescue', 'in the woods', 'in the trees',
@@ -149,7 +149,7 @@ class SimplifiedGolfRulesSystem:
             'water_hazard_16': {
                 'required': ['16'],
                 'any_of': ['water', 'penalty area', 'hazard', 'pond', 'sixteenth'],
-                # FIX 1: Exclude  -  if query is about a non-water topic, let AI handle it
+                # FIX 1: Exclude -- if query is about a non-water topic, let AI handle it
                 'exclude': ['flagstick', 'flag stick', 'flag', 'pin', 'putt', 'green',
                             'bunker', 'sand', 'tree', 'fence', 'cart path', 'obstruction',
                             'unplayable', 'embedded', 'lost', 'out of bounds', 'tee',
@@ -224,7 +224,7 @@ class SimplifiedGolfRulesSystem:
                 
             matches += required_found
             
-            # FIX 1 (revised): Exclusion check  -  if query contains words indicating
+            # FIX 1 (revised): Exclusion check -- if query contains words indicating
             # a different topic, skip this template and let AI handle the complex query.
             # The enrichment step will append local rule details if the AI's answer warrants it.
             exclude_words = patterns.get('exclude')
@@ -232,7 +232,7 @@ class SimplifiedGolfRulesSystem:
                 excluded = any(ew in question_lower for ew in exclude_words)
                 if excluded:
                     if verbose:
-                        logger.info(f"ðŸš« Template '{template_name}' skipped: exclude word found, routing to AI + enrichment")
+                        logger.info(f" Template '{template_name}' skipped: exclude word found, routing to AI + enrichment")
                     continue
             
             # Check any_of patterns
@@ -253,7 +253,7 @@ class SimplifiedGolfRulesSystem:
                 best_match = template_name
                 
         if verbose and best_match:
-            logger.info(f"[i] Best template match: {best_match} (confidence: {best_confidence:.2f})")
+            logger.info(f" Best template match: {best_match} (confidence: {best_confidence:.2f})")
         
         if best_match and best_confidence >= 0.3:  # Internal threshold
             template = self.templates.get(best_match)
@@ -280,7 +280,7 @@ class SimplifiedGolfRulesSystem:
         """
         question_lower = question.lower()
         
-        # FIX 4: Negative patterns  -  these are procedural, not definitional
+        # FIX 4: Negative patterns -- these are procedural, not definitional
         procedural_indicators = [
             'what do i do', 'what should i do', 'what happens',
             'what are my options', 'what is the ruling', 'what is the rule',
@@ -373,13 +373,13 @@ class SimplifiedGolfRulesSystem:
             if not filtered_results:
                 filtered_results = search_results[:5]  # At least give AI something to work with
                 if verbose:
-                    logger.info(f"[OK] No rules scored >0.5, using top {len(filtered_results)} as fallback")
+                    logger.info(f" No rules scored >0.5, using top {len(filtered_results)} as fallback")
 
             search_results = filtered_results
             
             if verbose:
-                logger.info(f"ðŸ“Š [{query_id}] Balanced results: {len(local_rules[:3])} local + {len(official_rules[:9])} official")
-                logger.info(f"ðŸ“Š After 0.5 threshold filter: {len(search_results)} rules")
+                logger.info(f" [{query_id}] Balanced results: {len(local_rules[:3])} local + {len(official_rules[:9])} official")
+                logger.info(f" After 0.5 threshold filter: {len(search_results)} rules")
             
             # Check if we found exception-related rules
             has_exception_rules = self._check_for_exception_rules(search_results)
@@ -390,10 +390,10 @@ class SimplifiedGolfRulesSystem:
             # Log context stats
             if verbose:
                 context_rules = re.findall(r'Rule [\d\.]+[a-z]?', context)
-                logger.info(f"ðŸ“š [{query_id}] Context includes {len(context_rules)} rules")
-                logger.info(f"[?] [{query_id}] Full context being sent:\n{context[:2000]}")
+                logger.info(f" [{query_id}] Context includes {len(context_rules)} rules")
+                logger.info(f" [{query_id}] Full context being sent:\n{context[:2000]}")
                 if has_exception_rules:
-                    logger.info(f"[OK] [{query_id}] Exception rules detected in context")
+                    logger.info(f" [{query_id}] Exception rules detected in context")
             
             # Create the unified prompt with explicit exception handling
             # FIX 11: Single call (was duplicated before)
@@ -429,7 +429,7 @@ class SimplifiedGolfRulesSystem:
             
         except Exception as e:
             import traceback
-            logger.error(f"[ERR] [{query_id}] Unified AI error: {e}\n{traceback.format_exc()}") 
+            logger.error(f" [{query_id}] Unified AI error: {e}\n{traceback.format_exc()}") 
             return {
                 'answer': "I encountered an error processing your question. Please try rephrasing it.",
                 'source': 'error',
@@ -458,27 +458,27 @@ class SimplifiedGolfRulesSystem:
             {
                 'template_name': 'water_hazard_16',
                 'condition': ('penalty area' in answer_lower and '16' in question_lower),
-                'header': "\n\n---\n**Columbia CC Local Rule  -  Hole 16 Penalty Area Options:**\n\n"
+                'header': "\n\n---\n**Columbia CC Local Rule -- Hole 16 Penalty Area Options:**\n\n"
             },
             {
                 'template_name': 'water_hazard_17',
                 'condition': ('penalty area' in answer_lower and '17' in question_lower),
-                'header': "\n\n---\n**Columbia CC Local Rule  -  Hole 17 Penalty Area Options:**\n\n"
+                'header': "\n\n---\n**Columbia CC Local Rule -- Hole 17 Penalty Area Options:**\n\n"
             },
             {
                 'template_name': 'clear_lost_ball',
                 'condition': ('lost ball' in answer_lower or 'stroke and distance' in answer_lower or 'ball is lost' in answer_lower) and 'columbia' not in answer_lower and 'penalty area' not in answer_lower and 'penalty area' not in question_lower,
-                'header': "\n\n---\n**Columbia CC Local Rule  -  Lost Ball Alternative:**\n\n"
+                'header': "\n\n---\n**Columbia CC Local Rule -- Lost Ball Alternative:**\n\n"
             },
             {
                 'template_name': 'clear_out_of_bounds',
                 'condition': ('out of bounds' in answer_lower or 'stroke and distance' in answer_lower) and 'ob' in combined and 'columbia' not in answer_lower and 'penalty area' not in answer_lower and 'penalty area' not in question_lower,
-                'header': "\n\n---\n**Columbia CC Local Rule  -  Out of Bounds Alternative:**\n\n"
+                'header': "\n\n---\n**Columbia CC Local Rule -- Out of Bounds Alternative:**\n\n"
             },
             {
                 'template_name': 'maintenance_facility',
                 'condition': 'maintenance' in answer_lower and ('10' in question_lower or 'tenth' in question_lower or '9' in question_lower or 'ninth' in question_lower),
-                'header': "\n\n---\n**Columbia CC Local Rule  -  Maintenance Facility:**\n\n"
+                'header': "\n\n---\n**Columbia CC Local Rule -- Maintenance Facility:**\n\n"
             },
         ]
         
@@ -486,7 +486,7 @@ class SimplifiedGolfRulesSystem:
             if trigger['condition']:
                 template = self.templates.get(trigger['template_name'])
                 if template:
-                    logger.info(f"[+] Enriching AI response with template: {trigger['template_name']}")
+                    logger.info(f" Enriching AI response with template: {trigger['template_name']}")
                     return ai_answer + trigger['header'] + template.get('quick_response', '')
         
         return ai_answer
@@ -535,7 +535,7 @@ class SimplifiedGolfRulesSystem:
                     
                     # Safety check - ensure conditions is a list
                     if not isinstance(conditions_list, list):
-                        logger.error(f"[OK] Conditions for {rule_id} is not a list: {type(conditions_list)}")
+                        logger.error(f" Conditions for {rule_id} is not a list: {type(conditions_list)}")
                         context_parts.append(context_part)
                         continue
                     
@@ -546,7 +546,7 @@ class SimplifiedGolfRulesSystem:
                     for condition in conditions_list[:5]:
                         # Safety check - ensure condition is a dict
                         if not isinstance(condition, dict):
-                            logger.error(f"[OK] Condition in {rule_id} is {type(condition)}, not dict")
+                            logger.error(f" Condition in {rule_id} is {type(condition)}, not dict")
                             continue
                         
                         situation = condition.get('situation', '')
@@ -557,9 +557,9 @@ class SimplifiedGolfRulesSystem:
                     
                     # Show exceptions FIRST and prominently
                     if exceptions:
-                        context_part += "\n[OK] EXCEPTIONS:\n"
+                        context_part += "\n[!]  EXCEPTIONS:\n"
                         for exc in exceptions:
-                            context_part += f"  • {exc.get('explanation', '')}\n"
+                            context_part += f"  - {exc.get('explanation', '')}\n"
                             # Add examples if available
                             if 'examples' in exc and isinstance(exc.get('examples'), list):
                                 for ex in exc['examples'][:2]:
@@ -572,7 +572,7 @@ class SimplifiedGolfRulesSystem:
                             context_part += f"- {condition.get('situation', '')}: {condition.get('explanation', '')}\n"
                             
                 except Exception as e:
-                    logger.error(f"[OK] Error formatting conditions for rule {rule_id}: {e}")
+                    logger.error(f" Error formatting conditions for rule {rule_id}: {e}")
             
             context_parts.append(context_part)
         
@@ -621,9 +621,9 @@ class SimplifiedGolfRulesSystem:
                                 
                                 # Show exceptions FIRST
                                 if exceptions:
-                                    related_part += "\n[OK] EXCEPTIONS:\n"
+                                    related_part += "\n[!]  EXCEPTIONS:\n"
                                     for exc in exceptions:
-                                        related_part += f"  • {exc.get('explanation', '')}\n"
+                                        related_part += f"  - {exc.get('explanation', '')}\n"
                                         if 'examples' in exc and isinstance(exc.get('examples'), list):
                                             for ex in exc['examples'][:2]:
                                                 related_part += f"    Example: {ex}\n"
@@ -636,7 +636,7 @@ class SimplifiedGolfRulesSystem:
                         
                         context_parts.append(related_part)
                     except Exception as e:
-                        logger.error(f"[OK] Error formatting related rule {rule_id}: {e}")
+                        logger.error(f" Error formatting related rule {rule_id}: {e}")
         
         return "\n".join(context_parts)
     
@@ -685,27 +685,27 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
 
 2. CHECK FOR EXCEPTIONS - This is absolutely critical! Consider:
    - WHO caused the condition:
-     * If another player/person caused it  ->  Check Rule 8.1d (may restore conditions)
-     * If animal/natural forces caused it  ->  Check Rules 9.3, 9.6
-     * If player accidentally caused it  ->  Check Rule 9.4
+     * If another player/person caused it -- Check Rule 8.1d (may restore conditions)
+     * If animal/natural forces caused it -- Check Rules 9.3, 9.6
+     * If player accidentally caused it -- Check Rule 9.4
    
    - WHEN it happened:
-     * After ball came to rest  ->  Different rules may apply (8.1d, 9.3)
-     * During the stroke  ->  Rule 9.1b
-     * While ball in motion  ->  Rules 11.1-11.3
-     * After marking and lifting  ->  Rule 14.2d
-     * IMPORTANT: If ball was lifted and replaced BEFORE natural forces moved it  ->  Rule 9.3 Exception applies (replace ball, not play as it lies)
+     * After ball came to rest -- Different rules may apply (8.1d, 9.3)
+     * During the stroke -- Rule 9.1b
+     * While ball in motion -- Rules 11.1-11.3
+     * After marking and lifting -- Rule 14.2d
+     * IMPORTANT: If ball was lifted and replaced BEFORE natural forces moved it -- Rule 9.3 Exception applies (replace ball, not play as it lies)
    
    - WHERE on the course:
-     * Putting green  ->  Special rules under Rule 13
-     * Penalty area  ->  Rule 17 procedures
-     * Bunker  ->  Rule 12 specific rules
-     * Teeing area  ->  Rule 6 applies (including Rule 6.2b(5): no penalty for accidentally moving ball on tee)
+     * Putting green -- Special rules under Rule 13
+     * Penalty area -- Rule 17 procedures
+     * Bunker -- Rule 12 specific rules
+     * Teeing area -- Rule 6 applies (including Rule 6.2b(5): no penalty for accidentally moving ball on tee)
    
    - INTENT (accidental vs. deliberate):
-     * Accidental movement  ->  Often no penalty or different procedure
-     * Deliberate actions  ->  Usually penalties apply
-     * IMPORTANT: Accidental contact during backswing or practice swing is NOT a stroke  -  a stroke requires intent to hit the ball forward. If the ball was accidentally knocked off the tee during a backswing, it is NOT a stroke and Rule 6.2b(5) applies.
+     * Accidental movement -- Often no penalty or different procedure
+     * Deliberate actions -- Usually penalties apply
+     * IMPORTANT: Accidental contact during backswing or practice swing is NOT a stroke -- a stroke requires intent to hit the ball forward. If the ball was accidentally knocked off the tee during a backswing, it is NOT a stroke and Rule 6.2b(5) applies.
 
    - EXCEPTIONS WITHIN RULES:
      * Many rules have exceptions listed within them - check carefully!
@@ -780,7 +780,7 @@ Now provide your complete ruling:"""
         """
         Log the start of a query
         """
-        logger.info(f"ðŸŒï¸ [{query_id}] Query started: {question[:100]}...")
+        logger.info(f" [{query_id}] Query started: {question[:100]}...")
     
     def _log_query_complete(self, query_id: str, question: str, result: Dict):
         """
@@ -813,9 +813,9 @@ Now provide your complete ruling:"""
             
             # Additional detailed logging for debugging
             if result.get('source') == 'error':
-                logger.error(f"[ERR] [{query_id}] Query failed: {result.get('error', 'Unknown error')}")
+                logger.error(f" [{query_id}] Query failed: {result.get('error', 'Unknown error')}")
             else:
-                logger.info(f"âœ… [{query_id}] Query completed: {result['source']} in {result['response_time']}s")
+                logger.info(f" [{query_id}] Query completed: {result['source']} in {result['response_time']}s")
                 
         except Exception as e:
             logger.error(f"Logging error for query {query_id}: {e}")
