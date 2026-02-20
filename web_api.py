@@ -73,11 +73,11 @@ Most golfers prefer the Columbia CC option since you don't have to walk back."""
 
 OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
 Instead of going back to where you last played, you can:
-â€¢ Estimate where your ball crossed out of bounds or was lost
-â€¢ Find the nearest fairway point to that spot
-â€¢ Drop anywhere between two imaginary lines: one from the hole through where your ball was lost, and one from the hole through the nearest fairway point
-â€¢ Stay within two club-lengths of those lines
-â€¢ Must not be closer to the hole than where ball was lost
+• Estimate where your ball crossed out of bounds or was lost
+• Find the nearest fairway point to that spot
+• Drop anywhere between two imaginary lines: one from the hole through where your ball was lost, and one from the hole through the nearest fairway point
+• Stay within two club-lengths of those lines
+• Must not be closer to the hole than where ball was lost
 
 OPTION 2 - Standard Rule (1 penalty stroke):
 Return to where you last played and hit again (stroke and distance).
@@ -91,9 +91,9 @@ Exception: player gets FREE RELIEF from a ball hit into the maintenance area to 
         "quick_response": """On the 16th hole at Columbia CC, your options under Rule 17.1 depend on where the ball entered the water:
 
 If your ball went into the water/penalty area on the south side of the footbridge marked by yellow stakes:
-â€¢ Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
-â€¢ Back-on-the-Line Relief (1 penalty stroke), OR
-â€¢ Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
+• Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
+• Back-on-the-Line Relief (1 penalty stroke), OR
+• Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
 
 If your ball went into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
     },
@@ -104,10 +104,10 @@ If your ball went into the water/penalty area on the north side of the footbridg
         "quick_response": """On the 17th hole at Columbia CC:
 
 If your ball goes in the POND (west of the footbridge):
-â€¢ Standard relief under Rule 17.1 (1 penalty stroke), OR  
-â€¢ Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
+• Standard relief under Rule 17.1 (1 penalty stroke), OR  
+• Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
 If your ball is in other penalty areas on 17th, including on the cart bridge:
-â€¢ Standard relief under Rule 17.1 only
+• Standard relief under Rule 17.1 only
 The dropping zone is only available for the main pond area, not other penalty areas on the hole."""
     },
 
@@ -132,11 +132,11 @@ This is different from regular ground under repair - relief is mandatory, not op
         "quick_response": """Maintenance facility at Columbia CC (near holes 9 & 10):
 
 FREE RELIEF available from:
-â€¢ All maintenance buildings
-â€¢ Storage tanks and sheds  
-â€¢ Paved and gravel areas
-â€¢ Retention ponds
-â€¢ Equipment
+• All maintenance buildings
+• Storage tanks and sheds  
+• Paved and gravel areas
+• Retention ponds
+• Equipment
 The entire maintenance complex is treated as one large immovable obstruction. Drop within one club-length of your nearest point of complete relief, no closer to the hole."""
     },
     
@@ -154,12 +154,12 @@ When stakes are used to define or show the boundary edge, they are boundary obje
         "quick_response": """Aeration holes at Columbia CC:
 
 FREE RELIEF available when:
-â€¢ Ball is IN an aeration hole
-â€¢ Ball TOUCHES an aeration hole  
-â€¢ Aeration hole interferes with your swing
+• Ball is IN an aeration hole
+• Ball TOUCHES an aeration hole  
+• Aeration hole interferes with your swing
 NO RELIEF when:
-â€¢ Aeration hole only affects your stance
-â€¢ On putting green: only affects your line of putt
+• Aeration hole only affects your stance
+• On putting green: only affects your line of putt
 Relief: Drop/place within one club-length of nearest point of relief. If you get relief and the ball rolls into another aeration hole, you get relief again."""
     },
 
@@ -192,12 +192,12 @@ The construction fence is treated as a boundary, not a regular obstruction."""
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
-â€¢ Cart path sections behind 14th green marked by green stakes
-â€¢ Cart path sections behind 17th green marked by green stakes  
-â€¢ Unpaved road behind 12th green
+• Cart path sections behind 14th green marked by green stakes
+• Cart path sections behind 17th green marked by green stakes  
+• Unpaved road behind 12th green
 NO FREE RELIEF AVAILABLE - Your options:
-â€¢ Play the ball as it lies if possible
-â€¢ Declare the ball unplayable under Rule 19 (1 penalty stroke)
+• Play the ball as it lies if possible
+• Declare the ball unplayable under Rule 19 (1 penalty stroke)
     - Drop within two club-lengths, not nearer hole
     - Drop on line from hole through ball, going back as far as desired
     - Return to previous spot where you played
@@ -216,22 +216,22 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
     "quick_response": """According to Columbia Country Club's local rules, the Purple Line wall is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
-â€¢ NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
-â€¢ Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
-â€¢ This applies EVEN IF the ball comes to rest in a seemingly playable position
-â€¢ This includes balls that end up on the other side of the boundary
-â€¢ This includes balls that come to rest inside tunnels or other areas beyond the line
-â€¢ EXCEPTION: if your ball bounces back into play on the same side of the train tracks that it originally crossed, your ball is IN PLAY with NO PENALTY
+• NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
+• Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
+• This applies EVEN IF the ball comes to rest in a seemingly playable position
+• This includes balls that end up on the other side of the boundary
+• This includes balls that come to rest inside tunnels or other areas beyond the line
+• EXCEPTION: if your ball bounces back into play on the same side of the train tracks that it originally crossed, your ball is IN PLAY with NO PENALTY
 OUT OF BOUNDS RELIEF OPTIONS:
 You have TWO options under Columbia CC's local rules:
 
 OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
-â€¢ Estimate where your ball crossed the Purple Line boundary
-â€¢ Find the nearest fairway point to that crossing point
-â€¢ Drop within two club-lengths of the line between the hole and those reference points
-â€¢ Must not be closer to the hole than where ball crossed boundary
+• Estimate where your ball crossed the Purple Line boundary
+• Find the nearest fairway point to that crossing point
+• Drop within two club-lengths of the line between the hole and those reference points
+• Must not be closer to the hole than where ball crossed boundary
 OPTION 2 - Standard Rule (1 penalty stroke):
-â€¢ Return to where you last played and hit again (stroke and distance)
+• Return to where you last played and hit again (stroke and distance)
 Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
     }
 }
@@ -274,7 +274,7 @@ def apply_columbia_boosting(results, query, verbose=False):
         r = get_result_by_id('CCC-6')
         if r:
             if verbose:
-                logger.info(f"ðŸŽ¯ CCC-6: {r['best_similarity']:.3f} â†’ {r['best_similarity']*3.0:.3f} (3.0x purple line boost)")
+                logger.info(f"ðŸŽ¯ CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*3.0:.3f} (3.0x purple line boost)")
             r['best_similarity'] *= 3.0
     
     # --- BRIDGE (must come before cart path) ---
@@ -288,20 +288,20 @@ def apply_columbia_boosting(results, query, verbose=False):
         r = get_result_by_id('CCC-2')
         if r:
             if verbose:
-                logger.info(f"   ðŸŽ¯ CCC-2: {r['best_similarity']:.3f} â†’ {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
+                logger.info(f"   ðŸŽ¯ CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
             r['best_similarity'] *= 4.0
         
         r = get_result_by_id('CCC-4')
         if r:
             if verbose:
-                logger.info(f"   ðŸ”» CCC-4: {r['best_similarity']:.3f} â†’ {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+                logger.info(f"   ðŸ”» CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
             r['best_similarity'] *= 0.3
         
         for r in results:
             rid = r.get('rule', {}).get('id', '')
             if '16.1' in rid and not r.get('is_local'):
                 if verbose:
-                    logger.info(f"   ðŸ”» {rid}: {r['best_similarity']:.3f} â†’ {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   ðŸ”» {rid}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
     
     # --- CART PATH behind holes 12, 14, 17 ---
@@ -318,13 +318,13 @@ def apply_columbia_boosting(results, query, verbose=False):
             if r:
                 boost = 5.0 if hole_number == 12 else 3.0
                 if verbose:
-                    logger.info(f"   ðŸŽ¯ CCC-4: {r['best_similarity']:.3f} â†’ {r['best_similarity']*boost:.3f} ({boost}x boost)")
+                    logger.info(f"   ðŸŽ¯ CCC-4: {r['best_similarity']:.3f} → {r['best_similarity']*boost:.3f} ({boost}x boost)")
                 r['best_similarity'] *= boost
             
             r = get_result_by_id('CCC-10')
             if r:
                 if verbose:
-                    logger.info(f"   ðŸ”» CCC-10: {r['best_similarity']:.3f} â†’ {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
+                    logger.info(f"   ðŸ”» CCC-10: {r['best_similarity']:.3f} → {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
                 r['best_similarity'] *= 0.3
     
     # --- WATER HAZARD on holes 15-18 ---
@@ -339,13 +339,13 @@ def apply_columbia_boosting(results, query, verbose=False):
             r = get_result_by_id('CCC-2')
             if r:
                 if verbose:
-                    logger.info(f"   ðŸŽ¯ CCC-2: {r['best_similarity']:.3f} â†’ {r['best_similarity']*4.0:.3f} (4.0x boost)")
+                    logger.info(f"   ðŸŽ¯ CCC-2: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
                 r['best_similarity'] *= 4.0
             
             r = get_result_by_id('CCC-1')
             if r:
                 if verbose:
-                    logger.info(f"   ðŸ”» CCC-1: {r['best_similarity']:.3f} â†’ {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   ðŸ”» CCC-1: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
     
     # --- CONSTRUCTION FENCE ---
@@ -356,7 +356,7 @@ def apply_columbia_boosting(results, query, verbose=False):
         r = get_result_by_id('CCC-6')
         if r:
             if verbose:
-                logger.info(f"   ðŸŽ¯ CCC-6: {r['best_similarity']:.3f} â†’ {r['best_similarity']*4.0:.3f} (4.0x boost)")
+                logger.info(f"   ðŸŽ¯ CCC-6: {r['best_similarity']:.3f} → {r['best_similarity']*4.0:.3f} (4.0x boost)")
             r['best_similarity'] *= 4.0
         
         for r in results:
@@ -364,7 +364,7 @@ def apply_columbia_boosting(results, query, verbose=False):
             text = r.get('rule', {}).get('text', '').lower()
             if 'obstruction' in title and 'free relief' in text:
                 if verbose:
-                    logger.info(f"   ðŸ”» {r['rule']['id']}: {r['best_similarity']:.3f} â†’ {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                    logger.info(f"   ðŸ”» {r['rule']['id']}: {r['best_similarity']:.3f} → {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
                 r['best_similarity'] *= 0.4
     
     # --- HOLES 2-4 LEFT SIDE PENALTY AREA ---
@@ -484,12 +484,12 @@ class ProductionHybridVectorSearch:
                 for i, rule in enumerate(all_rules):
                     self.rule_embeddings_cache[rule['id']] = embeddings[i]
                 
-                logger.info(f"âœ… Pre-computed embeddings for {len(all_rules)} rules")
+                logger.info(f"🤖 Pre-computed embeddings for {len(all_rules)} rules")
             else:
-                logger.error("âŒ Failed to pre-compute rule embeddings")
+                logger.error("❌ Failed to pre-compute rule embeddings")
                 
         except Exception as e:
-            logger.error(f"âŒ Error pre-computing embeddings: {e}")
+            logger.error(f"❌ Error pre-computing embeddings: {e}")
     
     def get_embeddings_batch(self, texts, max_batch_size=100):
         """Get embeddings for multiple texts in batches."""
@@ -595,7 +595,7 @@ class ProductionHybridVectorSearch:
             results.sort(key=sort_key, reverse=True)
             
             if verbose:
-                logger.info(f"âœ… Found {len(results)} total rules, returning top {top_n}")
+                logger.info(f"🤖 Found {len(results)} total rules, returning top {top_n}")
                 for i, result in enumerate(results[:top_n]):
                     rule_type = "LOCAL" if result['is_local'] else "OFFICIAL"
                     logger.info(f"  {i+1}. {rule_type} - {result['rule']['id']}: {result['best_similarity']:.3f}")
@@ -695,7 +695,7 @@ def create_definition_response(definition_id, query):
 {definition['definition']}
 
 **Examples:**
-{chr(10).join([f'â€¢ {example}' for example in definition['examples'][:4]])}
+{chr(10).join([f'• {example}' for example in definition['examples'][:4]])}
 
 **Related Rules:** {', '.join(definition['related_rules'])}"""
     
@@ -756,9 +756,9 @@ def enhance_ai_prompt_with_definitions(prompt, query):
         return prompt
         
     except Exception as e:
-        logger.error(f"âŒ DEBUG: Definition enhancement failed with error: {e}")
+        logger.error(f"❌ DEBUG: Definition enhancement failed with error: {e}")
         import traceback
-        logger.error(f"âŒ DEBUG: Traceback: {traceback.format_exc()}")
+        logger.error(f"❌ DEBUG: Traceback: {traceback.format_exc()}")
         return prompt
 
 def check_common_query(question):
@@ -856,7 +856,7 @@ Focus on:
 - Columbia-specific areas (maintenance zones, construction boundaries, integral cart paths)
 
 Key distinctions:
-- Ball position â‰  relief procedures (focus on WHERE not HOW to get relief)
+- Ball position ≈ relief procedures (focus on WHERE not HOW to get relief)
 - Different course areas have different rules
 - Local boundaries may differ from standard golf boundaries
 
@@ -1415,7 +1415,7 @@ def check_common_query_with_confidence(question, confidence_threshold=0.6):
     # Debug print (like your verbose mode in vector search)
     print(f"\nðŸ” Template matching for: '{question[:40]}...'")
     for name, conf in sorted(debug_matches, key=lambda x: x[1], reverse=True)[:3]:
-        status = "âœ…" if conf >= confidence_threshold else "  "
+        status = "🤖" if conf >= confidence_threshold else "  "
         print(f"  {status} {name}: {conf:.3f}")
     
     # Apply threshold (like similarity < 0.1 skip in vector search)
@@ -1458,7 +1458,7 @@ def get_hybrid_interpretation(question, verbose=False):
             # High confidence: Use template immediately
             if confidence >= 0.75:
                 if verbose:
-                    logger.info(f"âœ… High confidence ({confidence:.3f}) - using template")
+                    logger.info(f"🤖 High confidence ({confidence:.3f}) - using template")
                 
                 result = {
                     'answer': template["quick_response"],
@@ -1474,7 +1474,7 @@ def get_hybrid_interpretation(question, verbose=False):
             # Medium confidence: Use template but note uncertainty
             elif confidence >= 0.5:
                 if verbose:
-                    logger.info(f"âš ï¸ Medium confidence ({confidence:.3f}) - using template with note")
+                    logger.info(f"✅ Medium confidence ({confidence:.3f}) - using template with note")
                 
                 # Add a note about confidence
                 modified_answer = template["quick_response"]
@@ -1495,7 +1495,7 @@ def get_hybrid_interpretation(question, verbose=False):
             # Low confidence: Fall through to AI
             else:
                 if verbose:
-                    logger.info(f"âŒ Low confidence ({confidence:.3f}) - routing to AI")
+                    logger.info(f"❌ Low confidence ({confidence:.3f}) - routing to AI")
         
         # STEP 2: No good template match, classify intent for AI routing
         intent = classify_intent_enhanced(question)
@@ -1520,7 +1520,7 @@ def get_hybrid_interpretation(question, verbose=False):
         result['intent_detected'] = intent
         
         if verbose:
-            logger.info(f"âœ… AI response completed in {response_time}s")
+            logger.info(f"🤖 AI response completed in {response_time}s")
         
         return result
                 
@@ -1601,7 +1601,7 @@ def initialize_ai_system():
         
         if test_response:
             ai_system_available = True
-            logger.info("âœ… Production hybrid system ready - Templates + AI with Rule Scoring")
+            logger.info("🤖 Production hybrid system ready - Templates + AI with Rule Scoring")
             try:
                 simplified_system = create_simplified_system(
                     templates=COMMON_QUERY_TEMPLATES,
@@ -1611,9 +1611,9 @@ def initialize_ai_system():
                     rules_db=RULES_DATABASE,
                     local_rules=COLUMBIA_CC_LOCAL_RULES
                 )
-                logger.info("âœ… Simplified system ready")
+                logger.info("🤖 Simplified system ready")
             except Exception as e:
-                logger.error(f"âš ï¸ Simplified system init failed: {e}")
+                logger.error(f"✅ Simplified system init failed: {e}")
             return True
         else:
             raise Exception("OpenAI API test failed")
@@ -1621,7 +1621,7 @@ def initialize_ai_system():
     except Exception as e:
         ai_system_available = False
         ai_error_message = f"AI initialization error: {str(e)}"
-        logger.error(f"âŒ AI initialization failed: {str(e)}")
+        logger.error(f"❌ AI initialization failed: {str(e)}")
         return False
 
 @app.route('/api/ask', methods=['POST'])
@@ -1679,7 +1679,7 @@ def ask_question():
                 except Exception as e:
                     logger.error(f"Dashboard logging error for definitions: {e}")
                 
-                logger.info(f"âœ… Definition response in {response_time}s")
+                logger.info(f"🤖 Definition response in {response_time}s")
                 return jsonify(response_data)
             
         if ai_system_available:
@@ -1717,7 +1717,7 @@ def ask_question():
                 if 'rule_id' in result:
                     response_data['rule_id'] = result['rule_id']
                 
-                logger.info(f"âœ… Production hybrid response ({result['source']}) in {response_time}s")
+                logger.info(f"🤖 Production hybrid response ({result['source']}) in {response_time}s")
                 try:
                     comprehensive_log = {
                         "timestamp": datetime.now().isoformat(),
@@ -1739,7 +1739,7 @@ def ask_question():
                 return jsonify(response_data)
                 
             except Exception as e:
-                logger.error(f"âš ï¸ Hybrid system error: {str(e)}")
+                logger.error(f"✅ Hybrid system error: {str(e)}")
                 # Fall through to fallback
         
         # Fallback if AI unavailable
@@ -1759,12 +1759,12 @@ def ask_question():
             'timestamp': datetime.now().isoformat()
         }
         
-        logger.info(f"âœ… Fallback response in {response_time}s") 
+        logger.info(f"🤖 Fallback response in {response_time}s") 
         
         return jsonify(response_data)
         
     except Exception as e:
-        logger.error(f"âŒ API Error: {str(e)}")
+        logger.error(f"❌ API Error: {str(e)}")
         return jsonify({
             'success': False,
             'error': f'Failed to process question: {str(e)}',
@@ -1818,7 +1818,7 @@ def get_definitions():
             })
     
     except Exception as e:
-        logger.error(f"âŒ Definitions API Error: {str(e)}")
+        logger.error(f"❌ Definitions API Error: {str(e)}")
         return jsonify({
             'success': False,
             'error': f'Failed to get definitions: {str(e)}'
@@ -1965,7 +1965,7 @@ def view_all_queries():
                 <h3>Summary (Last 7 Days)</h3>
                 <p><strong>Total Queries:</strong> {len(all_queries)}</p>
                 <p><strong>Template Responses:</strong> {template_count}</p>
-                <p><strong>Definitions Database:</strong> {definitions_count} âœ¨ NEW</p>
+                <p><strong>Definitions Database:</strong> {definitions_count} 🔎 NEW</p>
                 <p><strong>AI Responses:</strong> {ai_count}</p>
                 <p><strong>Total Cost:</strong> ${sum([q.get('estimated_cost', 0) for q in all_queries]):.4f}</p>
                 <p><strong>Data Source:</strong> Cloud Logging (Persistent)</p>
@@ -2025,7 +2025,7 @@ def view_all_queries():
             <div style="margin-top: 20px; font-size: 12px; color: #666;">
                 <p><strong>Color coding:</strong></p>
                 <p><span style="background-color: #e8f5e8; padding: 2px 6px;">Green</span> = Template (Free)</p>
-                <p><span style="background-color: #fff5e6; padding: 2px 6px;">Orange</span> = Definitions Database (Free) âœ¨ NEW</p>
+                <p><span style="background-color: #fff5e6; padding: 2px 6px;">Orange</span> = Definitions Database (Free) 🔎 NEW</p>
                 <p><span style="background-color: #e8f0ff; padding: 2px 6px;">Blue</span> = AI Response (Costs tokens)</p>
                 <p><span style="background-color: #ffe8e8; padding: 2px 6px;">Red</span> = Error/Fallback</p>
                 <p><strong>Data persists across container restarts!</strong></p>
@@ -2068,16 +2068,16 @@ def view_all_queries():
 # Initialize the production hybrid system
 logger.info("ðŸš€ Starting Production Hybrid Golf Rules System...")
 logger.info("ðŸ“Š System includes:")
-logger.info(f"  â€¢ {len(COMMON_QUERY_TEMPLATES)} comprehensive templates")
-logger.info(f"  â€¢ {len(COLUMBIA_CC_LOCAL_RULES.get('local_rules', []))} Columbia CC local rules")  
-logger.info(f"  â€¢ {len(RULES_DATABASE)} official golf rules")
+logger.info(f"  • {len(COMMON_QUERY_TEMPLATES)} comprehensive templates")
+logger.info(f"  • {len(COLUMBIA_CC_LOCAL_RULES.get('local_rules', []))} Columbia CC local rules")  
+logger.info(f"  • {len(RULES_DATABASE)} official golf rules")
 
 ai_initialized = initialize_ai_system()
 
 if ai_initialized: 
     logger.info("ðŸŽ¯ Production Hybrid System Ready - Templates + AI + Rule Scoring + Local Precedence!")
 else:
-    logger.warning("âš ï¸ Running in template-only mode")
+    logger.warning("✅ Running in template-only mode")
 
         
 if __name__ == '__main__':
