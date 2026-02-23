@@ -63,7 +63,9 @@ Instead of going back to where you last played, you can:
 OPTION 2 - Standard Rule (1 penalty stroke):
 Return to where you last played and hit again (stroke and distance).
 
-Most golfers prefer the Columbia CC option since you don't have to walk back."""
+Most golfers prefer the Columbia CC option since you don't have to walk back.
+
+"""
     },
 
     "clear_out_of_bounds": {
@@ -82,7 +84,9 @@ Instead of going back to where you last played, you can:
 OPTION 2 - Standard Rule (1 penalty stroke):
 Return to where you last played and hit again (stroke and distance).
 
-Exception: player gets FREE RELIEF from a ball hit into the maintenance area to the left of #10, whether the ball is found or not."""
+Exception: player gets FREE RELIEF from a ball hit into the maintenance area to the left of #10, whether the ball is found or not.
+
+"""
     },
     
     "water_hazard_16": {
@@ -95,7 +99,9 @@ If your ball went into the water/penalty area on the south side of the footbridg
   • Back-on-the-Line Relief (1 penalty stroke), OR
   • Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
 
-If your ball went into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
+If your ball went into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke).
+
+"""
     },
     
     "water_hazard_17": {
@@ -109,6 +115,7 @@ If your ball goes in the POND (west of the footbridge):
 If your ball is in other penalty areas on 17th, including on the cart bridge:
   • Standard relief under Rule 17.1 only
 The dropping zone is only available for the main pond area, not other penalty areas on the hole.
+
 """
     },
 
@@ -124,7 +131,9 @@ MANDATORY FREE RELIEF required:
   • Within one club-length, not nearer hole
   • No penalty stroke
 
-This is different from regular ground under repair - relief is mandatory, not optional."""
+This is different from regular ground under repair - relief is mandatory, not optional.
+
+"""
     },
      
     "maintenance_facility": {
@@ -139,6 +148,7 @@ FREE RELIEF available from:
   • Retention ponds
   • Equipment
 The entire maintenance complex is treated as one large immovable obstruction. Drop within one club-length of your nearest point of complete relief, no closer to the hole.
+
 """
     },
     
@@ -147,7 +157,9 @@ The entire maintenance complex is treated as one large immovable obstruction. Dr
         "official_definition": "Out of Bounds",
         "quick_response": """According to the Rules of Golf, when out-of-bounds is defined by a painted line on the ground, the boundary edge is the course-side edge of the line, and the line itself is out of bounds.
 
-When stakes are used to define or show the boundary edge, they are boundary objects, which are treated as immovable even if they are movable or any part of them is movable."""
+When stakes are used to define or show the boundary edge, they are boundary objects, which are treated as immovable even if they are movable or any part of them is movable.
+
+"""
     },
     
     "aeration_holes": {
@@ -162,7 +174,9 @@ FREE RELIEF available when:
 NO RELIEF when:
   • Aeration hole only affects your stance
   • On putting green: only affects your line of putt
-Relief: Drop/place within one club-length of nearest point of relief. If you get relief and the ball rolls into another aeration hole, you get relief again."""
+Relief: Drop/place within one club-length of nearest point of relief. If you get relief and the ball rolls into another aeration hole, you get relief again.
+
+"""
     },
 
     "construction_fence_relief": {
@@ -179,7 +193,9 @@ Your options:
   - Drop on line from hole through ball, going back as far as desired
   - Return to previous spot where you played
 
-The construction fence is treated as a boundary, not a regular obstruction."""
+The construction fence is treated as a boundary, not a regular obstruction.
+
+"""
     },
 
     "green_stakes_cart_path": {
@@ -237,6 +253,7 @@ OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
 OPTION 2 - Standard Rule (1 penalty stroke):
   • Return to where you last played and hit again (stroke and distance)
 Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction.
+
 """
     }
 }
