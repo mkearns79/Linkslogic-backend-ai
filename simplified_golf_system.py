@@ -88,7 +88,7 @@ class SimplifiedGolfRulesSystem:
         
         # STAGE 1: Check templates (strict matching for Columbia CC rules)
         template_result = self._check_template_strict(question, verbose)
-        if template_result and template_result['confidence'] >= 0.3:
+        if template_result:
             if verbose:
                 logger.info(f" [{query_id}] Using template with confidence {template_result['confidence']:.2f}")
             result = self._format_response(template_result, start_time, query_id)
