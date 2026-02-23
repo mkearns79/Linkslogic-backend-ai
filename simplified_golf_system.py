@@ -191,7 +191,8 @@ class SimplifiedGolfRulesSystem:
             'purple_line_boundary': {
                 'required': ['purple'],
                 'any_of': ['line', 'boundary', 'train', 'tracks', 'wall', 'fence'],
-                'min_matches': 1
+                'min_matches': 1,
+                'min_confidence': 0.2
             },
             'green_stakes_cart_path': {
                 'required': ['path', 'green'],
@@ -255,18 +256,22 @@ class SimplifiedGolfRulesSystem:
         if verbose and best_match:
             logger.info(f" Best template match: {best_match} (confidence: {best_confidence:.2f})")
         
-        if best_match and best_confidence >= 0.3:  # Internal threshold
-            template = self.templates.get(best_match)
-            if template:
-                source = 'template_high' if best_confidence >= 0.85 else 'template_medium'
-                return {
-                    'answer': template.get('quick_response', ''),
-                    'source': source,
-                    'rule_id': template.get('local_rule'),
-                    'confidence': best_confidence,
-                    'template_name': best_match,
-                    'tokens_used': 0
-                }
+        if best_match:
+            # Use per-template min_confidence if set, otherwise default 0.3
+            best_patterns = template_patterns.get(best_match, {})
+            min_conf = best_patterns.get('min_confidence', 0.3)
+            if best_confidence >= min_conf:
+                template = self.templates.get(best_match)
+                if template:
+                    source = 'template_high' if best_confidence >= 0.85 else 'template_medium'
+                    return {
+                        'answer': template.get('quick_response', ''),
+                        'source': source,
+                        'rule_id': template.get('local_rule'),
+                        'confidence': best_confidence,
+                        'template_name': best_match,
+                        'tokens_used': 0
+                    }
         
         return None
     
