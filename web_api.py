@@ -108,7 +108,8 @@ If your ball goes in the POND (west of the footbridge):
   • Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
 If your ball is in other penalty areas on 17th, including on the cart bridge:
   • Standard relief under Rule 17.1 only
-The dropping zone is only available for the main pond area, not other penalty areas on the hole."""
+The dropping zone is only available for the main pond area, not other penalty areas on the hole.
+"""
     },
 
     "turf_nursery": {
@@ -137,7 +138,8 @@ FREE RELIEF available from:
   • Paved and gravel areas
   • Retention ponds
   • Equipment
-The entire maintenance complex is treated as one large immovable obstruction. Drop within one club-length of your nearest point of complete relief, no closer to the hole."""
+The entire maintenance complex is treated as one large immovable obstruction. Drop within one club-length of your nearest point of complete relief, no closer to the hole.
+"""
     },
     
      "OB_lines": {
@@ -201,8 +203,8 @@ NO FREE RELIEF AVAILABLE - Your options:
         - Drop within two club-lengths, not nearer hole
         - Drop on line from hole through ball, going back as far as desired
         - Return to previous spot where you played
-
 Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects.
+
 """
     },
 
@@ -234,7 +236,8 @@ OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
   • Must not be closer to the hole than where ball crossed boundary
 OPTION 2 - Standard Rule (1 penalty stroke):
   • Return to where you last played and hit again (stroke and distance)
-Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
+Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction.
+"""
     }
 }
 
