@@ -3,11 +3,11 @@ Simplified Golf Rules System - Version 2 with Enhanced Logging
 Updated with better source tracking and no character limits
 
 FIXES APPLIED:
-- Fix 1: Template topic-gating to prevent hole-number-only matches
-- Fix 4: Definition stage negative patterns to prevent over-triggering
-- Fix 7: Expanded lost ball template patterns
-- Fix 8: AI prompt clarification for accidental contact vs stroke
-- Fix 11: Removed debug logging and duplicate prompt creation
+  • Fix 1: Template topic-gating to prevent hole-number-only matches
+  • Fix 4: Definition stage negative patterns to prevent over-triggering
+  • Fix 7: Expanded lost ball template patterns
+  • Fix 8: AI prompt clarification for accidental contact vs stroke
+  • Fix 11: Removed debug logging and duplicate prompt creation
 """
 
 import time
@@ -557,7 +557,7 @@ class SimplifiedGolfRulesSystem:
                     
                     # Show exceptions FIRST and prominently
                     if exceptions:
-                        context_part += "\n[!]  EXCEPTIONS:\n"
+                        context_part += "\nEXCEPTIONS:\n"
                         for exc in exceptions:
                             context_part += f"  - {exc.get('explanation', '')}\n"
                             # Add examples if available
@@ -621,7 +621,7 @@ class SimplifiedGolfRulesSystem:
                                 
                                 # Show exceptions FIRST
                                 if exceptions:
-                                    related_part += "\n[!]  EXCEPTIONS:\n"
+                                    related_part += "\nEXCEPTIONS:\n"
                                     for exc in exceptions:
                                         related_part += f"  - {exc.get('explanation', '')}\n"
                                         if 'examples' in exc and isinstance(exc.get('examples'), list):
@@ -725,15 +725,15 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
    - If an exception changes the ruling, explain why
 
 RESPONSE FORMAT:
-- Start with the direct answer/ruling first (1-2 sentences)
-- Then provide the explanation with rule citations
-- Keep total response concise: 150-250 words
-- Don't explore rules that don't apply to this situation
-- Set max_tokens to 400 in the API call
+  • Start with the direct answer/ruling first (1-2 sentences)
+  • Then provide the explanation with rule citations
+  • Keep total response concise: 150-250 words
+  • Don't explore rules that don't apply to this situation
+  • Set max_tokens to 400 in the API call
 
 Start your response appropriately:
-- "According to Columbia's local rules..." (if using local rule)
-- "According to the Rules of Golf, Rule X.X..." (if using official rule)
+  • "According to Columbia's local rules..." (if using local rule)
+  • "According to the Rules of Golf, Rule X.X..." (if using official rule)
         
 Example of complete answer:
 "According to The Rules of Golf, Rule 13.1c, you generally cannot repair damage on the fringe. However, Rule 8.1d provides an exception: since another player caused the damage after your ball came to rest, you ARE allowed to restore the conditions to what they were. You may repair the pitch mark without penalty."

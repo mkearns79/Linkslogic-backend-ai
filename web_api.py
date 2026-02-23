@@ -54,11 +54,11 @@ COMMON_QUERY_TEMPLATES = {
 
 OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
 Instead of going back to where you last played, you can:
-- Estimate where your ball was lost
-- Find the nearest fairway point to that spot  
-- Drop anywhere between two imaginary lines from the hole through each point
-- Stay within two club-lengths of those lines
-- Must not be closer to the hole than where ball was lost
+  • Estimate where your ball was lost
+  • Find the nearest fairway point to that spot  
+  • Drop anywhere between two imaginary lines from the hole through each point
+  • Stay within two club-lengths of those lines
+  • Must not be closer to the hole than where ball was lost
 
 OPTION 2 - Standard Rule (1 penalty stroke):
 Return to where you last played and hit again (stroke and distance).
@@ -73,11 +73,11 @@ Most golfers prefer the Columbia CC option since you don't have to walk back."""
 
 OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
 Instead of going back to where you last played, you can:
-- Estimate where your ball crossed out of bounds or was lost
-- Find the nearest fairway point to that spot
-- Drop anywhere between two imaginary lines: one from the hole through where your ball was lost, and one from the hole through the nearest fairway point
-- Stay within two club-lengths of those lines
-- Must not be closer to the hole than where ball was lost
+  • Estimate where your ball crossed out of bounds or was lost
+  • Find the nearest fairway point to that spot
+  • Drop anywhere between two imaginary lines: one from the hole through where your ball was lost, and one from the hole through the nearest fairway point
+  • Stay within two club-lengths of those lines
+  • Must not be closer to the hole than where ball was lost
 
 OPTION 2 - Standard Rule (1 penalty stroke):
 Return to where you last played and hit again (stroke and distance).
@@ -91,9 +91,9 @@ Exception: player gets FREE RELIEF from a ball hit into the maintenance area to 
         "quick_response": """On the 16th hole at Columbia CC, your options under Rule 17.1 depend on where the ball entered the water:
 
 If your ball went into the water/penalty area on the south side of the footbridge marked by yellow stakes:
-- Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
-- Back-on-the-Line Relief (1 penalty stroke), OR
-- Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
+  • Stroke-and-Distance Relief (rehit from tee) (1 penalty stroke)
+  • Back-on-the-Line Relief (1 penalty stroke), OR
+  • Use the special DROPPING ZONE near the 16th green (1 penalty stroke)
 
 If your ball went into the water/penalty area on the north side of the footbridge marked by red stakes, you have an additional relief option to drop within two club lengths from the point where the original ball is estimated to have crossed into the red penalty area, no closer to the hole (1 penalty stroke)."""
     },
@@ -104,10 +104,10 @@ If your ball went into the water/penalty area on the north side of the footbridg
         "quick_response": """On the 17th hole at Columbia CC:
 
 If your ball goes in the POND (west of the footbridge):
-- Standard relief under Rule 17.1 (1 penalty stroke), OR  
-- Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
+  • Standard relief under Rule 17.1 (1 penalty stroke), OR  
+  • Use the special DROPPING ZONE near the 17th green (1 penalty stroke)
 If your ball is in other penalty areas on 17th, including on the cart bridge:
-- Standard relief under Rule 17.1 only
+  • Standard relief under Rule 17.1 only
 The dropping zone is only available for the main pond area, not other penalty areas on the hole."""
     },
 
@@ -117,11 +117,11 @@ The dropping zone is only available for the main pond area, not other penalty ar
         "quick_response": """According to Columbia Country Club's local rules, the turf nursery adjacent to the maintenance area is a No Play Zone.
 
 MANDATORY FREE RELIEF required:
-- You CANNOT play the ball as it lies
-- You MUST take free relief under Rule 16.1f
-- Drop at nearest point of complete relief from the nursery area
-- Within one club-length, not nearer hole
-- No penalty stroke
+  • You CANNOT play the ball as it lies
+  • You MUST take free relief under Rule 16.1f
+  • Drop at nearest point of complete relief from the nursery area
+  • Within one club-length, not nearer hole
+  • No penalty stroke
 
 This is different from regular ground under repair - relief is mandatory, not optional."""
     },
@@ -132,11 +132,11 @@ This is different from regular ground under repair - relief is mandatory, not op
         "quick_response": """Maintenance facility at Columbia CC (near holes 9 & 10):
 
 FREE RELIEF available from:
-- All maintenance buildings
-- Storage tanks and sheds  
-- Paved and gravel areas
-- Retention ponds
-- Equipment
+  • All maintenance buildings
+  • Storage tanks and sheds  
+  • Paved and gravel areas
+  • Retention ponds
+  • Equipment
 The entire maintenance complex is treated as one large immovable obstruction. Drop within one club-length of your nearest point of complete relief, no closer to the hole."""
     },
     
@@ -154,12 +154,12 @@ When stakes are used to define or show the boundary edge, they are boundary obje
         "quick_response": """Aeration holes at Columbia CC:
 
 FREE RELIEF available when:
-- Ball is IN an aeration hole
-- Ball TOUCHES an aeration hole  
-- Aeration hole interferes with your swing
+  • Ball is IN an aeration hole
+  • Ball TOUCHES an aeration hole  
+  • Aeration hole interferes with your swing
 NO RELIEF when:
-- Aeration hole only affects your stance
-- On putting green: only affects your line of putt
+  • Aeration hole only affects your stance
+  • On putting green: only affects your line of putt
 Relief: Drop/place within one club-length of nearest point of relief. If you get relief and the ball rolls into another aeration hole, you get relief again."""
     },
 
@@ -171,8 +171,8 @@ Relief: Drop/place within one club-length of nearest point of relief. If you get
 NO FREE RELIEF is available from this fence, or any fence at Columbia.
 
 Your options:
-- Play the ball as it lies if possible
-- Declare the ball unplayable under Rule 19 (1 penalty stroke)
+  • Play the ball as it lies if possible
+  • Declare the ball unplayable under Rule 19 (1 penalty stroke)
   - Drop within two club-lengths, not nearer hole
   - Drop on line from hole through ball, going back as far as desired
   - Return to previous spot where you played
@@ -192,12 +192,12 @@ The construction fence is treated as a boundary, not a regular obstruction."""
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
-- Cart path sections behind 14th green marked by green stakes
-- Cart path sections behind 17th green marked by green stakes  
-- Unpaved road behind 12th green
+  • Cart path sections behind 14th green marked by green stakes
+  • Cart path sections behind 17th green marked by green stakes  
+  • Unpaved road behind 12th green
 NO FREE RELIEF AVAILABLE - Your options:
-- Play the ball as it lies if possible
-- Declare the ball unplayable under Rule 19 (1 penalty stroke)
+  • Play the ball as it lies if possible
+  • Declare the ball unplayable under Rule 19 (1 penalty stroke)
     - Drop within two club-lengths, not nearer hole
     - Drop on line from hole through ball, going back as far as desired
     - Return to previous spot where you played
@@ -216,22 +216,22 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
     "quick_response": """According to Columbia Country Club's local rules, the Purple Line wall is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
-- NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
-- Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
-- This applies EVEN IF the ball comes to rest in a seemingly playable position
-- This includes balls that end up on the other side of the boundary
-- This includes balls that come to rest inside tunnels or other areas beyond the line
-- EXCEPTION: if your ball bounces back into play on the same side of the train tracks that it originally crossed, your ball is IN PLAY with NO PENALTY
+  • NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
+  • Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
+  • This applies EVEN IF the ball comes to rest in a seemingly playable position
+  • This includes balls that end up on the other side of the boundary
+  • This includes balls that come to rest inside tunnels or other areas beyond the line
+  • EXCEPTION: if your ball bounces back into play on the same side of the train tracks that it originally crossed, your ball is IN PLAY with NO PENALTY
 OUT OF BOUNDS RELIEF OPTIONS:
 You have TWO options under Columbia CC's local rules:
 
 OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
-- Estimate where your ball crossed the Purple Line boundary
-- Find the nearest fairway point to that crossing point
-- Drop within two club-lengths of the line between the hole and those reference points
-- Must not be closer to the hole than where ball crossed boundary
+  • Estimate where your ball crossed the Purple Line boundary
+  • Find the nearest fairway point to that crossing point
+  • Drop within two club-lengths of the line between the hole and those reference points
+  • Must not be closer to the hole than where ball crossed boundary
 OPTION 2 - Standard Rule (1 penalty stroke):
-- Return to where you last played and hit again (stroke and distance)
+  • Return to where you last played and hit again (stroke and distance)
 Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
     }
 }
@@ -845,19 +845,19 @@ Relevant Rules:
 {context}
 
 Focus on: 
-- Local boundary definitions (purple line, train tracks, construction areas, out of bounds markers)
-- Ball location determination (in bounds vs out of bounds, penalty area vs general area)
-- Course area identification (teeing area, bunker, penalty area, putting green, general area)
-- Local obstruction rules (cart paths as integral objects vs immovable obstructions)
-- Ball identification issues (which ball is mine, provisional vs original)
-- Playability status (can I play this ball, is it the right ball)
-- Movement and position after deflection (bounced back, kicked back, ricocheted)
-- Columbia-specific areas (maintenance zones, construction boundaries, integral cart paths)
+  • Local boundary definitions (purple line, train tracks, construction areas, out of bounds markers)
+  • Ball location determination (in bounds vs out of bounds, penalty area vs general area)
+  • Course area identification (teeing area, bunker, penalty area, putting green, general area)
+  • Local obstruction rules (cart paths as integral objects vs immovable obstructions)
+  • Ball identification issues (which ball is mine, provisional vs original)
+  • Playability status (can I play this ball, is it the right ball)
+  • Movement and position after deflection (bounced back, kicked back, ricocheted)
+  • Columbia-specific areas (maintenance zones, construction boundaries, integral cart paths)
 
 Key distinctions:
-- Ball position -- relief procedures (focus on WHERE not HOW to get relief)
-- Different course areas have different rules
-- Local boundaries may differ from standard golf boundaries
+  • Ball position -- relief procedures (focus on WHERE not HOW to get relief)
+  • Different course areas have different rules
+  • Local boundaries may differ from standard golf boundaries
 
 If COLUMBIA CC LOCAL RULE applies, start with "According to Columbia's local rules..."
 If an official rule applies, start with "According to the Rules of Golf, Rule X.X..."
@@ -924,13 +924,13 @@ CRITICAL INSTRUCTIONS:
 7. Distinguish between movable and immovable obstructions if relevant
 
 Start your response with either:
-- "According to Columbia's local rules..." (if using local rule)
-- "According to the Rules of Golf, Rule X.X..." (if using official rule)
+  • "According to Columbia's local rules..." (if using local rule)
+  • "According to the Rules of Golf, Rule X.X..." (if using official rule)
 
 Provide the complete procedure including:
-- Whether there is a penalty or free relief
-- Where and how to take relief
-- Any specific requirements or limitations"""
+  • Whether there is a penalty or free relief
+  • Where and how to take relief
+  • Any specific requirements or limitations"""
 
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
 
@@ -990,8 +990,8 @@ CRITICAL INSTRUCTIONS:
 6. Describe the complete procedure to continue play after the breach
 
 Start your response appropriately:
-- "According to Columbia's local rules..." (if using local rule)
-- "According to the Rules of Golf, Rule X.X..." (if using official rule)"""
+  • "According to Columbia's local rules..." (if using local rule)
+  • "According to the Rules of Golf, Rule X.X..." (if using official rule)"""
 
         # Apply definition enhancement (Option 1)
         enhanced_prompt = enhance_ai_prompt_with_definitions(base_prompt, question)
@@ -1053,8 +1053,8 @@ CRITICAL INSTRUCTIONS:
 6. Be thorough - do not skip steps or details
 
 Start your response appropriately:
-- "According to Columbia's local rules..." (if using local rule)
-- "According to the Rules of Golf, Rule X.X..." (if using official rule)
+  • "According to Columbia's local rules..." (if using local rule)
+  • "According to the Rules of Golf, Rule X.X..." (if using official rule)
 
 Format the procedure clearly with numbered steps when applicable."""
 
@@ -1107,8 +1107,8 @@ CRITICAL INSTRUCTIONS:
 4. If the rule has specific requirements or limitations, include them all
 
 Start your response appropriately:
-- "According to Columbia's local rules..." (if using local rule)
-- "According to the Rules of Golf, Rule X.X..." (if using official rule)
+  • "According to Columbia's local rules..." (if using local rule)
+  • "According to the Rules of Golf, Rule X.X..." (if using official rule)
 
 Ensure your answer is complete and would allow a golfer to proceed correctly."""
 
@@ -1541,11 +1541,11 @@ def enhance_ai_prompt_with_completeness_check(base_prompt, question, rule_type="
     completeness_instructions = """
 
 ACCURACY REQUIREMENTS:
-- Include ALL qualifying conditions (when the rule applies)
-- Include ALL exceptions (when the rule does NOT apply)
-- For relief questions: specify what types of interference qualify
-- For position questions: specify all relevant boundaries and areas
-- Never provide partial information that could mislead
+  • Include ALL qualifying conditions (when the rule applies)
+  • Include ALL exceptions (when the rule does NOT apply)
+  • For relief questions: specify what types of interference qualify
+  • For position questions: specify all relevant boundaries and areas
+  • Never provide partial information that could mislead
 
 If the rule has specific conditions for applicability, you MUST mention them.
 Example: "Relief is available ONLY when [condition 1] AND [condition 2]"
@@ -1555,9 +1555,9 @@ Example: "Relief is available ONLY when [condition 1] AND [condition 2]"
     if "relief" in question.lower() or "obstruction" in question.lower():
         completeness_instructions += """
 For relief from obstructions/conditions:
-- Specify if interference must be with swing, stance, or line of play
-- Note if different rules apply on putting green vs general area
-- Include any "clearly unreasonable" exceptions
+  • Specify if interference must be with swing, stance, or line of play
+  • Note if different rules apply on putting green vs general area
+  • Include any "clearly unreasonable" exceptions
 """
     
     return base_prompt + completeness_instructions
