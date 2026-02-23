@@ -198,10 +198,12 @@ AFFECTED AREAS:
 NO FREE RELIEF AVAILABLE - Your options:
   • Play the ball as it lies if possible
   • Declare the ball unplayable under Rule 19 (1 penalty stroke)
-    - Drop within two club-lengths, not nearer hole
-    - Drop on line from hole through ball, going back as far as desired
-    - Return to previous spot where you played
-Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects."""
+        - Drop within two club-lengths, not nearer hole
+        - Drop on line from hole through ball, going back as far as desired
+        - Return to previous spot where you played
+
+Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects.
+"""
     },
 
     "purple_line_boundary": {
@@ -1865,28 +1867,28 @@ def get_quick_questions():
                 'id': 'maintenance_facility',
                 'text': 'Maintenance facility on #10',
                 'category': 'local_rules',
-                'icon': '[M]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'purple_line_boundary',
                 'text': 'Purple Line',
                 'category': 'local_rules',
-                'icon': '[P]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'water_hazard_17',
                 'text': 'Water on #17',
                 'category': 'local_rules',
-                'icon': '[W]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'green_stakes_cart_path',
                 'text': 'Path behind #14 & #17 green',
                 'category': 'local_rules',
-                'icon': '[R]',
+                'icon': '',
                 'expected_source': 'template'
             }
         ],
