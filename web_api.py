@@ -2078,6 +2078,38 @@ if ai_initialized:
 else:
     logger.warning(" Running in template-only mode")
 
+@app.route('/api/transcribe', methods=['POST'])
+def transcribe_audio():
+    """Transcribe audio using OpenAI Whisper API with golf context."""
+    try:
+        if 'audio' not in request.files:
+            return jsonify({'success': False, 'error': 'No audio file provided'}), 400
+        
+        audio_file = request.files['audio']
+        
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file,
+            language="en",
+            prompt="Golf rules question at Columbia Country Club. "
+                   "Terms: putt, putting, putting green, penalty area, bunker, "
+                   "cart path, OB, out of bounds, stroke and distance, "
+                   "unplayable, embedded, provisional, lateral relief, "
+                   "dropping zone, flagstick, loose impediment, "
+                   "ground under repair, aeration, sod seam, Purple Line, "
+                   "hole 1 through hole 18, fairway, rough, tee box, "
+                   "integral object, green stakes, immovable obstruction, "
+                   "turf nursery, maintenance facility."
+        )
+        
+        return jsonify({
+            'success': True,
+            'transcript': transcript.text
+        })
+        
+    except Exception as e:
+        logger.error(f"Transcription error: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
         
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
