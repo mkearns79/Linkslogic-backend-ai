@@ -2087,9 +2087,13 @@ def transcribe_audio():
         
         audio_file = request.files['audio']
         
+        import io
+        audio_buffer = io.BytesIO(audio_file.read())
+        audio_buffer.name = 'recording.webm'
+        
         transcript = client.audio.transcriptions.create(
             model="whisper-1",
-            file=audio_file,
+            file=audio_buffer,
             language="en",
             prompt="Golf rules question at Columbia Country Club. "
                    "Terms: putt, putting, putting green, penalty area, bunker, "
