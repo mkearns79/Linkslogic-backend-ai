@@ -1986,8 +1986,8 @@ def view_all_queries():
         # Add rows for each query with definitions database color coding
         for query in all_queries[:100]:  # Limit to 100 for performance
             timestamp = query.get('timestamp', 'N/A')[:16]
-            question = query.get('question', 'N/A')[:100]
-            answer = query.get('answer', 'N/A')[:450]
+            question = query.get('question', 'N/A')
+            answer = query.get('answer', 'N/A')
             source = query.get('source', 'unknown')
             rule_type = query.get('rule_type', 'N/A')
             tokens = query.get('tokens_used', 0)
