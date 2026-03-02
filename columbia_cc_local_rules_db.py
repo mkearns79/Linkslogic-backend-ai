@@ -9,7 +9,7 @@ COLUMBIA_CC_LOCAL_RULES = {
         'contact': 'your_contact@columbiacc.org'
     },
     
-    'local_rules': [  # - Changed to LIST like official rules
+    'local_rules': [  # ← Changed to LIST like official rules
         {
             'id': 'CCC-1',
             'title': 'Ball Lost or Out of Bounds (Alternative Relief)',
@@ -20,7 +20,7 @@ COLUMBIA_CC_LOCAL_RULES = {
                 'Ball lost in rough - estimate where it came to rest and take relief',
                 'Ball crosses boundary line - use reference point system for relief'
             ],
-            'conditions': [  # - Standardized LIST format
+            'conditions': [  # ← Standardized LIST format
                 {
                     'situation': 'When ball has not been found',
                     'explanation': 'Ball has not been found within three-minute search time and player chooses alternative to stroke and distance relief',
@@ -62,14 +62,9 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'examples': ['Ball in water on 15th', 'Ball in penalty area on 15th']
                 },
                 {
-                    'situation': 'Hole 16 yellow penalty area (south side of footbridge)',
-                    'explanation': 'When ball enters the YELLOW stake penalty area on the south side of the footbridge on hole 16, player has these options for one penalty stroke: (1) Stroke-and-distance relief, (2) Back-on-the-line relief, or (3) Drop in designated dropping zone near the 16th green. Lateral relief is NOT available from a yellow penalty area.',
-                    'examples': ['Ball in water south of footbridge on 16 - yellow stakes', 'No lateral relief from yellow penalty area', 'Dropping zone available as additional option']
-                },
-                {
-                    'situation': 'Hole 16 red penalty area (north side of footbridge)',
-                    'explanation': 'When ball enters the RED stake penalty area on the north side of the footbridge on hole 16, player has all yellow penalty area options PLUS lateral relief: drop within two club-lengths of where the ball last crossed the edge of the penalty area, not nearer the hole, for one penalty stroke. The dropping zone near the 16th green is also available.',
-                    'examples': ['Ball in water north of footbridge on 16 - red stakes', 'Lateral relief IS available from red penalty area', 'Drop within 2 club-lengths of crossing point', 'Dropping zone also available']
+                    'situation': 'Hole 16 penalty area relief options',
+                    'explanation': 'When ball is in penalty area on hole 16, player has two relief options for one penalty stroke: (1) Standard relief under Rule 17.1, or (2) Drop in designated dropping zone near 16th green',
+                    'examples': ['Ball in water on 16th', 'Ball in water on number 16']
                 },
                 {
                     'situation': 'Hole 17 penalty area relief options',
@@ -98,13 +93,11 @@ COLUMBIA_CC_LOCAL_RULES = {
             'id': 'CCC-3',
             'title': 'Penalty Areas - Holes 2, 3, 4',
             'text': 'The entire left side of holes 2, 3, and 4 is a red penalty area. In the absence of painted lines and/or stakes, the edge of the penalty area is defined as the edge of the unmaintained area. Players may play their ball as it lies or take penalty relief under Rule 17.1d.',
-            'keywords': ['penalty area', 'red penalty area', 'left side', 'holes 2 3 4', 'unmaintained area', 'stakes', 'painted lines', 'tall grass left', 'left rough', 'left of fairway', 'fescue left', 'hole 2', 'hole 3', 'hole 4', 'second hole', 'third hole', 'fourth hole'],
+            'keywords': ['penalty area', 'red penalty area', 'left side', 'holes 2 3 4', 'unmaintained area', 'stakes', 'painted lines'],
             'examples': [
                 'Ball rolls left into rough area on hole 2 - red penalty area relief available',
                 'Ball in unmaintained area on left side of hole 3',
-                'Ball in fescue area left of fairway on hole 4',
-                'Ball went left into tall grass on hole 3 - this is a red penalty area',
-                'Ball in deep rough on left of hole 2 - penalty area, play as lies or take relief'
+                'Ball in fescue area left of fairway on hole 4'
             ],
             'conditions': [
                 {
@@ -433,6 +426,46 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'examples': ['Connected seam lines', 'Secondary relief procedure', 'Place ball if drop fails']
                 }
             ]
+        },
+
+         {
+            'id': 'CCC-14',
+            'title': 'Preferred Lies (Lift, Clean, and Place)',
+            'text': 'When the Committee has declared preferred lies in effect (Model Local Rule E-3), a ball lying in the general area may be lifted, cleaned, and placed without penalty. The player must mark the spot before lifting, and must place the ball within one club-length of the original spot, not nearer the hole, and in the general area. This applies to any ball at rest in the general area, including after a ball has been dropped under another Rule (such as penalty area relief into a dropping zone).',
+            'keywords': ['preferred lies', 'lift clean place', 'winter rules', 'Model Local Rule E-3', 'clean ball', 'place ball', 'general area', 'dropping zone', 'mark ball', 'seasonal rule', 'wet conditions', 'mud ball'],
+            'examples': [
+                'Preferred lies in effect - may lift, clean, and place ball in general area',
+                'Ball dropped in dropping zone - may then lift, clean, and place under preferred lies',
+                'Ball in fairway with mud - lift, clean, and place within one club-length',
+                'Ball in rough during preferred lies - lift, clean, and place in general area'
+            ],
+            'conditions': [
+                {
+                    'situation': 'When preferred lies applies',
+                    'explanation': 'Preferred lies applies whenever the Committee has put the local rule in effect, typically during wet or winter conditions. It allows any ball at rest in the general area to be lifted, cleaned, and placed within one club-length, not nearer the hole, and must remain in the general area.',
+                    'examples': ['Winter conditions on course', 'Wet fairways declared by Committee', 'Seasonal preferred lies in effect', 'Notice posted at pro shop or first tee']
+                },
+                {
+                    'situation': 'Procedure for preferred lies',
+                    'explanation': 'Player must: (1) Mark the spot of the ball before lifting, (2) Lift and clean the ball, (3) Place the ball within one club-length of the original spot, not nearer the hole, in the general area. The ball must be placed, not dropped. If the placed ball does not stay at rest on the spot, follow Rule 14.2e.',
+                    'examples': ['Mark with tee or coin before lifting', 'Clean mud off ball', 'Place within one club-length not nearer hole', 'Ball must stay at rest where placed']
+                },
+                {
+                    'situation': 'Preferred lies after dropping in a dropping zone',
+                    'explanation': 'After a player drops a ball in a dropping zone located in the general area (such as after taking penalty area relief), the ball is now at rest in the general area. Since preferred lies applies to ANY ball at rest in the general area, the player IS allowed to then invoke preferred lies to lift, clean, and place the ball. The penalty relief procedure and preferred lies are two independent rules that can both apply sequentially.',
+                    'examples': ['Drop in dropping zone on hole 16, then lift clean and place - ALLOWED', 'Drop in dropping zone on hole 17, then lift clean and place - ALLOWED', 'Penalty area relief drop followed by preferred lies - both apply', 'Ball dropped in general area under any relief rule may use preferred lies']
+                },
+                {
+                    'situation': 'Where preferred lies does NOT apply',
+                    'explanation': 'Preferred lies only applies in the general area. It does NOT apply to balls on the putting green (which already have lift/clean/replace rights under Rule 13.1b), in bunkers, in penalty areas, or in the teeing area.',
+                    'examples': ['Ball in bunker - no preferred lies relief', 'Ball in penalty area - no preferred lies relief', 'Ball on green - use Rule 13.1b instead', 'Teeing area - no preferred lies needed, may tee up']
+                },
+                {
+                    'situation': 'Penalty for incorrect procedure',
+                    'explanation': 'If a player places the ball in a wrong place or fails to mark before lifting, the player gets one penalty stroke under Rule 14.2. If the player drops instead of places, the ball is not in play and must be corrected.',
+                    'examples': ['Forgetting to mark spot - one penalty stroke', 'Placing ball nearer the hole - wrong place penalty', 'Dropping instead of placing - must correct']
+                }
+            ]
         }
     ],
     
@@ -454,7 +487,9 @@ COLUMBIA_CC_LOCAL_RULES = {
         'decorative': ['CCC-9'],
         'bird_house': ['CCC-12'],
         'turf_nursery': ['CCC-8'],
-        'fenced_trees': ['CCC-5']
+        'fenced_trees': ['CCC-5'],
+        'preferred_lies': ['CCC-14'],
+        'lift_clean_and_place': ['CCC-14']
     },
     
     'hole_specific_rules': {
@@ -468,8 +503,8 @@ COLUMBIA_CC_LOCAL_RULES = {
         '13': ['CCC-9'],
         '14': ['CCC-4'],
         '15': ['CCC-2', 'CCC-4'],
-        '16': ['CCC-2'],
-        '17': ['CCC-2', 'CCC-4'],
+        '16': ['CCC-2', 'CCC-14'],
+        '17': ['CCC-2', 'CCC-4', 'CCC-14'],
         '18': ['CCC-2', 'CCC-9']
     }
 }
