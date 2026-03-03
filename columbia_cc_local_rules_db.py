@@ -428,22 +428,22 @@ COLUMBIA_CC_LOCAL_RULES = {
             ]
         },
 
-         {
+        {
             'id': 'CCC-14',
             'title': 'Preferred Lies (Lift, Clean, and Place)',
-            'text': 'When the Committee has declared preferred lies in effect (Model Local Rule E-3), a ball lying in the general area may be lifted, cleaned, and placed without penalty. The player must mark the spot before lifting, and must place the ball within one club-length of the original spot, not nearer the hole, and in the general area. This applies to any ball at rest in the general area, including after a ball has been dropped under another Rule (such as penalty area relief into a dropping zone).',
-            'keywords': ['preferred lies', 'lift clean place', 'winter rules', 'Model Local Rule E-3', 'clean ball', 'place ball', 'general area', 'dropping zone', 'mark ball', 'seasonal rule', 'wet conditions', 'mud ball'],
+            'text': 'When the Committee has declared preferred lies in effect (Model Local Rule E-3), a ball lying in a part of the general area cut to fairway height or less may be lifted, cleaned, and placed without penalty. The player must mark the spot before lifting, and must place the ball within one club-length of the original spot, not nearer the hole, and in the general area. This applies to any ball at rest in an area cut to fairway height or less, including after a ball has been dropped under another Rule (such as penalty area relief into a dropping zone).',
+            'keywords': ['preferred lies', 'lift clean place', 'winter rules', 'Model Local Rule E-3', 'clean ball', 'place ball', 'general area', 'fairway height', 'closely mown', 'dropping zone', 'mark ball', 'seasonal rule', 'wet conditions', 'mud ball'],
             'examples': [
-                'Preferred lies in effect - may lift, clean, and place ball in general area',
-                'Ball dropped in dropping zone - may then lift, clean, and place under preferred lies',
+                'Preferred lies in effect - may lift, clean, and place ball on fairway',
+                'Ball dropped in dropping zone cut to fairway height - may then lift, clean, and place under preferred lies',
                 'Ball in fairway with mud - lift, clean, and place within one club-length',
-                'Ball in rough during preferred lies - lift, clean, and place in general area'
+                'Ball in rough - preferred lies does NOT apply, rough is not cut to fairway height'
             ],
             'conditions': [
                 {
                     'situation': 'When preferred lies applies',
-                    'explanation': 'Preferred lies applies whenever the Committee has put the local rule in effect, typically during wet or winter conditions. It allows any ball at rest in the general area to be lifted, cleaned, and placed within one club-length, not nearer the hole, and must remain in the general area.',
-                    'examples': ['Winter conditions on course', 'Wet fairways declared by Committee', 'Seasonal preferred lies in effect', 'Notice posted at pro shop or first tee']
+                    'explanation': 'Preferred lies applies whenever the Committee has put the local rule in effect, typically during wet or winter conditions. It allows any ball at rest in a part of the general area cut to fairway height or less to be lifted, cleaned, and placed within one club-length, not nearer the hole, and must remain in the general area. It does NOT apply to balls in the rough or other areas not cut to fairway height.',
+                    'examples': ['Ball on fairway during winter rules', 'Ball on fringe cut to fairway height', 'Ball on fairway-cut path between holes', 'Ball in rough - NOT eligible for preferred lies']
                 },
                 {
                     'situation': 'Procedure for preferred lies',
@@ -452,13 +452,13 @@ COLUMBIA_CC_LOCAL_RULES = {
                 },
                 {
                     'situation': 'Preferred lies after dropping in a dropping zone',
-                    'explanation': 'After a player drops a ball in a dropping zone located in the general area (such as after taking penalty area relief), the ball is now at rest in the general area. Since preferred lies applies to ANY ball at rest in the general area, the player IS allowed to then invoke preferred lies to lift, clean, and place the ball. The penalty relief procedure and preferred lies are two independent rules that can both apply sequentially.',
-                    'examples': ['Drop in dropping zone on hole 16, then lift clean and place - ALLOWED', 'Drop in dropping zone on hole 17, then lift clean and place - ALLOWED', 'Penalty area relief drop followed by preferred lies - both apply', 'Ball dropped in general area under any relief rule may use preferred lies']
+                    'explanation': 'After a player drops a ball in a dropping zone located in the general area that is cut to fairway height or less (such as after taking penalty area relief), the ball is now at rest in an eligible area. Since preferred lies applies to ANY ball at rest in the general area cut to fairway height or less, the player IS allowed to then invoke preferred lies to lift, clean, and place the ball. The penalty relief procedure and preferred lies are two independent rules that can both apply sequentially. If the dropping zone is in the rough or an area not cut to fairway height, preferred lies would NOT apply.',
+                    'examples': ['Drop in dropping zone on fairway-cut area on hole 16, then lift clean and place - ALLOWED', 'Drop in dropping zone on hole 17 on closely mown area, then lift clean and place - ALLOWED', 'Dropping zone in rough area - preferred lies NOT available after drop', 'Penalty area relief drop on fairway followed by preferred lies - both apply']
                 },
                 {
                     'situation': 'Where preferred lies does NOT apply',
-                    'explanation': 'Preferred lies only applies in the general area. It does NOT apply to balls on the putting green (which already have lift/clean/replace rights under Rule 13.1b), in bunkers, in penalty areas, or in the teeing area.',
-                    'examples': ['Ball in bunker - no preferred lies relief', 'Ball in penalty area - no preferred lies relief', 'Ball on green - use Rule 13.1b instead', 'Teeing area - no preferred lies needed, may tee up']
+                    'explanation': 'Preferred lies only applies to areas of the general area cut to fairway height or less. It does NOT apply to: the rough, bunkers, penalty areas, putting greens (which already have lift/clean/replace under Rule 13.1b), or the teeing area. A ball sitting in the rough even a few inches from the fairway is not eligible.',
+                    'examples': ['Ball in rough - no preferred lies', 'Ball in bunker - no preferred lies', 'Ball in penalty area - no preferred lies', 'Ball just off fairway in first cut of rough - no preferred lies', 'Ball on green - use Rule 13.1b instead']
                 },
                 {
                     'situation': 'Penalty for incorrect procedure',
