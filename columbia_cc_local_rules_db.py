@@ -93,17 +93,17 @@ COLUMBIA_CC_LOCAL_RULES = {
             'id': 'CCC-3',
             'title': 'Penalty Areas - Holes 2, 3, 4',
             'text': 'The entire left side of holes 2, 3, and 4 is a red penalty area. In the absence of painted lines and/or stakes, the edge of the penalty area is defined as the edge of the unmaintained area. Players may play their ball as it lies or take penalty relief under Rule 17.1d.',
-            'keywords': ['penalty area', 'red penalty area', 'left side', 'holes 2 3 4', 'unmaintained area', 'stakes', 'painted lines'],
+            'keywords': ['penalty area', 'red penalty area', 'left side', 'holes 2 3 4', 'unmaintained area', 'fescue on 3', 'stakes', 'painted lines'],
             'examples': [
                 'Ball rolls left into rough area on hole 2 - red penalty area relief available',
-                'Ball in unmaintained area on left side of hole 3',
+                'Ball in unmaintained area or fescue on left side of hole 3',
                 'Ball in fescue area left of fairway on hole 4'
             ],
             'conditions': [
                 {
                     'situation': 'Left side penalty area boundary',
                     'explanation': 'The entire left side of holes 2, 3, and 4 is designated as a red penalty area',
-                    'examples': ['Left rough area on hole 2', 'Left side fescue on hole 3', 'Left unmaintained area on hole 4']
+                    'examples': ['Left rough area on hole 2', 'Left side fescue on hole 3', 'fescue on 3', 'Left unmaintained area on hole 4']
                 },
                 {
                     'situation': 'Boundary definition when no markings',
