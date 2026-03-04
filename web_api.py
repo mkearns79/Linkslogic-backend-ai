@@ -180,21 +180,20 @@ Your options:
 The construction fence is treated as a boundary, not a regular obstruction."""
     },
 
-    "green_stakes_cart_path": {
+    "no_relief_cart_path": {
     "keywords": [
-        "green stakes behind 14", "green stakes behind 17", "green stakes behind fourteenth", "green stakes behind seventeenth",
-        "cart path behind 14th green", "cart path behind 17th green", "path behind fourteenth green", "path behind seventeenth green", 
+        "green stakes behind 17", "green stakes behind seventeenth", "cart path behind 12th green", "road behind 12th green", "road behind twelve green", "road behind 12", "road behind twelvth green", "road behind #12 green",
+        "cart path behind 17th green", "path behind seventeenth green", 
         "cart path green stakes", "path marked with green stakes", "integral object cart path",
-        "no relief cart path", "cart path behind green", "path behind 14", "path behind 17",
-        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #14 & #17 green"
+        "no relief cart path", "cart path behind green", "path behind 17",
+        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #17 green"
     ],
     "local_rule": "CCC-4",
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
-  • Cart path sections behind 14th green marked by green stakes
-  • Cart path sections behind 17th green marked by green stakes  
   • Unpaved road behind 12th green
+  • Cart path sections behind 17th green marked by green stakes
 NO FREE RELIEF AVAILABLE - Your options:
   • Play the ball as it lies if possible
   • Declare the ball unplayable under Rule 19 (1 penalty stroke)
@@ -216,7 +215,8 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
     "quick_response": """According to Columbia Country Club's local rules, the Purple Line wall is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
-  • NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
+  • NO RELIEF for balls near or against Purple Line boundary wall
+  • Angled support walls at tunnel entrances are immovable obstructions
   • Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
   • This applies EVEN IF the ball comes to rest in a seemingly playable position
   • This includes balls that end up on the other side of the boundary
@@ -232,9 +232,11 @@ OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
   • Must not be closer to the hole than where ball crossed boundary
 OPTION 2 - Standard Rule (1 penalty stroke):
   • Return to where you last played and hit again (stroke and distance)
-Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
+Remember: The Purple Line boundary wall provides NO FREE RELIEF - it is a boundary, not an obstruction."""
     }
 }
+
+COMMON_QUERY_TEMPLATES["no_relief_cart_path"] = COMMON_QUERY_TEMPLATES["unpaved_road"]
 
 def extract_hole_number_from_query(query: str):
     """Simple hole number extraction."""
@@ -1884,7 +1886,7 @@ def get_quick_questions():
             },
             {
                 'id': 'green_stakes_cart_path',
-                'text': 'Path behind #14 & #17 green',
+                'text': 'Path behind #12 & #17 green',
                 'category': 'local_rules',
                 'icon': '',
                 'expected_source': 'template'

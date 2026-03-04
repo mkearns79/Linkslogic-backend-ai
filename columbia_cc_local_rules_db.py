@@ -121,10 +121,10 @@ COLUMBIA_CC_LOCAL_RULES = {
         {
             'id': 'CCC-4',
             'title': 'Integral Objects - Cart Paths and Roads',
-            'text': 'Specific cart paths and roads are designated as integral objects from which free relief is not allowed. The unpaved road behind 12th green and sections of cart path behind 14th and 17th greens marked by green stakes are integral objects. Balls resting on or against these cart paths get NO RELIEF and must play it as it lies or take an unplayable ball penalty.',
-            'keywords': ['cart path', 'integral object', 'no relief', 'unpaved road', 'green stakes', 'holes 12 14 17', 'cart path behind green', 'path behind green','path behind twelfth green', 'road behind twelvth green', 'path behind fourteenth green', 'path behind seventeenth green', 'path behind 12th green', 'road behind 12th green', 'path behind 14th green', 'path behind 17th green', 'path behind 12 green', 'road behind 12 green', 'path behind 14 green', 'path behind 17 green', 'cart path behind', 'no free relief','cart path integral', 'path integral object'],
+            'text': 'Specific cart paths and roads are designated as integral objects from which free relief is not allowed. The unpaved road behind 12th green and sections of cart path behind the 17th green marked by green stakes are integral objects. Balls resting on or against these cart paths get NO RELIEF and must play it as it lies or take an unplayable ball penalty.',
+            'keywords': ['cart path', 'integral object', 'no relief', 'unpaved road', 'green stakes', 'holes 12 17', 'cart path behind green', 'path behind green','path behind twelfth green', 'road behind twelvth green', 'path behind seventeenth green', 'path behind 12th green', 'road behind 12th green', 'path behind 17th green', 'path behind 12 green', 'road behind 12 green', 'path behind 17 green', 'cart path behind', 'no free relief','cart path integral', 'path integral object'],
             'examples': [
-                'Ball on cart path behind 14th green - no free relief available',
+                'Ball on cart path behind 17th green - no free relief available',
                 'Ball on road behind 12th green - no free relief available',
                 'Ball on maintenance road elsewhere - free relief under Rule 16.1',
                 'Ball on path marked with green stakes - must play as lies'
@@ -133,7 +133,7 @@ COLUMBIA_CC_LOCAL_RULES = {
                 {
                     'situation': 'No relief areas - certain paths are integral objects',
                     'explanation': 'No free relief is available from: unpaved road behind 12th green, cart path sections behind 14th green marked by green stakes, cart path sections behind 17th green marked by green stakes',
-                    'examples': ['Unpaved road behind 12th green', 'path behind 12th green', 'Cart path behind 14th green with green stakes', 'Cart path behind 17th green with green stakes']
+                    'examples': ['Unpaved road behind 12th green', 'path behind 12th green', 'Cart path behind 17th green with green stakes']
                 },
                 {
                     'situation': 'Stone wall at 15th tee',
@@ -180,13 +180,13 @@ COLUMBIA_CC_LOCAL_RULES = {
         
         {
             'id': 'CCC-6',
-            'title': 'Purple Line and Construction Fence',
-            'text': 'The fence around the Purple Line construction area is considered a boundary fence from which free relief is not available. Mesh attached to the fence is part of the fence and considered immovable. A ball coming to rest on or beyond the Purple Line construction area is out of bounds.',
+            'title': 'Purple Line',
+            'text': 'The walls around the Purple Line are boundary objects from which free relief is not available. A ball coming to rest on or beyond the Purple Line construction area is out of bounds.',
             'keywords': ['purple line', 'the purple line', 'purple', 'construction fence', 'purple line fence', 'boundary fence', 'out of bounds', 'no relief', 'green fence', 'mesh', 'mesh fence', 'construction mesh', 'green mesh', 'behind green', 'behind 1st green', 'behind first green', 'behind 14th green', 'to the right of #2', 'construction area', 'fence behind green', 'temporary fence'],
             'examples': [
                 'Ball lands in construction area - out of bounds, proceed under stroke and distance',
                 'Ball against purple line fence - no free relief available, play as lies or unplayable',
-                'Ball hits mesh on construction fence - no relief from boundary fence'
+                'Ball against tunnel angled support walls - immovable obstruction'
             ],
             'conditions': [
                 {
@@ -195,14 +195,19 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'examples': ['Purple construction fence', 'Temporary boundary fencing', 'No obstruction relief available']
                 },
                 {
-                    'situation': 'Mesh as part of fence',
-                    'explanation': 'Mesh attached to the construction fence is part of the fence and is considered immovable - no free relief available',
-                    'examples': ['Orange mesh on fence', 'Construction netting', 'Protective screening']
-                },
-                {
                     'situation': 'Out of bounds determination',
                     'explanation': 'A ball coming to rest in or beyond the Purple Line construction area is out of bounds, even if it comes to rest on another part of the course that is in bounds for other holes',
                     'examples': ['Ball in construction zone', 'Ball beyond purple line markers', 'Out of bounds even if on course']
+                },
+                {
+                    'situation': 'Tunnels are out of bounds',
+                    'explanation': 'A ball that enters the tunnels under the Purple Line at holes 1, 2, 14, 15 is out of bounds, unless it bounces back into play on the same side as it entered',
+                    'examples': ['Ball in tunnel', 'Ball went into tunnel', 'Ball at rest in tunnel', 'Ball went through the tunnel']
+                },
+                                {
+                    'situation': 'Angled support walls',
+                    'explanation': 'The angled support walls at tunnel entrances are immovable obstructions',
+                    'examples': ['Ball against support wall', 'tunnel support wall interfering with swing', 'angled tunnel wall intereferes with swing', 'free relief from angled support walls']
                 },
                 {
                     'situation': 'No free relief options',

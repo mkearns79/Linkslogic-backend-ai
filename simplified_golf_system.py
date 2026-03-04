@@ -149,9 +149,9 @@ class SimplifiedGolfRulesSystem:
                 'any_of': ['hole', 'holes', 'punch', 'punched', 'aerify'],
                 'min_matches': 2
             },
-            'construction_fence_relief': {
-                'required': ['fence'],
-                'any_of': ['purple line', 'construction', 'mesh', 'relief'],
+            'boundary wall': {
+                'required': ['wall'],
+                'any_of': ['purple line', 'boundary', 'train'],
                 'min_matches': 2
             },
             'purple_line_boundary': {
@@ -159,9 +159,14 @@ class SimplifiedGolfRulesSystem:
                 'any_of': ['line', 'boundary', 'train', 'tracks', 'wall'],
                 'min_matches': 1
             },
-            'green_stakes_cart_path': {
+            'no_relief_cart_path': {
                 'required': ['path', 'green'],
-                'any_of': ['14', '17', 'behind', 'stakes', 'cart path', 'cart', 'marked'],
+                'any_of': ['17', 'behind', 'stakes', 'cart path', 'cart', 'marked'],
+                'min_matches': 2
+            },
+            'unpaved_road': {
+                'required': ['road'],
+                'any_of': ['12', 'twelve', '12th', 'twelvth', 'cart'],
                 'min_matches': 2
             },
             'OB_lines': {
