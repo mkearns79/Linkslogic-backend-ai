@@ -103,7 +103,7 @@ COLUMBIA_CC_LOCAL_RULES = {
                 {
                     'situation': 'Left side penalty area boundary',
                     'explanation': 'The entire left side of holes 2, 3, and 4 is designated as a red penalty area',
-                    'examples': ['Left rough area on hole 2', 'Left side vegetation on hole 3', 'Left unmaintained area on hole 4']
+                    'examples': ['Left rough area on hole 2', 'Left side fescue on hole 3', 'Left unmaintained area on hole 4']
                 },
                 {
                     'situation': 'Boundary definition when no markings',
