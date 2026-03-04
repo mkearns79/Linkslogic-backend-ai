@@ -236,7 +236,7 @@ Remember: The Purple Line boundary wall provides NO FREE RELIEF - it is a bounda
     }
 }
 
-COMMON_QUERY_TEMPLATES["no_relief_cart_path"] = COMMON_QUERY_TEMPLATES["unpaved_road"]
+COMMON_QUERY_TEMPLATES["unpaved_road"] = COMMON_QUERY_TEMPLATES["no_relief_cart_path"]
 
 def extract_hole_number_from_query(query: str):
     """Simple hole number extraction."""
