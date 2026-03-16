@@ -46,9 +46,9 @@ COLUMBIA_CC_LOCAL_RULES = {
         
         {
             'id': 'CCC-2',
-            'title': 'Penalty Areas - Holes 15, 16, 17, 18',
+            'title': 'Penalty Areas - Holes 13, 15, 16, 17, 18',
             'text': 'Special relief options for penalty areas on holes 15, 16, 17, and 18. Players have additional dropping zone options beyond standard penalty area relief.',
-            'keywords': ['penalty area', 'dropping zone', 'red penalty area', 'water hazard', 'holes 15 16 17 18', 'extra relief', 'bridge', 'cart bridge', 'footbridge', 'creek', 'pond', 'integral object'],
+            'keywords': ['penalty area', 'bridge on 13', 'dropping zone', 'red penalty area', 'water hazard', 'holes 15 16 17 18', 'extra relief', 'bridge', 'cart bridge', 'footbridge', 'creek', 'pond', 'integral object'],
             'examples': [
                 'Ball in water on 16th - can use dropping zone instead of going back',
                 'Ball in pond on 17th west of bridge - dropping zone available',
