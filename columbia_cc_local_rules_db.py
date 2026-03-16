@@ -72,9 +72,9 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'examples': ['Ball in pond west of footbridge - dropping zone available', 'Ball in creek left of bridge - dropping zone available', 'Ball in creek right of bridge - NO dropping zone, standard relief only', 'Dropping zone only for main pond area left/west side of footbridge']
                 },
                 {
-                    'situation': 'Ball on cart bridge over penalty area',
-                    'explanation': 'When ball comes to rest on the cart bridge between the 17th and 18th holes that crosses over the penalty area, player gets NO RELIEF from the bridge. The ball is considered to be above the penalty area in accordance with Rule 17.1(a), and the bridge is an integral object of the penalty area. Player must play the ball as it lies or proceed under penalty area relief options.',
-                    'examples': ['Ball on bridge between 17th and 18th', 'Ball resting on cart bridge over water', 'Bridge over penalty area - no free relief', 'Must play from bridge or take penalty relief', 'Ball on bridge - integral object', 'No free relief from bridge']
+                    'situation': 'Ball on bridge over penalty area',
+                    'explanation': 'When ball comes to rest on one of the bridges on holes 16, 17, and 18 that crosses over the penalty area, player gets NO RELIEF from the bridge. The ball is considered to be above the penalty area in accordance with Rule 17.1(a), and the bridge is an integral object of the penalty area. Player must play the ball as it lies or proceed under penalty area relief options.',
+                    'examples': ['Ball on bridge between 17th and 18th', 'Ball on bridge on 16', 'Ball on bridge on 17', 'Ball resting on bridge over water', 'Bridge over penalty area - no free relief', 'Must play from bridge or take penalty relief', 'No free relief from bridge']
                 },
                 {
                     'situation': 'Hole 18 penalty area relief',
@@ -85,6 +85,11 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'situation': 'Artificial walls in penalty areas',
                     'explanation': 'Artificial walls inside penalty areas of holes 15, 16, 17, and 18 are integral objects from which free relief is not allowed',
                     'examples': ['Stone wall in water hazard', 'Retaining wall in penalty area']
+                },
+                {
+                    'situation': 'Hole 13 bridge over creek',
+                    'explanation': 'The bridge on hole 13 crosses the creek (penalty area). Only the portion of the bridge directly over the penalty area is treated as being in the penalty area under Rule 17.1a. If your ball is on a part of the bridge that is NOT over the penalty area, the bridge is an immovable obstruction and you are entitled to free relief under Rule 16.1 - find the nearest point of complete relief not nearer the hole and drop within one club-length. If your ball is on the portion of the bridge directly over the penalty area, you must play it as it lies or take penalty area relief under Rule 17.1d for one penalty stroke.',
+                    'examples': ['Ball on bridge on 13', 'Ball on bridge over creek on hole 13', 'Relief from bridge on 13th']
                 }
             ]
         },

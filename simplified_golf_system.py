@@ -688,7 +688,7 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
 
 0. DEFAULT CLASSIFICATION OF COMMON COURSE OBJECTS (unless a local rule explicitly says otherwise):
    IMMOVABLE OBSTRUCTIONS (free relief under Rule 16.1):
-   - Bridges, footbridges, and pedestrian crossings
+   - Bridges, footbridges, and pedestrian crossings (free relief under 16.1, unless over a penalty area)
    - Cart paths and paved surfaces
    - Sprinkler heads, drain covers, and irrigation boxes
    - Permanent benches, trash cans, and ball washers
