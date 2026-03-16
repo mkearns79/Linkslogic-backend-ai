@@ -180,27 +180,30 @@ Your options:
 The construction fence is treated as a boundary, not a regular obstruction."""
     },
 
-    "no_relief_cart_path": {
+    "green_stakes_cart_path": {
     "keywords": [
-        "green stakes behind 17", "green stakes behind seventeenth", "cart path behind 12th green", "road behind 12th green", "road behind twelve green", "road behind 12", "road behind twelvth green", "road behind #12 green",
-        "cart path behind 17th green", "path behind seventeenth green", 
+        "green stakes behind 14", "green stakes behind 17", "green stakes behind fourteenth", "green stakes behind seventeenth",
+        "cart path behind 14th green", "cart path behind 17th green", "path behind fourteenth green", "path behind seventeenth green", 
         "cart path green stakes", "path marked with green stakes", "integral object cart path",
-        "no relief cart path", "cart path behind green", "path behind 17",
-        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #17 green"
+        "no relief cart path", "cart path behind green", "path behind 14", "path behind 17",
+        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #14 & #17 green"
     ],
     "local_rule": "CCC-4",
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
+  • Cart path sections behind 14th green marked by green stakes
+  • Cart path sections behind 17th green marked by green stakes  
   • Unpaved road behind 12th green
-  • Cart path sections behind 17th green marked by green stakes
 NO FREE RELIEF AVAILABLE - Your options:
   • Play the ball as it lies if possible
   • Declare the ball unplayable under Rule 19 (1 penalty stroke)
         - Drop within two club-lengths, not nearer hole
         - Drop on line from hole through ball, going back as far as desired
         - Return to previous spot where you played
-Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects."""
+
+Note: All other cart paths on the course DO provide free relief under Rule 16.1 - only these specifically marked areas are integral objects.
+"""
     },
 
     "purple_line_boundary": {
@@ -215,8 +218,7 @@ Note: All other cart paths on the course DO provide free relief under Rule 16.1 
     "quick_response": """According to Columbia Country Club's local rules, the Purple Line wall is a BOUNDARY, and any ball that crosses this boundary is OUT OF BOUNDS.
 
 IMPORTANT BOUNDARY RULE:
-  • NO RELIEF for balls near or against Purple Line boundary wall
-  • Angled support walls at tunnel entrances are immovable obstructions
+  • NO RELIEF for balls near or against Purple Line boundary wall or temporary construction fence
   • Any ball that crosses the Purple Line boundary is OUT OF BOUNDS
   • This applies EVEN IF the ball comes to rest in a seemingly playable position
   • This includes balls that end up on the other side of the boundary
@@ -232,11 +234,9 @@ OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
   • Must not be closer to the hole than where ball crossed boundary
 OPTION 2 - Standard Rule (1 penalty stroke):
   • Return to where you last played and hit again (stroke and distance)
-Remember: The Purple Line boundary wall provides NO FREE RELIEF - it is a boundary, not an obstruction."""
+Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
     }
 }
-
-COMMON_QUERY_TEMPLATES["unpaved_road"] = COMMON_QUERY_TEMPLATES["no_relief_cart_path"]
 
 def extract_hole_number_from_query(query: str):
     """Simple hole number extraction."""
@@ -283,9 +283,11 @@ def apply_columbia_boosting(results, query, verbose=False):
     bridge_terms = ['bridge', 'cart bridge', 'footbridge']
     is_bridge_query = any(term in query_lower for term in bridge_terms)
     
-    if is_bridge_query and (hole_number in [17, 18] or '17' in query_lower or '18' in query_lower):
+    bridge_holes = [13, 16, 17, 18]
+    bridge_hole_strs = ['13', '16', '17', '18']
+    if is_bridge_query and (hole_number in bridge_holes or any(h in query_lower for h in bridge_hole_strs)):
         if verbose:
-            logger.info(f" Columbia CC: Detected bridge query on hole {hole_number or '17/18'}")
+            logger.info(f" Columbia CC: Detected bridge query on hole {hole_number or 'unknown'}")
         
         r = get_result_by_id('CCC-2')
         if r:
@@ -1867,28 +1869,28 @@ def get_quick_questions():
                 'id': 'maintenance_facility',
                 'text': 'Maintenance facility on #10',
                 'category': 'local_rules',
-                'icon': '',
+                'icon': '[M]',
                 'expected_source': 'template'
             },
             {
                 'id': 'purple_line_boundary',
                 'text': 'Purple Line',
                 'category': 'local_rules',
-                'icon': '',
+                'icon': '[P]',
                 'expected_source': 'template'
             },
             {
                 'id': 'water_hazard_17',
                 'text': 'Water on #17',
                 'category': 'local_rules',
-                'icon': '',
+                'icon': '[W]',
                 'expected_source': 'template'
             },
             {
                 'id': 'green_stakes_cart_path',
-                'text': 'Path behind #12 & #17 green',
+                'text': 'Path behind #14 & #17 green',
                 'category': 'local_rules',
-                'icon': '',
+                'icon': '[R]',
                 'expected_source': 'template'
             }
         ],
@@ -1988,8 +1990,8 @@ def view_all_queries():
         # Add rows for each query with definitions database color coding
         for query in all_queries[:100]:  # Limit to 100 for performance
             timestamp = query.get('timestamp', 'N/A')[:16]
-            question = query.get('question', 'N/A')
-            answer = query.get('answer', 'N/A')
+            question = query.get('question', 'N/A')[:100]
+            answer = query.get('answer', 'N/A')[:450]
             source = query.get('source', 'unknown')
             rule_type = query.get('rule_type', 'N/A')
             tokens = query.get('tokens_used', 0)
@@ -2080,42 +2082,6 @@ if ai_initialized:
 else:
     logger.warning(" Running in template-only mode")
 
-@app.route('/api/transcribe', methods=['POST'])
-def transcribe_audio():
-    """Transcribe audio using OpenAI Whisper API with golf context."""
-    try:
-        if 'audio' not in request.files:
-            return jsonify({'success': False, 'error': 'No audio file provided'}), 400
-        
-        audio_file = request.files['audio']
-        
-        import io
-        audio_buffer = io.BytesIO(audio_file.read())
-        audio_buffer.name = 'recording.webm'
-        
-        transcript = client.audio.transcriptions.create(
-            model="whisper-1",
-            file=audio_buffer,
-            language="en",
-            prompt="Golf rules question at Columbia Country Club. "
-                   "Terms: putt, putting, putting green, penalty area, bunker, "
-                   "cart path, OB, out of bounds, stroke and distance, "
-                   "unplayable, embedded, provisional, lateral relief, "
-                   "dropping zone, flagstick, loose impediment, "
-                   "ground under repair, aeration, sod seam, Purple Line, "
-                   "hole 1 through hole 18, fairway, rough, tee box, "
-                   "integral object, green stakes, immovable obstruction, "
-                   "turf nursery, maintenance facility."
-        )
-        
-        return jsonify({
-            'success': True,
-            'transcript': transcript.text
-        })
-        
-    except Exception as e:
-        logger.error(f"Transcription error: {str(e)}")
-        return jsonify({'success': False, 'error': str(e)}), 500
         
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
