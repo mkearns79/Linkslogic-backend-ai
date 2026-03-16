@@ -183,7 +183,7 @@ class SimplifiedGolfRulesSystem:
             },
             'construction_fence_relief': {
                 'required': ['fence'],
-                'any_of': ['purple line', 'construction', 'mesh', 'relief'],
+                'any_of': ['purple line', 'construction', 'mesh'],
                 'exclude': ['bounced back', 'bounce back', 'back onto', 'back on the course',
                             'back in play', 'back in bounds', 'came back', 'ricocheted back'],
                 'min_matches': 2
