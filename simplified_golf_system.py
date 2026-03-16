@@ -548,17 +548,39 @@ class SimplifiedGolfRulesSystem:
                     exceptions = []
                     other_conditions = []
                     
-                    for condition in conditions_list[:5]:
+                    # Filter conditions by relevance to the question
+                    question_lower_words = question.lower()
+                    
+                    for condition in conditions_list:
                         # Safety check - ensure condition is a dict
                         if not isinstance(condition, dict):
                             logger.error(f" Condition in {rule_id} is {type(condition)}, not dict")
                             continue
                         
                         situation = condition.get('situation', '')
+                        explanation = condition.get('explanation', '')
+                        examples = condition.get('examples', [])
+                        condition_text = (situation + ' ' + explanation + ' ' + ' '.join(examples if isinstance(examples, list) else [])).lower()
+                        
+                        # Include condition if it's relevant to the question
+                        # Check for hole number match, key terms match, or exception
+                        is_relevant = False
+                        
                         if 'exception' in situation.lower():
-                            exceptions.append(condition)
+                            is_relevant = True
                         else:
-                            other_conditions.append(condition)
+                            # Check if any significant words from the question appear in the condition
+                            question_terms = [w for w in question_lower_words.split() if len(w) > 2 and w not in ('the', 'and', 'for', 'what', 'are', 'how', 'does', 'can', 'get', 'from', 'ball', 'my', 'is', 'on', 'in', 'do', 'this')]
+                            for term in question_terms:
+                                if term in condition_text:
+                                    is_relevant = True
+                                    break
+                        
+                        if is_relevant:
+                            if 'exception' in situation.lower():
+                                exceptions.append(condition)
+                            else:
+                                other_conditions.append(condition)
                     
                     # Show exceptions FIRST and prominently
                     if exceptions:
@@ -688,7 +710,7 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
 
 0. DEFAULT CLASSIFICATION OF COMMON COURSE OBJECTS (unless a local rule explicitly says otherwise):
    IMMOVABLE OBSTRUCTIONS (free relief under Rule 16.1):
-   - Bridges, footbridges, and pedestrian crossings (free relief under 16.1, unless over a penalty area)
+   - Bridges, footbridges, and pedestrian crossings
    - Cart paths and paved surfaces
    - Sprinkler heads, drain covers, and irrigation boxes
    - Permanent benches, trash cans, and ball washers
