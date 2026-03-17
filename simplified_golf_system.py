@@ -762,8 +762,6 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
    - Do NOT assume any object is integral unless the context states it
    - "No free relief" from an integral object means you cannot drop AWAY from it under Rule 16.1
    - HOWEVER, you CAN always remove loose impediments (rocks, leaves, sticks, etc.) anywhere on the course under Rule 15.1, even when your ball is on or near an integral object, a boundary object, or in a penalty area - as long as doing so does not cause your ball to move
-   
-   IMPORTANT: A ball on a bridge over a penalty area is treated as being in the penalty area (Rule 17.1a), BUT the bridge itself is still an immovable obstruction. If the ball is NOT over a penalty area, normal Rule 16.1 (Clarification 16.1/4) relief applies.
 
 1. IDENTIFY THE PRIMARY RULE that applies to this situation
 
