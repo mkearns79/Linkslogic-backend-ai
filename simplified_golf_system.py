@@ -689,7 +689,7 @@ class SimplifiedGolfRulesSystem:
                     if clar_key == rule_id or clar_key.startswith(rule_id):
                         for clar in clar_list:
                             # Filter by relevance to the question
-                            clar_text_lower = (clar['title'] + ' ' + clar['text'][:300]).lower()
+                            clar_text_lower = (clar['title'] + ' ' + clar['text'][:800]).lower()
                             question_terms = [w for w in question_lower.split() if len(w) > 3 and w not in ('what', 'does', 'when', 'from', 'that', 'this', 'with', 'your', 'have', 'ball')]
                             if any(term in clar_text_lower for term in question_terms):
                                 clarification_parts.append(f"USGA Clarification {clar['id']}: {clar['title']}\n{clar['text'][:600]}")
