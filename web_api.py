@@ -1614,7 +1614,7 @@ def initialize_ai_system():
                     search_engine=ProductionHybridVectorSearch(),
                     client=client,
                     rules_db=RULES_DATABASE,
-                    local_rules=COLUMBIA_CC_LOCAL_RULES
+                    local_rules=COLUMBIA_CC_LOCAL_RULES,
                     clarifications_db=USGA_CLARIFICATIONS
                 )
                 logger.info(" Simplified system ready")
