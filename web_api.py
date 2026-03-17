@@ -26,6 +26,8 @@ from golf_definitions_db import (
 
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
 
+from golf_clarifications_db import USGA_CLARIFICATIONS
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -1613,6 +1615,7 @@ def initialize_ai_system():
                     client=client,
                     rules_db=RULES_DATABASE,
                     local_rules=COLUMBIA_CC_LOCAL_RULES
+                    clarifications_db=USGA_CLARIFICATIONS
                 )
                 logger.info(" Simplified system ready")
             except Exception as e:

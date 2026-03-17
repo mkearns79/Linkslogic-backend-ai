@@ -33,7 +33,8 @@ class SimplifiedGolfRulesSystem:
                  vector_search_engine: Any,
                  openai_client: Any,
                  rules_database: Dict,
-                 local_rules: List):
+                 local_rules: List,
+                 clarifications_db: Dict = None):
         """
         Initialize with existing components from web_api.py
         """
@@ -43,6 +44,7 @@ class SimplifiedGolfRulesSystem:
         self.client = openai_client
         self.rules_database = rules_database
         self.local_rules = local_rules
+        self.clarifications_db = clarifications_db or {}
         
         # Model selection - UPDATE THIS based on check_openai_models.py results
         self.model = "gpt-4o"
@@ -665,6 +667,39 @@ class SimplifiedGolfRulesSystem:
                     except Exception as e:
                         logger.error(f" Error formatting related rule {rule_id}: {e}")
         
+        # Inject relevant USGA Clarifications
+        if self.clarifications_db:
+            clarification_parts = []
+            included_rule_ids = set()
+            
+            # Collect all rule IDs from search results
+            for result in search_results:
+                rid = result['rule']['id']
+                included_rule_ids.add(rid)
+                # Also add base rule (e.g., "16.1" from "16.1a")
+                base = re.match(r'(\d+\.\d+)', rid)
+                if base:
+                    included_rule_ids.add(base.group(1))
+            
+            # Find matching clarifications
+            question_lower = question.lower()
+            for rule_id in included_rule_ids:
+                # Check exact match and sub-rules (e.g., "16.1" matches "16.1", "16.1a", "16.1b")
+                for clar_key, clar_list in self.clarifications_db.items():
+                    if clar_key == rule_id or clar_key.startswith(rule_id):
+                        for clar in clar_list:
+                            # Filter by relevance to the question
+                            clar_text_lower = (clar['title'] + ' ' + clar['text'][:300]).lower()
+                            question_terms = [w for w in question_lower.split() if len(w) > 3 and w not in ('what', 'does', 'when', 'from', 'that', 'this', 'with', 'your', 'have', 'ball')]
+                            if any(term in clar_text_lower for term in question_terms):
+                                clarification_parts.append(f"USGA Clarification {clar['id']}: {clar['title']}\n{clar['text'][:600]}")
+            
+            if clarification_parts:
+                # Limit to top 3 most relevant clarifications to avoid context bloat
+                context_parts.append("\n--- USGA OFFICIAL CLARIFICATIONS ---")
+                for cp in clarification_parts[:3]:
+                    context_parts.append(cp)
+        
         return "\n".join(context_parts)
     
     def _get_rule_by_id(self, rule_id: str) -> Optional[Dict]:
@@ -725,8 +760,8 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
    INTEGRAL OBJECTS (NO relief - only when designated by local rule):
    - Objects are ONLY integral if a local rule explicitly designates them
    - Do NOT assume any object is integral unless the context states it
-   - "No relief" from integral objects means you cannot drop away from it under Rule 16.1
-   - However, you can always remove loose impediments anywhere on the course under Rule 15.1, as long as doing so does not cause the ball to move
+   - "No free relief" from an integral object means you cannot drop AWAY from it under Rule 16.1
+   - HOWEVER, you CAN always remove loose impediments (rocks, leaves, sticks, etc.) anywhere on the course under Rule 15.1, even when your ball is on or near an integral object, a boundary object, or in a penalty area - as long as doing so does not cause your ball to move
    
    IMPORTANT: A ball on a bridge over a penalty area is treated as being in the penalty area (Rule 17.1a), BUT the bridge itself is still an immovable obstruction. If the ball is NOT over a penalty area, normal Rule 16.1 relief applies.
 
@@ -912,7 +947,7 @@ Now provide your complete ruling:"""
 
 
 # Integration function for web_api.py
-def create_simplified_system(templates, definitions_db, search_engine, client, rules_db, local_rules):
+def create_simplified_system(templates, definitions_db, search_engine, client, rules_db, local_rules, clarifications_db=None):
     """
     Factory function to create the simplified system with existing components
     """
@@ -922,5 +957,6 @@ def create_simplified_system(templates, definitions_db, search_engine, client, r
         vector_search_engine=search_engine,
         openai_client=client,
         rules_database=rules_db,
-        local_rules=local_rules
+        local_rules=local_rules,
+        clarifications_db=clarifications_db
     )
