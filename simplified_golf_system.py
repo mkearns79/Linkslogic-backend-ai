@@ -725,6 +725,8 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
    INTEGRAL OBJECTS (NO relief - only when designated by local rule):
    - Objects are ONLY integral if a local rule explicitly designates them
    - Do NOT assume any object is integral unless the context states it
+   - "No relief" from integral objects means you cannot drop away from it under Rule 16.1
+   - However, you can always remove loose impediments anywhere on the course under Rule 15.1, as long as doing so does not cause the ball to move
    
    IMPORTANT: A ball on a bridge over a penalty area is treated as being in the penalty area (Rule 17.1a), BUT the bridge itself is still an immovable obstruction. If the ball is NOT over a penalty area, normal Rule 16.1 relief applies.
 
