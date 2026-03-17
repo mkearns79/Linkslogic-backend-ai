@@ -2865,9 +2865,9 @@ essentially back where the player started."""
         },
         {
             "id": "16.1/4",
-            "title": "How to Take Relief When Ball Lies on Elevated Part of",
+            "title": "How to Take Relief When Ball Lies on Elevated Part of Immovable Obstruction",
             "text": """Immovable Obstruction
-When a ball lies on an elevated part of an immovable obstruction, the nearest point of
+When a ball lies on an elevated part of an immovable obstruction, such as a bridge, the nearest point of
 complete relief is on the ground under the obstruction. This is to make it easier to
 establish the nearest point of complete relief and to avoid it from being located on the
 branch of a nearby tree.
