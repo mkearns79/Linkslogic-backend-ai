@@ -4627,7 +4627,7 @@ RULES_DATABASE = [
         "id": "15.1a",
         "title": "Removal of Loose Impediment",
         "text": "Without penalty, a player may remove a loose impediment anywhere on or off the course, and may do so in any way (such as by using a hand or foot, using a club or other equipment, getting help from others or breaking off part of a loose impediment). But there are two exceptions for removing loose impediments where ball must be replaced and restrictions on deliberately removing loose impediments to affect ball in motion.",
-        "keywords": ["removal", "loose impediment", "without penalty", "anywhere", "hand", "foot", "club", "equipment", "help", "breaking", "exceptions"],
+        "keywords": ["removal", "remove", "stick", "leaf", "leaves", "stone", "pebble", "loose impediment", "without penalty", "anywhere", "hand", "foot", "club", "equipment", "help", "breaking", "exceptions"],
         "examples": [
             "using hand to remove leaves",
             "using club to move branches",

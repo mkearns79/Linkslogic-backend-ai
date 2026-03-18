@@ -88,7 +88,7 @@ COLUMBIA_CC_LOCAL_RULES = {
                 },
                 {
                     'situation': 'Hole 13 bridge over creek',
-                    'explanation': 'The bridge on hole 13 crosses the creek (penalty area). Only the portion of the bridge directly over the penalty area is treated as being in the penalty area under Rule 17.1a. If the ball is on a part of the bridge that is NOT over the penalty area, the bridge is an immovable obstruction and you are entitled to free relief under Rule 16.1, which is on the ground directly beneath where the ball lies on the bridge. If your ball is on the portion of the bridge directly over the penalty area, you must play it as it lies or take penalty area relief under Rule 17.1d for one penalty stroke.',
+                    'explanation': 'The bridge on hole 13 crosses the creek (penalty area). Only the portion of the bridge directly over the penalty area is treated as being in the penalty area under Rule 17.1a. If the ball is on a part of the bridge that is NOT over the penalty area, the bridge is an immovable obstruction and you are entitled to free relief under Rule 16.1, which would be on the ground directly beneath where the ball lies on the bridge. If your ball is on the portion of the bridge directly over the penalty area, you must play it as it lies or take penalty area relief under Rule 17.1d for one penalty stroke.',
                     'examples': ['Ball on bridge on 13', 'Ball on bridge over creek on hole 13', 'Relief from bridge on 13th']
                 }
             ]
