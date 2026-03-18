@@ -811,6 +811,7 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
    - If the context includes "USGA Clarification" entries, these are OFFICIAL interpretive guidance from the USGA
    - Clarifications provide authoritative detail on HOW to apply rules in specific situations
    - When a clarification is relevant to the specific situation described in the query, you MUST incorporate its specific guidance into your answer
+   - For example, if a clarification explains that the nearest point of relief is on the ground beneath an elevated obstruction, your answer to a relief query must include this detail
    - Clarifications are as authoritative as the rules themselves
 
 5. PROVIDE YOUR ANSWER:
