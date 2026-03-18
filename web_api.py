@@ -11,6 +11,7 @@ import logging
 from openai import OpenAI
 from dotenv import load_dotenv
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
+from golf_clarifications_db import USGA_CLARIFICATIONS
 
 
 # Import your existing comprehensive databases
@@ -1617,7 +1618,8 @@ def initialize_ai_system():
                     search_engine=ProductionHybridVectorSearch(),
                     client=client,
                     rules_db=RULES_DATABASE,
-                    local_rules=COLUMBIA_CC_LOCAL_RULES
+                    local_rules=COLUMBIA_CC_LOCAL_RULES,
+                    clarifications_db=USGA_CLARIFICATIONS
                 )
                 logger.info(" Simplified system ready")
             except Exception as e:
@@ -1874,28 +1876,28 @@ def get_quick_questions():
                 'id': 'maintenance_facility',
                 'text': 'Maintenance facility on #10',
                 'category': 'local_rules',
-                'icon': '[M]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'purple_line_boundary',
                 'text': 'Purple Line',
                 'category': 'local_rules',
-                'icon': '[P]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'water_hazard_17',
                 'text': 'Water on #17',
                 'category': 'local_rules',
-                'icon': '[W]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'green_stakes_cart_path',
                 'text': 'Path behind #14 & #17 green',
                 'category': 'local_rules',
-                'icon': '[R]',
+                'icon': '',
                 'expected_source': 'template'
             }
         ],
