@@ -740,8 +740,6 @@ class SimplifiedGolfRulesSystem:
         """
         Create the unified prompt with explicit exception handling instructions.
         
-        FIX 8: Added clarification about accidental contact vs intentional stroke,
-        and an additional example about teeing area exceptions.
         """
         prompt = f"""You are an expert golf rules official at Columbia Country Club with complete knowledge of both USGA Rules and Columbia's local rules.
 
