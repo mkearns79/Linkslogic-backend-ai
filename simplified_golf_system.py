@@ -815,7 +815,7 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
    - Clarifications are as authoritative as the rules themselves
 
 5. PROVIDE YOUR ANSWER:
-   - State the applicable rule(s) clearly; include rule numbers for Official Rules of Golf but not local rules
+   - State the applicable rule(s) clearly; include rule numbers for Official Rules of Golf but NOT local rules
    - Mention ANY exceptions or special cases that apply
    - Specify the correct procedure step by step
    - State any penalties (or explicitly note if there's no penalty)
