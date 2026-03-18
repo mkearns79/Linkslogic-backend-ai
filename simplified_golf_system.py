@@ -685,7 +685,7 @@ class SimplifiedGolfRulesSystem:
             
             # Find matching clarifications
             question_lower = question.lower()
-            question_terms = [w for w in question_lower.split() if len(w) > 2 and w not in ('the', 'and', 'for', 'what', 'are', 'how', 'does', 'can', 'get', 'from', 'ball', 'my', 'is', 'on', 'in', 'do', 'this', 'its')]
+            question_terms = [w.strip('.,;:!?()[]"\'') for w in question_lower.split() if len(w) > 2 and w.strip('.,;:!?()[]"\'') not in ('the', 'and', 'for', 'what', 'are', 'how', 'does', 'can', 'get', 'from', 'ball', 'my', 'is', 'on', 'in', 'do', 'this', 'its', '')]
             
             logger.info(f" Clarifications: question terms: {question_terms}")
             
@@ -740,6 +740,8 @@ class SimplifiedGolfRulesSystem:
         """
         Create the unified prompt with explicit exception handling instructions.
         
+        FIX 8: Added clarification about accidental contact vs intentional stroke,
+        and an additional example about teeing area exceptions.
         """
         prompt = f"""You are an expert golf rules official at Columbia Country Club with complete knowledge of both USGA Rules and Columbia's local rules.
 
