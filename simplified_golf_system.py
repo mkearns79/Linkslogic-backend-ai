@@ -681,24 +681,33 @@ class SimplifiedGolfRulesSystem:
                 if base:
                     included_rule_ids.add(base.group(1))
             
+            logger.info(f" Clarifications: checking against rule IDs: {sorted(included_rule_ids)}")
+            
             # Find matching clarifications
             question_lower = question.lower()
+            question_terms = [w for w in question_lower.split() if len(w) > 2 and w not in ('the', 'and', 'for', 'what', 'are', 'how', 'does', 'can', 'get', 'from', 'ball', 'my', 'is', 'on', 'in', 'do', 'this', 'its')]
+            
+            logger.info(f" Clarifications: question terms: {question_terms}")
+            
             for rule_id in included_rule_ids:
                 # Check exact match and sub-rules (e.g., "16.1" matches "16.1", "16.1a", "16.1b")
                 for clar_key, clar_list in self.clarifications_db.items():
                     if clar_key == rule_id or clar_key.startswith(rule_id):
                         for clar in clar_list:
-                            # Filter by relevance to the question
+                            # Filter by relevance - check title and first 800 chars of text
                             clar_text_lower = (clar['title'] + ' ' + clar['text'][:800]).lower()
-                            question_terms = [w for w in question_lower.split() if len(w) > 3 and w not in ('what', 'does', 'when', 'from', 'that', 'this', 'with', 'your', 'have', 'ball')]
                             if any(term in clar_text_lower for term in question_terms):
+                                logger.info(f" Clarification MATCHED: {clar['id']} via rule {rule_id}")
                                 clarification_parts.append(f"USGA Clarification {clar['id']}: {clar['title']}\n{clar['text'][:1000]}")
             
             if clarification_parts:
+                logger.info(f" Injecting {len(clarification_parts)} clarifications into context")
                 # Limit to top 3 most relevant clarifications to avoid context bloat
                 context_parts.append("\n--- USGA OFFICIAL CLARIFICATIONS ---")
                 for cp in clarification_parts[:3]:
                     context_parts.append(cp)
+            else:
+                logger.info(f" No clarifications matched for this query")
         
         return "\n".join(context_parts)
     
@@ -762,6 +771,8 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
    - Do NOT assume any object is integral unless the context states it
    - "No free relief" from an integral object means you cannot drop AWAY from it under Rule 16.1
    - HOWEVER, you CAN always remove loose impediments (rocks, leaves, sticks, etc.) anywhere on the course under Rule 15.1, even when your ball is on or near an integral object, a boundary object, or in a penalty area - as long as doing so does not cause your ball to move
+   
+   IMPORTANT: A ball on a bridge over a penalty area is treated as being in the penalty area (Rule 17.1a), BUT the bridge itself is still an immovable obstruction. If the ball is NOT over a penalty area, normal Rule 16.1 relief applies.
 
 1. IDENTIFY THE PRIMARY RULE that applies to this situation
 
@@ -796,7 +807,7 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
 
 3. CHECK COLUMBIA CC LOCAL RULES:
    - If a Columbia local rule applies to this specific situation, it takes precedence
-   - Columbia rules are marked as "CCC-" in the context, but NEVER cite the rule number in your response
+   - Columbia rules are marked as "CCC-" in the context, but do not cite the rule number in your response
    
    CRITICAL - DO NOT FABRICATE LOCAL RULES:
    - ONLY apply a Columbia CC local rule if the context EXPLICITLY covers the EXACT situation in the question
@@ -810,12 +821,12 @@ CRITICAL INSTRUCTIONS FOR ACCURATE RULINGS:
 4. CHECK USGA CLARIFICATIONS:
    - If the context includes "USGA Clarification" entries, these are OFFICIAL interpretive guidance from the USGA
    - Clarifications provide authoritative detail on HOW to apply rules in specific situations
-   - When a clarification is relevant to the specific situation described in the query, you MUST incorporate its specific guidance into your answer
-   - For example, if a clarification explains that the nearest point of relief is on the ground beneath an elevated obstruction, your answer to a relief query must include this detail
+   - When a clarification is relevant, you MUST incorporate its specific guidance into your answer
+   - For example, if a clarification explains that the nearest point of relief is on the ground beneath an elevated obstruction, your answer must include this detail
    - Clarifications are as authoritative as the rules themselves
 
 5. PROVIDE YOUR ANSWER:
-   - State the applicable rule(s) clearly; include rule numbers for Official Rules of Golf but NOT local rules
+   - State the applicable rule(s) clearly; include rule numbers for Official Rules of Golf but not local rules
    - Mention ANY exceptions or special cases that apply
    - Specify the correct procedure step by step
    - State any penalties (or explicitly note if there's no penalty)
