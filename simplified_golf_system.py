@@ -683,31 +683,48 @@ class SimplifiedGolfRulesSystem:
             
             logger.info(f" Clarifications: checking against rule IDs: {sorted(included_rule_ids)}")
             
-            # Find matching clarifications
+            # Find matching clarifications, scored by relevance
             question_lower = question.lower()
-            question_terms = [w.strip('.,;:!?()[]"\'') for w in question_lower.split() if len(w) > 2 and w.strip('.,;:!?()[]"\'') not in ('the', 'and', 'for', 'what', 'are', 'how', 'does', 'can', 'get', 'from', 'ball', 'my', 'is', 'on', 'in', 'do', 'this', 'its', '')]
+            question_terms = [w.strip('.,;:!?()[]"\'') for w in question_lower.split() if len(w) > 3 and w.strip('.,;:!?()[]"\'') not in ('the', 'and', 'for', 'what', 'are', 'how', 'does', 'can', 'get', 'from', 'ball', 'my', 'is', 'on', 'in', 'do', 'this', 'its', 'that', 'but', 'not', 'there', 'even', 'though', 'when', 'with', 'have', '')]
             
             logger.info(f" Clarifications: question terms: {question_terms}")
             
+            scored_clarifications = []
+            seen_ids = set()
+            
             for rule_id in included_rule_ids:
-                # Check exact match and sub-rules (e.g., "16.1" matches "16.1", "16.1a", "16.1b")
                 for clar_key, clar_list in self.clarifications_db.items():
                     if clar_key == rule_id or clar_key.startswith(rule_id):
                         for clar in clar_list:
-                            # Filter by relevance - check title and first 800 chars of text
+                            if clar['id'] in seen_ids:
+                                continue
+                            
                             clar_text_lower = (clar['title'] + ' ' + clar['text'][:800]).lower()
-                            if any(term in clar_text_lower for term in question_terms):
-                                logger.info(f" Clarification MATCHED: {clar['id']} via rule {rule_id}")
-                                clarification_parts.append(f"USGA Clarification {clar['id']}: {clar['title']}\n{clar['text'][:1000]}")
+                            matching_terms = [t for t in question_terms if t in clar_text_lower]
+                            
+                            if len(matching_terms) >= 2:
+                                seen_ids.add(clar['id'])
+                                scored_clarifications.append({
+                                    'id': clar['id'],
+                                    'score': len(matching_terms),
+                                    'terms': matching_terms,
+                                    'text': f"USGA Clarification {clar['id']}: {clar['title']}\n{clar['text'][:1000]}"
+                                })
             
-            if clarification_parts:
-                logger.info(f" Injecting {len(clarification_parts)} clarifications into context")
-                # Limit to top 3 most relevant clarifications to avoid context bloat
+            # Sort by score descending, take top 3
+            scored_clarifications.sort(key=lambda x: x['score'], reverse=True)
+            
+            for sc in scored_clarifications[:5]:
+                logger.info(f" Clarification scored: {sc['id']} (score={sc['score']}, terms={sc['terms']})")
+            
+            if scored_clarifications:
+                logger.info(f" Injecting top {min(3, len(scored_clarifications))} of {len(scored_clarifications)} clarifications")
                 context_parts.append("\n--- USGA OFFICIAL CLARIFICATIONS ---")
-                for cp in clarification_parts[:3]:
-                    context_parts.append(cp)
+                for sc in scored_clarifications[:3]:
+                    clarification_parts.append(sc['text'])
+                    context_parts.append(sc['text'])
             else:
-                logger.info(f" No clarifications matched for this query")
+                logger.info(f" No clarifications matched for this query (need 2+ term matches)")
         
         return "\n".join(context_parts)
     
