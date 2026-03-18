@@ -692,7 +692,7 @@ class SimplifiedGolfRulesSystem:
                             clar_text_lower = (clar['title'] + ' ' + clar['text'][:800]).lower()
                             question_terms = [w for w in question_lower.split() if len(w) > 3 and w not in ('what', 'does', 'when', 'from', 'that', 'this', 'with', 'your', 'have', 'ball')]
                             if any(term in clar_text_lower for term in question_terms):
-                                clarification_parts.append(f"USGA Clarification {clar['id']}: {clar['title']}\n{clar['text'][:600]}")
+                                clarification_parts.append(f"USGA Clarification {clar['id']}: {clar['title']}\n{clar['text'][:1000]}")
             
             if clarification_parts:
                 # Limit to top 3 most relevant clarifications to avoid context bloat
