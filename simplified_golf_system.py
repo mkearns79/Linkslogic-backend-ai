@@ -565,14 +565,14 @@ class SimplifiedGolfRulesSystem:
                         condition_text = (situation + ' ' + explanation + ' ' + ' '.join(examples if isinstance(examples, list) else [])).lower()
                         
                         # Include condition if it's relevant to the question
-                        # Check for hole number match, key terms match, or exception
+                        # Check for key terms match or exception
                         is_relevant = False
                         
                         if 'exception' in situation.lower():
                             is_relevant = True
                         else:
                             # Check if any significant words from the question appear in the condition
-                            question_terms = [w for w in question_lower_words.split() if len(w) > 2 and w not in ('the', 'and', 'for', 'what', 'are', 'how', 'does', 'can', 'get', 'from', 'ball', 'my', 'is', 'on', 'in', 'do', 'this')]
+                            question_terms = [w.strip('.,;:!?()[]"\'') for w in question_lower_words.split() if len(w) > 2 and w.strip('.,;:!?()[]"\'') not in ('the', 'and', 'for', 'what', 'are', 'how', 'does', 'can', 'get', 'from', 'ball', 'my', 'is', 'on', 'in', 'do', 'this', '')]
                             for term in question_terms:
                                 if term in condition_text:
                                     is_relevant = True

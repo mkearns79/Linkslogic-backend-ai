@@ -244,7 +244,12 @@ def extract_hole_number_from_query(query: str):
     patterns = [
         r'\b(\d{1,2})(?:th|st|nd|rd)?\s+(?:hole|green)\b',
         r'\bhole\s+(\d{1,2})\b',
-        r'\b(\d{1,2})(?:th|st|nd|rd)\b'
+        r'#(\d{1,2})\b',
+        r'\b(\d{1,2})(?:th|st|nd|rd)\b',
+        r'\b(\d{1,2})\s+(?:bridge|fairway|tee|rough|bunker|pond|creek|water)\b',
+        r'(?:hole|number)\s*#?\s*(\d{1,2})\b',
+        r'(?:bridge|fairway|tee|green|rough|bunker|pond|creek|water)\s+(?:on|over|at|near)\s+(\d{1,2})\b',
+        r'\bon\s+(\d{1,2})\b',
     ]
     for pattern in patterns:
         match = re.search(pattern, query.lower())
@@ -301,16 +306,12 @@ def apply_columbia_boosting(results, query, verbose=False):
                 logger.info(f"   - CCC-4: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.3:.3f} (0.3x de-boost)")
             r['best_similarity'] *= 0.3
         
-        # Only de-boost Rule 16.1 for holes where bridge is primarily over penalty area
-        # Hole 13 bridge is mostly NOT over penalty area, so 16.1 relief applies there
-        penalty_area_bridge_holes = [17, 18]
-        if hole_number in penalty_area_bridge_holes or (hole_number is None and not any(h in query_lower for h in ['13'])):
-            for r in results:
-                rid = r.get('rule', {}).get('id', '')
-                if '16.1' in rid and not r.get('is_local'):
-                    if verbose:
-                        logger.info(f"   - {rid}: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
-                    r['best_similarity'] *= 0.4
+        for r in results:
+            rid = r.get('rule', {}).get('id', '')
+            if '16.1' in rid and not r.get('is_local'):
+                if verbose:
+                    logger.info(f"   - {rid}: {r['best_similarity']:.3f}  ->  {r['best_similarity']*0.4:.3f} (0.4x de-boost)")
+                r['best_similarity'] *= 0.4
     
     # --- CART PATH behind holes 12, 14, 17 ---
     if hole_number in [12, 14, 17] and not is_bridge_query:
