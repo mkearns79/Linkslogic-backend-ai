@@ -301,8 +301,8 @@ def apply_columbia_boosting(results, query, verbose=False):
                 logger.info(f"   - CCC-2: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
             r['best_similarity'] *= 4.0
 
-         r = get_result_by_id('CCC-15')
-         if r:
+        r = get_result_by_id('CCC-15')
+        if r:
             if verbose:
                 logger.info(f"   - CCC-15: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
             r['best_similarity'] *= 4.0           
