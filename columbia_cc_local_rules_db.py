@@ -476,7 +476,7 @@ COLUMBIA_CC_LOCAL_RULES = {
         {
             'id': 'CCC-15',
             'title': 'Bridges on the Course',
-            'description': 'Rules for balls on or near bridges at Columbia Country Club.',
+            'text': 'Rules for balls on or near bridges at Columbia Country Club.',
             'keywords': ['bridge', 'footbridge', 'cart bridge', 'ball on bridge', 'under bridge', 'bridge relief', 'support beam', 'bridge over creek', 'bridge over water', 'bridge over penalty area', 'hole 2', 'hole 3', 'hole 13', 'hole 14', 'hole 16', 'hole 17', 'hole 18'],
             'examples': [
                 'Ball on bridge - no free relief on most holes',
