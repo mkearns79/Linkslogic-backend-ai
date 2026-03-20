@@ -85,12 +85,6 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'situation': 'Artificial walls in penalty areas',
                     'explanation': 'Artificial walls inside penalty areas of holes 15, 16, 17, and 18 are integral objects from which free relief is not allowed',
                     'examples': ['Stone wall in water hazard', 'Retaining wall in penalty area']
-                },
-                {
-                    'situation': 'Hole 13 bridge over creek',
-                    'explanation': 'The bridge on hole 13 crosses a creek (penalty area) as well as a general area. BALL ON THE BRIDGE: Only the portion of the bridge directly over the penalty area is treated as being in the penalty area under Rule 17.1a. If a ball is on a part of the bridge that is NOT over the penalty area, the bridge is an immovable obstruction and player gets free relief under Rule 16.1 - the nearest point of complete relief is on the ground directly beneath where the ball lies on the bridge (vertical distance is disregarded), drop within one club-length of that point, not nearer the hole. If ball is on the portion directly over the penalty area, must play it as it lies or take penalty area relief under Rule 17.1d for one penalty stroke. BALL UNDER THE BRIDGE: If the ball is on the ground under or near the bridge and the bridge or its supporting structures (beams, columns) interfere with the stance or swing, the bridge is an immovable obstruction and player gets free relief under Rule 16.1.',
-
-                    'examples': ['Ball on bridge on 13', 'Ball on bridge over creek on hole 13', 'Relief from bridge on 13th']
                 }
             ]
         },
@@ -476,6 +470,36 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'explanation': 'If a player places the ball in a wrong place or fails to mark before lifting, the player gets one penalty stroke under Rule 14.2. If the player drops instead of places, the ball is not in play and must be corrected.',
                     'examples': ['Forgetting to mark spot - one penalty stroke', 'Placing ball nearer the hole - wrong place penalty', 'Dropping instead of placing - must correct']
                 }
+            ]
+        },
+
+        {
+            'id': 'CCC-15',
+            'title': 'Bridges on the Course',
+            'description': 'Rules for balls on or near bridges at Columbia Country Club.',
+            'keywords': ['bridge', 'footbridge', 'cart bridge', 'ball on bridge', 'under bridge', 'bridge relief', 'support beam', 'bridge over creek', 'bridge over water', 'bridge over penalty area', 'hole 2', 'hole 3', 'hole 13', 'hole 14', 'hole 16', 'hole 17', 'hole 18'],
+            'examples': [
+                'Ball on bridge - no free relief on most holes',
+                'Ball on bridge on hole 13 - may get free relief depending on position',
+                'Ball under bridge against support beam - free relief',
+                'Ball on footbridge on 17 - in penalty area'
+            ],
+            'conditions': [
+                {
+                    'situation': 'Bridges entirely over penalty areas (holes 2, 3, 14, 16, 17, 18)',
+                    'explanation': 'The following bridges are entirely within penalty areas: both bridges on hole 2, both bridges on hole 3, the bridge on hole 14, the footbridge on hole 16, the footbridge on hole 17, and the cart bridge on hole 18. A ball on any of these bridges is treated as being in the penalty area under Rule 17.1a. No free relief is available from the bridge. The player must play the ball as it lies or take penalty area relief under Rule 17.1d for one penalty stroke.',
+                    'examples': ['Ball on bridge on 2', 'Ball on bridge on 3', 'Ball on bridge on 14', 'Ball on footbridge on 16', 'Ball on footbridge on 17', 'Ball on cart bridge on 18']
+                },
+                {
+                    'situation': 'Bridge on hole 13 - ball ON the bridge',
+                    'explanation': 'The footbridge on hole 13 crosses a creek (penalty area) as well as a general area. Only the portion of the bridge directly over the penalty area is treated as being in the penalty area under Rule 17.1a. If your ball is on a part of the bridge NOT directly over the penalty area, the bridge is an immovable obstruction and you get free relief under Rule 16.1. Per USGA Clarification 16.1/4, the nearest point of complete relief is on the ground directly beneath where the ball lies on the bridge (vertical distance is disregarded). Drop within one club-length of that point, not nearer the hole. If your ball is on the portion directly over the creek, you must play it as it lies or take penalty area relief under Rule 17.1d for one penalty stroke.',
+                    'examples': ['Ball on bridge on 13', 'Ball on bridge over creek on hole 13', 'Relief from bridge on 13th', 'Free drop from 13 bridge']
+                },
+                {
+                    'situation': 'Ball UNDER any bridge or near support structures',
+                    'explanation': 'If your ball is on the ground under or near any bridge and the bridge or its supporting structures (beams, columns, railings) interfere with your stance or swing, the bridge is an immovable obstruction and you are entitled to free relief under Rule 16.1. Find the nearest point of complete relief not nearer the hole and drop within one club-length. This applies on any hole because the ball is on the ground, not above the penalty area.',
+                    'examples': ['Ball under bridge against support beam', 'Bridge column in swing path', 'Ball under bridge on 13 near beam', 'Support beam interfering with stance', 'Ball against bridge support on 17']
+                },
             ]
         }
     ],
