@@ -289,6 +289,15 @@ def apply_columbia_boosting(results, query, verbose=False):
     bridge_terms = ['bridge', 'cart bridge', 'footbridge']
     is_bridge_query = any(term in query_lower for term in bridge_terms)
     
+    # CCC-15 (bridge rules) applies to ALL bridge queries regardless of hole
+    if is_bridge_query:
+        r = get_result_by_id('CCC-15')
+        if r:
+            if verbose:
+                logger.info(f"   - CCC-15: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
+            r['best_similarity'] *= 4.0
+    
+    # CCC-2 (penalty area dropping zones) only for specific holes
     bridge_holes = [13, 16, 17, 18]
     bridge_hole_strs = ['13', '16', '17', '18']
     if is_bridge_query and (hole_number in bridge_holes or any(h in query_lower for h in bridge_hole_strs)):
@@ -300,12 +309,6 @@ def apply_columbia_boosting(results, query, verbose=False):
             if verbose:
                 logger.info(f"   - CCC-2: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
             r['best_similarity'] *= 4.0
-
-        r = get_result_by_id('CCC-15')
-        if r:
-            if verbose:
-                logger.info(f"   - CCC-15: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
-            r['best_similarity'] *= 4.0           
         
         r = get_result_by_id('CCC-4')
         if r:
