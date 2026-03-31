@@ -524,23 +524,24 @@ COLUMBIA_CC_LOCAL_RULES = {
         'turf_nursery': ['CCC-8'],
         'fenced_trees': ['CCC-5'],
         'preferred_lies': ['CCC-14'],
-        'lift_clean_and_place': ['CCC-14']
+        'lift_clean_and_place': ['CCC-14'],
+        'bridge': ['CCC-15']
     },
     
     'hole_specific_rules': {
-       '2': ['CCC-3'],
-        '3': ['CCC-3', 'CCC-5'],
+        '2': ['CCC-3', 'CCC-15']
+        '3': ['CCC-3', 'CCC-5', 'CCC-15'],
         '4': ['CCC-3'],
         '6': ['CCC-9'],
         '9': ['CCC-7', 'CCC-8'],
         '10': ['CCC-7', 'CCC-8'],
         '12': ['CCC-4'],
         '13': ['CCC-9'],
-        '14': ['CCC-4'],
+        '14': ['CCC-4', 'CCC-15'],
         '15': ['CCC-2', 'CCC-4'],
-        '16': ['CCC-2', 'CCC-14'],
-        '17': ['CCC-2', 'CCC-4', 'CCC-14'],
-        '18': ['CCC-2', 'CCC-9']
+        '16': ['CCC-2', 'CCC-14', 'CCC-15'],
+        '17': ['CCC-2', 'CCC-4', 'CCC-14', 'CCC-15'],
+        '18': ['CCC-2', 'CCC-9', 'CCC-15']
     }
 }
 
