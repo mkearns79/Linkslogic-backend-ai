@@ -529,7 +529,7 @@ COLUMBIA_CC_LOCAL_RULES = {
     },
     
     'hole_specific_rules': {
-        '2': ['CCC-3', 'CCC-15']
+        '2': ['CCC-3', 'CCC-15'],
         '3': ['CCC-3', 'CCC-5', 'CCC-15'],
         '4': ['CCC-3'],
         '6': ['CCC-9'],
