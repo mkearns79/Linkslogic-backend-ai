@@ -241,26 +241,29 @@ Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides
 def extract_hole_number_from_query(query: str):
     """Simple hole number extraction."""
     import re
-    # Convert word numbers to digits first
-    word_to_num = {
+    query_lower = query.lower()
+    
+    # Convert ordinal words to numbers ONLY when near course context words
+    ordinal_to_num = {
         'first': '1', 'second': '2', 'third': '3', 'fourth': '4',
         'fifth': '5', 'sixth': '6', 'seventh': '7', 'eighth': '8',
         'ninth': '9', 'tenth': '10', 'eleventh': '11', 'twelfth': '12',
         'thirteenth': '13', 'fourteenth': '14', 'fifteenth': '15',
         'sixteenth': '16', 'seventeenth': '17', 'eighteenth': '18',
-        'one': '1', 'two': '2', 'three': '3', 'four': '4',
-        'five': '5', 'six': '6', 'seven': '7', 'eight': '8',
-        'nine': '9', 'ten': '10', 'eleven': '11', 'twelve': '12',
-        'thirteen': '13', 'fourteen': '14', 'fifteen': '15',
-        'sixteen': '16', 'seventeen': '17', 'eighteen': '18',
     }
     
-    query_lower = query.lower()
-    for word, num in word_to_num.items():
-        if word in query_lower:
-            hole_num = int(num)
-            if 1 <= hole_num <= 18:
-                return hole_num
+    course_context = ['hole', 'fairway', 'green', 'tee', 'rough', 'bunker',
+                      'bridge', 'pond', 'creek', 'water']
+    
+    for ordinal, num in ordinal_to_num.items():
+        # Check if ordinal appears near a course term (within ~3 words)
+        pattern = rf'(?:{ordinal})\s+(?:\w+\s+){{0,2}}(?:{"|".join(course_context)})'
+        if re.search(pattern, query_lower):
+            return int(num)
+        # Also check course term BEFORE ordinal: "fairway on the third"
+        pattern2 = rf'(?:{"|".join(course_context)})\s+(?:\w+\s+){{0,3}}(?:{ordinal})'
+        if re.search(pattern2, query_lower):
+            return int(num)
 
     patterns = [
         r'\b(\d{1,2})(?:th|st|nd|rd)?\s+(?:hole|green)\b',
