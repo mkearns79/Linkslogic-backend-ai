@@ -4978,7 +4978,7 @@ RULES_DATABASE = [
         },
         {
             "situation": "Exceptions - When relief is NOT allowed",
-            "explanation": "Relief is not allowed when an abnormal course condition only interferes with your play because of something other than the situations above. Relief is also not allowed when the ball is in a penalty area. Relief is also not allowed when interference is clearly unreasonable to play your ball because of something else (like severe lie in rough or a tree between your ball and the hole).",
+            "explanation": "Relief is not allowed when an abnormal course condition only interferes with your play because of something other than the situations above. Relief is also not allowed when the ball is in a penalty area. Relief is also not allowed when interference is clearly unreasonable to play your ball because of something else (like severe lie in rough or a tree between your ball and the hole). Relief is not allowed when the abnormal course condition interferes with the player's line of play only, unless the abnormal course condition is on the putting green.",
             "examples": ["tree between ball and hole", "abnormal condition only affecting line of play for ball in general area", "ball in penalty area", "only reasonable play is in different direction from condition"]
         }
     ]
