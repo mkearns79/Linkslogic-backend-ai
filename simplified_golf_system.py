@@ -155,7 +155,7 @@ class SimplifiedGolfRulesSystem:
                 'exclude': ['flagstick', 'flag stick', 'flag', 'pin', 'putt', 'green',
                             'bunker', 'sand', 'tree', 'fence', 'cart path', 'obstruction',
                             'unplayable', 'embedded', 'lost', 'out of bounds', 'tee',
-                            'fairway', 'rough', 'stance', 'swing'],
+                            'fairway', 'rough', 'stance', 'swing', '15', 'fifteen'],
                 'min_matches': 2
             },
             'water_hazard_17': {
