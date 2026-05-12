@@ -1927,7 +1927,7 @@ def get_quick_questions():
             },
             {
                 'id': 'green_stakes_cart_path',
-                'text': 'Path behind #17 green',
+                'text': 'Path behind #12 & #17 green',
                 'category': 'local_rules',
                 'icon': '',
                 'expected_source': 'template'
