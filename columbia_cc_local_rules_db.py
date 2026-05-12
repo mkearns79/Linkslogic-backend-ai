@@ -58,8 +58,8 @@ COLUMBIA_CC_LOCAL_RULES = {
             'conditions': [
                 {
                     'situation': 'Hole 15 penalty area relief',
-                    'explanation': 'When ball is in penalty area on hole 15, player must proceed under Rule 17.1 and may consider the penalty area to be a red penalty area',
-                    'examples': ['Ball in water on 15th', 'Ball in penalty area on 15th']
+                    'explanation': 'When ball is in penalty area on hole 15, including the pond, player must proceed under Rule 17.1 and may consider the penalty area to be a red penalty area. Note: if your ball enters the pond on hole 16 while playing hole 15 (even if the pond is closer to the 16th green), use the hole 15 relief options and treat as a red penalty area.',
+                    'examples': ['Ball in water on 15th', 'Ball in penalty area on 15th', 'Drive into pond on 16 while playing 15', 'Ball in pond between 15 and 16', 'Ball in water playing hole 15']
                 },
                 {
                     'situation': 'Hole 16 penalty area relief options',
