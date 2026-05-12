@@ -464,7 +464,7 @@ class SimplifiedGolfRulesSystem:
         enrichment_triggers = [
             {
                 'template_name': 'water_hazard_16',
-                'condition': ('penalty area' in answer_lower and '16' in question_lower),
+                'condition': ('penalty area' in answer_lower and '16' in question_lower and '15' not in question_lower),
                 'header': "\n\n---\n**Columbia CC Local Rule -- Hole 16 Penalty Area Options:**\n\n"
             },
             {
