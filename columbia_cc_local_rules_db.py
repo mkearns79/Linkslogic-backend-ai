@@ -125,6 +125,7 @@ COLUMBIA_CC_LOCAL_RULES = {
             'keywords': ['cart path', 'integral object', 'no relief', 'unpaved road', 'green stakes', 'holes 12 17', 'cart path behind green', 'path behind green','path behind twelfth green', 'road behind twelvth green', 'path behind seventeenth green', 'path behind 12th green', 'road behind 12th green', 'path behind 17th green', 'path behind 12 green', 'road behind 12 green', 'path behind 17 green', 'cart path behind', 'no free relief','cart path integral', 'path integral object'],
             'examples': [
                 'Ball on cart path behind 17th green - no free relief available',
+                'Short wall behind 17th green - no free relief available',
                 'Ball on road behind 12th green - no free relief available',
                 'Ball on maintenance road elsewhere - free relief under Rule 16.1',
                 'Ball on path marked with green stakes - must play as lies'
@@ -137,7 +138,7 @@ COLUMBIA_CC_LOCAL_RULES = {
                 },
                 {
                     'situation': 'Stone wall at 15th tee',
-                    'explanation': 'The low stone wall adjacent to cart path at 15th tee is part of the immovable obstruction, but the portion adjacent to integral object cart path is also integral object',
+                    'explanation': 'The low stone wall behind the 17th green, adjacent to cart path at 15th tee is part of the immovable obstruction, but the portion within the integral object cart path, defined by green stakes, is also integral object',
                     'examples': ['Stone wall next to cart path at 15th tee']
                 },
                 {
