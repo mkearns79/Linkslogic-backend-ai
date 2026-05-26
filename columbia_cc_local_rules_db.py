@@ -122,7 +122,7 @@ COLUMBIA_CC_LOCAL_RULES = {
             'id': 'CCC-4',
             'title': 'Integral Objects - Cart Paths and Roads',
             'text': 'Specific cart paths and roads are designated as integral objects from which free relief is not allowed. The unpaved road behind 12th green and sections of cart path behind the 17th green marked by green stakes are integral objects. Balls resting on or against these cart paths get NO RELIEF and must play it as it lies or take an unplayable ball penalty.',
-            'keywords': ['cart path', 'integral object', 'no relief', 'unpaved road', 'green stakes', 'holes 12 17', 'cart path behind green', 'retaining wall', 'stone wall', 'stone wall behind 17 green', 'stone wall behind 17th green', 'retaining wall behind 17 green', 'retaining wall behind 17th green', 'short wall behind 17 green', 'short wall behind 17th green', 'path behind green', 'path behind twelfth green', 'road behind twelvth green', 'path behind seventeenth green', 'path behind 12th green', 'road behind 12th green', 'path behind 17th green', 'path behind 12 green', 'road behind 12 green', 'path behind 17 green', 'retaining wall behind 17 green', 'cart path behind', 'no free relief', 'cart path integral', 'path integral object'],
+            'keywords': ['cart path', 'integral object', 'no relief', 'unpaved road', 'green stakes', 'holes 12 17', 'cart path behind green', 'retaining wall', 'stone wall', 'stone wall behind 17 green', 'stone wall behind 17th green', 'retaining wall behind 17 green', 'retaining wall behind 17th green', 'short wall behind 17 green', 'short wall behind 17th green', 'wall next to 15 tee', 'wall next to 15th tee', 'path behind green', 'path behind twelfth green', 'road behind twelvth green', 'path behind seventeenth green', 'path behind 12th green', 'road behind 12th green', 'path behind 17th green', 'path behind 12 green', 'road behind 12 green', 'path behind 17 green', 'retaining wall behind 17 green', 'cart path behind', 'no free relief', 'cart path integral', 'path integral object'],
             'examples': [
                 'Ball on cart path behind 17th green - no free relief available',
                 'Short stone retaining wall behind 17th green - no free relief available from portions of wall within green stakes',
@@ -279,7 +279,7 @@ COLUMBIA_CC_LOCAL_RULES = {
             'id': 'CCC-9',
             'title': 'Decorative Planting Areas',
             'text': 'Decorative planting areas, including mulched beds and plants, are part of the General Area with no free relief. Walls and bulkheads around decorative areas are immovable obstructions providing free relief under Rule 16.1.',
-            'keywords': ['decorative planting', 'mulched beds', 'general area', 'no relief', 'walls', 'bulkheads', 'immovable obstruction', 'gazebo', 'restroom', 'short wall behind 17 green', 'short wall behind 17th green', 'stone wall', 'retaining wall behind 17', 'retaining wall behind 17th'],
+            'keywords': ['decorative planting', 'mulched beds', 'general area', 'no relief', 'walls', 'bulkheads', 'immovable obstruction', 'gazebo', 'restroom', 'wall next to 15 tee', 'wall next to 15th tee', 'short wall behind 17 green', 'short wall behind 17th green', 'stone wall', 'retaining wall behind 17', 'retaining wall behind 17th'],
             'examples': [
                 'Ball in mulched bed - no relief, play as it lies',
                 'Ball interfered by retaining wall - free relief available',
