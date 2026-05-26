@@ -122,10 +122,10 @@ COLUMBIA_CC_LOCAL_RULES = {
             'id': 'CCC-4',
             'title': 'Integral Objects - Cart Paths and Roads',
             'text': 'Specific cart paths and roads are designated as integral objects from which free relief is not allowed. The unpaved road behind 12th green and sections of cart path behind the 17th green marked by green stakes are integral objects. Balls resting on or against these cart paths get NO RELIEF and must play it as it lies or take an unplayable ball penalty.',
-            'keywords': ['cart path', 'integral object', 'no relief', 'unpaved road', 'green stakes', 'holes 12 17', 'cart path behind green', 'path behind green','path behind twelfth green', 'road behind twelvth green', 'path behind seventeenth green', 'path behind 12th green', 'road behind 12th green', 'path behind 17th green', 'path behind 12 green', 'road behind 12 green', 'path behind 17 green', 'cart path behind', 'no free relief','cart path integral', 'path integral object'],
+            'keywords': ['cart path', 'integral object', 'no relief', 'unpaved road', 'green stakes', 'holes 12 17', 'cart path behind green', 'retaining wall', 'path behind green', 'path behind twelfth green', 'road behind twelvth green', 'path behind seventeenth green', 'path behind 12th green', 'road behind 12th green', 'path behind 17th green', 'path behind 12 green', 'road behind 12 green', 'path behind 17 green', 'retaining wall behind 17 green', 'cart path behind', 'no free relief', 'cart path integral', 'path integral object'],
             'examples': [
                 'Ball on cart path behind 17th green - no free relief available',
-                'Short wall behind 17th green - no free relief available',
+                'Short stone retaining wall behind 17th green - no free relief available from portions of wall within green stakes',
                 'Ball on road behind 12th green - no free relief available',
                 'Ball on maintenance road elsewhere - free relief under Rule 16.1',
                 'Ball on path marked with green stakes - must play as lies'
@@ -293,11 +293,16 @@ COLUMBIA_CC_LOCAL_RULES = {
                 },
                 {
                     'situation': 'Walls and bulkheads as obstructions',
-                    'explanation': 'Walls and bulkheads around decorative planting areas are immovable obstructions - free relief available under Rule 16.1',
+                    'explanation': 'Walls and bulkheads around decorative planting areas are immovable obstructions - free relief available under Rule 16.1, EXCEPT the short stone wall behind 17 green adjacent to 15 tee box, where no free relief is available.',
                     'examples': ['Stone retaining walls', 'Concrete bulkheads', 'Decorative barriers']
                 },
                 {
-                    'situation': 'Special exception areas',
+                    'situation': 'Special exception to walls and bulkheads as obstruction',
+                    'explanation': 'No free relief is available from the short stone wall behind the 17 green, adjacent to the 15 tee box, for portions of the wall between the green stakes. This portion of the wall, adjacent to the portion of the cart path designated as an integral object, is also an integral object.',
+                    'examples': ['Retaining wall behind 17 green', 'Retaining wall next to cart path by 15 tee', 'Stone wall next to holly trees on 15 tee', 'Short wall behind 17 green', 'Low wall near 15 tee']
+                },
+                {
+                    'situation': 'Special exception areas with free relief',
                     'explanation': 'Decorative planting areas completely surrounded by cart paths at 6th tee, 13th tee, around restroom at 13th tee, and around gazebo on 18th are part of adjacent immovable obstructions',
                     'examples': ['Landscaping at 6th tee', 'Plants around 13th restroom', 'Gazebo landscaping on 18th']
                 },
