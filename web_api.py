@@ -592,6 +592,9 @@ class ProductionHybridVectorSearch:
     def search_with_precedence(self, query, hole_number=None, top_n=3, verbose=False):
         """FIXED: Search with precedence using pre-computed embeddings."""
         try:
+            import re
+            query = re.sub(r'\b(\d{1,2})(?:th|st|nd|rd)\b', r'\1', query)
+            
             if verbose:
                 logger.info(f" Searching with precedence for: {query}")
                 
