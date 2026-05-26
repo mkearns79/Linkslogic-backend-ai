@@ -11,6 +11,7 @@ import logging
 from openai import OpenAI
 from dotenv import load_dotenv
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
+from golf_clarifications_db import USGA_CLARIFICATIONS
 
 
 # Import your existing comprehensive databases
@@ -171,7 +172,7 @@ Relief: Drop/place within one club-length of nearest point of relief. If you get
 NO FREE RELIEF is available from this fence, or any fence at Columbia.
 
 Your options:
-  • Play the ball as it lies if possible
+  • Play the ball as it lies
   • Declare the ball unplayable under Rule 19 (1 penalty stroke)
   - Drop within two club-lengths, not nearer hole
   - Drop on line from hole through ball, going back as far as desired
@@ -182,21 +183,20 @@ The construction fence is treated as a boundary, not a regular obstruction."""
 
     "green_stakes_cart_path": {
     "keywords": [
-        "green stakes behind 14", "green stakes behind 17", "green stakes behind fourteenth", "green stakes behind seventeenth",
-        "cart path behind 14th green", "cart path behind 17th green", "path behind fourteenth green", "path behind seventeenth green", 
+        "green stakes behind 17", "green stakes behind seventeenth",
+        "cart path behind 17th green", "path behind seventeenth green", 
         "cart path green stakes", "path marked with green stakes", "integral object cart path",
-        "no relief cart path", "cart path behind green", "path behind 14", "path behind 17",
-        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #14 & #17 green"
+        "no relief cart path", "cart path behind green", "path behind 17",
+        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #17 green"
     ],
     "local_rule": "CCC-4",
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
-  • Cart path sections behind 14th green marked by green stakes
   • Cart path sections behind 17th green marked by green stakes  
   • Unpaved road behind 12th green
 NO FREE RELIEF AVAILABLE - Your options:
-  • Play the ball as it lies if possible
+  • Play the ball as it lies
   • Declare the ball unplayable under Rule 19 (1 penalty stroke)
         - Drop within two club-lengths, not nearer hole
         - Drop on line from hole through ball, going back as far as desired
@@ -241,6 +241,30 @@ Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides
 def extract_hole_number_from_query(query: str):
     """Simple hole number extraction."""
     import re
+    query_lower = query.lower()
+    
+    # Convert ordinal words to numbers ONLY when near course context words
+    ordinal_to_num = {
+        'first': '1', 'second': '2', 'third': '3', 'fourth': '4',
+        'fifth': '5', 'sixth': '6', 'seventh': '7', 'eighth': '8',
+        'ninth': '9', 'tenth': '10', 'eleventh': '11', 'twelfth': '12',
+        'thirteenth': '13', 'fourteenth': '14', 'fifteenth': '15',
+        'sixteenth': '16', 'seventeenth': '17', 'eighteenth': '18',
+    }
+    
+    course_context = ['hole', 'fairway', 'green', 'tee', 'rough', 'bunker',
+                      'bridge', 'pond', 'creek', 'water']
+    
+    for ordinal, num in ordinal_to_num.items():
+        # Check if ordinal appears near a course term (within ~3 words)
+        pattern = rf'(?:{ordinal})\s+(?:\w+\s+){{0,2}}(?:{"|".join(course_context)})'
+        if re.search(pattern, query_lower):
+            return int(num)
+        # Also check course term BEFORE ordinal: "fairway on the third"
+        pattern2 = rf'(?:{"|".join(course_context)})\s+(?:\w+\s+){{0,3}}(?:{ordinal})'
+        if re.search(pattern2, query_lower):
+            return int(num)
+
     patterns = [
         r'\b(\d{1,2})(?:th|st|nd|rd)?\s+(?:hole|green)\b',
         r'\bhole\s+(\d{1,2})\b',
@@ -288,6 +312,15 @@ def apply_columbia_boosting(results, query, verbose=False):
     bridge_terms = ['bridge', 'cart bridge', 'footbridge']
     is_bridge_query = any(term in query_lower for term in bridge_terms)
     
+    # CCC-15 (bridge rules) applies to ALL bridge queries regardless of hole
+    if is_bridge_query:
+        r = get_result_by_id('CCC-15')
+        if r:
+            if verbose:
+                logger.info(f"   - CCC-15: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
+            r['best_similarity'] *= 4.0
+    
+    # CCC-2 (penalty area dropping zones) only for specific holes
     bridge_holes = [13, 16, 17, 18]
     bridge_hole_strs = ['13', '16', '17', '18']
     if is_bridge_query and (hole_number in bridge_holes or any(h in query_lower for h in bridge_hole_strs)):
@@ -560,28 +593,17 @@ class ProductionHybridVectorSearch:
         """FIXED: Search with precedence using pre-computed embeddings."""
         try:
             import re
-            
-            # Create normalized version (strip ordinals: "17th" -> "17")
-            normalized_query = re.sub(r'\b(\d{1,2})(?:th|st|nd|rd)\b', r'\1', query)
+            query = re.sub(r'\b(\d{1,2})(?:th|st|nd|rd)\b', r'\1', query)
             
             if verbose:
                 logger.info(f" Searching with precedence for: {query}")
-                if normalized_query != query:
-                    logger.info(f" Also searching normalized: {normalized_query}")
                 
-            # Get embeddings for original query
+            # Get query embedding (only 1 API call per query now)
             query_embedding = self.get_embeddings(query)
             if not query_embedding:
                 return []
+            
             query_vector = query_embedding[0]
-            
-            # Get embeddings for normalized query if different
-            norm_vector = None
-            if normalized_query != query:
-                norm_embedding = self.get_embeddings(normalized_query)
-                if norm_embedding:
-                    norm_vector = norm_embedding[0]
-            
             results = []
             
             # Use pre-computed rule embeddings (no API calls in loop)
@@ -594,11 +616,6 @@ class ProductionHybridVectorSearch:
                 if rule_id in self.rule_embeddings_cache:
                     rule_embedding = self.rule_embeddings_cache[rule_id]
                     similarity = self.cosine_similarity(query_vector, rule_embedding)
-                    
-                    # If normalized version exists, take the higher score
-                    if norm_vector is not None:
-                        norm_similarity = self.cosine_similarity(norm_vector, rule_embedding)
-                        similarity = max(similarity, norm_similarity)
                     
                     results.append({
                         'rule': {
@@ -1636,7 +1653,8 @@ def initialize_ai_system():
                     search_engine=ProductionHybridVectorSearch(),
                     client=client,
                     rules_db=RULES_DATABASE,
-                    local_rules=COLUMBIA_CC_LOCAL_RULES
+                    local_rules=COLUMBIA_CC_LOCAL_RULES,
+                    clarifications_db=USGA_CLARIFICATIONS
                 )
                 logger.info(" Simplified system ready")
             except Exception as e:
@@ -1893,28 +1911,28 @@ def get_quick_questions():
                 'id': 'maintenance_facility',
                 'text': 'Maintenance facility on #10',
                 'category': 'local_rules',
-                'icon': '[M]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'purple_line_boundary',
                 'text': 'Purple Line',
                 'category': 'local_rules',
-                'icon': '[P]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'water_hazard_17',
                 'text': 'Water on #17',
                 'category': 'local_rules',
-                'icon': '[W]',
+                'icon': '',
                 'expected_source': 'template'
             },
             {
                 'id': 'green_stakes_cart_path',
-                'text': 'Path behind #14 & #17 green',
+                'text': 'Path behind #12 & #17 green',
                 'category': 'local_rules',
-                'icon': '[R]',
+                'icon': '',
                 'expected_source': 'template'
             }
         ],
@@ -2015,7 +2033,7 @@ def view_all_queries():
         for query in all_queries[:100]:  # Limit to 100 for performance
             timestamp = query.get('timestamp', 'N/A')[:16]
             question = query.get('question', 'N/A')[:100]
-            answer = query.get('answer', 'N/A')[:450]
+            answer = query.get('answer', 'N/A')[:1000]
             source = query.get('source', 'unknown')
             rule_type = query.get('rule_type', 'N/A')
             tokens = query.get('tokens_used', 0)
@@ -2106,6 +2124,42 @@ if ai_initialized:
 else:
     logger.warning(" Running in template-only mode")
 
+@app.route('/api/transcribe', methods=['POST'])
+def transcribe_audio():
+    """Transcribe audio using OpenAI Whisper API with golf context."""
+    try:
+        if 'audio' not in request.files:
+            return jsonify({'success': False, 'error': 'No audio file provided'}), 400
+        
+        audio_file = request.files['audio']
+        
+        import io
+        audio_buffer = io.BytesIO(audio_file.read())
+        audio_buffer.name = 'recording.webm'
+        
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_buffer,
+            language="en",
+            prompt="Golf rules question at Columbia Country Club. "
+                   "Terms: putt, putting, putting green, penalty area, bunker, "
+                   "cart path, OB, out of bounds, stroke and distance, "
+                   "unplayable, embedded, provisional, lateral relief, "
+                   "dropping zone, flagstick, loose impediment, "
+                   "ground under repair, aeration, sod seam, Purple Line, "
+                   "hole 1 through hole 18, fairway, rough, tee box, "
+                   "integral object, green stakes, immovable obstruction, "
+                   "turf nursery, maintenance facility."
+        )
+        
+        return jsonify({
+            'success': True,
+            'transcript': transcript.text
+        })
+        
+    except Exception as e:
+        logger.error(f"Transcription error: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
         
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
