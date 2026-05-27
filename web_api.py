@@ -243,7 +243,7 @@ Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides
             "shack", "the shack", "snack bar", "snack shack",
             "shack on 8", "shack at 8", "shack between 8 and 9",
             "snack bar on 8", "snack bar at 8", "building at 8",
-            "gravel near shack", "paved area near shack"
+            "gravel near shack", "pebbles by the shack", "paved area near shack"
         ],
         "local_rule": "CCC-16",
         "quick_response": """The snack bar at hole 8, known as The Shack, is treated as a single immovable obstruction under Columbia's local rules.

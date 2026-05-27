@@ -208,7 +208,7 @@ class SimplifiedGolfRulesSystem:
             },
             'the_shack': {
                 'required': ['shack'],
-                'any_of': ['relief', 'drop', 'gravel', 'paved', 'building', 'snack', 'snackbar'],
+                'any_of': ['relief', 'drop', 'gravel', 'pebbles', 'rocks', 'paved', 'building', 'snack', 'snackbar'],
                 'min_matches': 1,
                 'min_confidence': 0.2
             }
