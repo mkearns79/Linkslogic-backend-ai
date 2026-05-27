@@ -11,6 +11,7 @@ import logging
 from openai import OpenAI
 from dotenv import load_dotenv
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
+from golf_clarifications_db import USGA_CLARIFICATIONS
 
 
 # Import your existing comprehensive databases
@@ -171,7 +172,7 @@ Relief: Drop/place within one club-length of nearest point of relief. If you get
 NO FREE RELIEF is available from this fence, or any fence at Columbia.
 
 Your options:
-  • Play the ball as it lies if possible
+  • Play the ball as it lies
   • Declare the ball unplayable under Rule 19 (1 penalty stroke)
   - Drop within two club-lengths, not nearer hole
   - Drop on line from hole through ball, going back as far as desired
@@ -182,21 +183,20 @@ The construction fence is treated as a boundary, not a regular obstruction."""
 
     "green_stakes_cart_path": {
     "keywords": [
-        "green stakes behind 14", "green stakes behind 17", "green stakes behind fourteenth", "green stakes behind seventeenth",
-        "cart path behind 14th green", "cart path behind 17th green", "path behind fourteenth green", "path behind seventeenth green", 
+        "green stakes behind 17", "green stakes behind seventeenth",
+        "cart path behind 17th green", "path behind seventeenth green", 
         "cart path green stakes", "path marked with green stakes", "integral object cart path",
-        "no relief cart path", "cart path behind green", "path behind 14", "path behind 17",
-        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #14 & #17 green"
+        "no relief cart path", "cart path behind green", "path behind 17",
+        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #17 green"
     ],
     "local_rule": "CCC-4",
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
-  • Cart path sections behind 14th green marked by green stakes
-  • Cart path sections behind 17th green marked by green stakes  
+  • Cart path sections behind 17th green marked by green stakes, including the adjacent short retaining wall  
   • Unpaved road behind 12th green
 NO FREE RELIEF AVAILABLE - Your options:
-  • Play the ball as it lies if possible
+  • Play the ball as it lies
   • Declare the ball unplayable under Rule 19 (1 penalty stroke)
         - Drop within two club-lengths, not nearer hole
         - Drop on line from hole through ball, going back as far as desired
@@ -241,6 +241,30 @@ Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides
 def extract_hole_number_from_query(query: str):
     """Simple hole number extraction."""
     import re
+    query_lower = query.lower()
+    
+    # Convert ordinal words to numbers ONLY when near course context words
+    ordinal_to_num = {
+        'first': '1', 'second': '2', 'third': '3', 'fourth': '4',
+        'fifth': '5', 'sixth': '6', 'seventh': '7', 'eighth': '8',
+        'ninth': '9', 'tenth': '10', 'eleventh': '11', 'twelfth': '12',
+        'thirteenth': '13', 'fourteenth': '14', 'fifteenth': '15',
+        'sixteenth': '16', 'seventeenth': '17', 'eighteenth': '18',
+    }
+    
+    course_context = ['hole', 'fairway', 'green', 'tee', 'rough', 'bunker',
+                      'bridge', 'pond', 'creek', 'water']
+    
+    for ordinal, num in ordinal_to_num.items():
+        # Check if ordinal appears near a course term (within ~3 words)
+        pattern = rf'(?:{ordinal})\s+(?:\w+\s+){{0,2}}(?:{"|".join(course_context)})'
+        if re.search(pattern, query_lower):
+            return int(num)
+        # Also check course term BEFORE ordinal: "fairway on the third"
+        pattern2 = rf'(?:{"|".join(course_context)})\s+(?:\w+\s+){{0,3}}(?:{ordinal})'
+        if re.search(pattern2, query_lower):
+            return int(num)
+
     patterns = [
         r'\b(\d{1,2})(?:th|st|nd|rd)?\s+(?:hole|green)\b',
         r'\bhole\s+(\d{1,2})\b',
@@ -288,6 +312,15 @@ def apply_columbia_boosting(results, query, verbose=False):
     bridge_terms = ['bridge', 'cart bridge', 'footbridge']
     is_bridge_query = any(term in query_lower for term in bridge_terms)
     
+    # CCC-15 (bridge rules) applies to ALL bridge queries regardless of hole
+    if is_bridge_query:
+        r = get_result_by_id('CCC-15')
+        if r:
+            if verbose:
+                logger.info(f"   - CCC-15: {r['best_similarity']:.3f}  ->  {r['best_similarity']*4.0:.3f} (4.0x bridge boost)")
+            r['best_similarity'] *= 4.0
+    
+    # CCC-2 (penalty area dropping zones) only for specific holes
     bridge_holes = [13, 16, 17, 18]
     bridge_hole_strs = ['13', '16', '17', '18']
     if is_bridge_query and (hole_number in bridge_holes or any(h in query_lower for h in bridge_hole_strs)):
@@ -559,6 +592,9 @@ class ProductionHybridVectorSearch:
     def search_with_precedence(self, query, hole_number=None, top_n=3, verbose=False):
         """FIXED: Search with precedence using pre-computed embeddings."""
         try:
+            import re
+            query = re.sub(r'\b(\d{1,2})(?:th|st|nd|rd)\b', r'\1', query)
+            
             if verbose:
                 logger.info(f" Searching with precedence for: {query}")
                 
@@ -607,42 +643,6 @@ class ProductionHybridVectorSearch:
                 for i, result in enumerate(results[:top_n]):
                     rule_type = "LOCAL" if result['is_local'] else "OFFICIAL"
                     logger.info(f"  {i+1}. {rule_type} - {result['rule']['id']}: {result['best_similarity']:.3f}")
-            
-            # --- KEYWORD FALLBACK ---
-            # If a local rule matches 3+ keywords but isn't in top results, inject it
-            import re
-            query_lower = query.lower()
-            # Strip ordinals for keyword matching
-            query_normalized = re.sub(r'\b(\d{1,2})(?:th|st|nd|rd)\b', r'\1', query_lower)
-            query_words = set(re.findall(r'\b\w+\b', query_normalized))
-            
-            top_ids = {r['rule']['id'] for r in results[:top_n]}
-            
-            for rule in self.local_rules:
-                if rule['id'] in top_ids:
-                    continue
-                
-                # Check keyword overlap
-                rule_keywords = ' '.join(rule.get('keywords', [])) + ' ' + rule.get('text', '')
-                # Normalize ordinals in rule keywords too
-                rule_keywords_normalized = re.sub(r'\b(\d{1,2})(?:th|st|nd|rd)\b', r'\1', rule_keywords.lower())
-                
-                matching_words = 0
-                for word in query_words:
-                    if len(word) > 2 and word in rule_keywords_normalized:
-                        matching_words += 1
-                
-                if matching_words >= 3:
-                    # Find this rule in results and boost it into top_n range
-                    for r in results:
-                        if r['rule']['id'] == rule['id']:
-                            old_score = r['best_similarity']
-                            r['best_similarity'] = max(r['best_similarity'], 0.5)
-                            if verbose:
-                                logger.info(f" Keyword fallback: {rule['id']} matched {matching_words} keywords, score {old_score:.3f} -> {r['best_similarity']:.3f}")
-                            break
-            
-            results.sort(key=sort_key, reverse=True)
             
             # Apply Columbia CC boosting (bridge, cart path, water, purple line, etc.)
             results = apply_columbia_boosting(results, query, verbose=verbose)
@@ -1653,7 +1653,8 @@ def initialize_ai_system():
                     search_engine=ProductionHybridVectorSearch(),
                     client=client,
                     rules_db=RULES_DATABASE,
-                    local_rules=COLUMBIA_CC_LOCAL_RULES
+                    local_rules=COLUMBIA_CC_LOCAL_RULES,
+                    clarifications_db=USGA_CLARIFICATIONS
                 )
                 logger.info(" Simplified system ready")
             except Exception as e:
@@ -1910,28 +1911,24 @@ def get_quick_questions():
                 'id': 'maintenance_facility',
                 'text': 'Maintenance facility on #10',
                 'category': 'local_rules',
-                'icon': '[M]',
                 'expected_source': 'template'
             },
             {
                 'id': 'purple_line_boundary',
                 'text': 'Purple Line',
                 'category': 'local_rules',
-                'icon': '[P]',
                 'expected_source': 'template'
             },
             {
                 'id': 'water_hazard_17',
                 'text': 'Water on #17',
                 'category': 'local_rules',
-                'icon': '[W]',
                 'expected_source': 'template'
             },
             {
                 'id': 'green_stakes_cart_path',
-                'text': 'Path behind #14 & #17 green',
+                'text': 'Path behind #12 & #17 green',
                 'category': 'local_rules',
-                'icon': '[R]',
                 'expected_source': 'template'
             }
         ],
@@ -2032,7 +2029,7 @@ def view_all_queries():
         for query in all_queries[:100]:  # Limit to 100 for performance
             timestamp = query.get('timestamp', 'N/A')[:16]
             question = query.get('question', 'N/A')[:100]
-            answer = query.get('answer', 'N/A')[:450]
+            answer = query.get('answer', 'N/A')[:1000]
             source = query.get('source', 'unknown')
             rule_type = query.get('rule_type', 'N/A')
             tokens = query.get('tokens_used', 0)
@@ -2123,6 +2120,42 @@ if ai_initialized:
 else:
     logger.warning(" Running in template-only mode")
 
+@app.route('/api/transcribe', methods=['POST'])
+def transcribe_audio():
+    """Transcribe audio using OpenAI Whisper API with golf context."""
+    try:
+        if 'audio' not in request.files:
+            return jsonify({'success': False, 'error': 'No audio file provided'}), 400
+        
+        audio_file = request.files['audio']
+        
+        import io
+        audio_buffer = io.BytesIO(audio_file.read())
+        audio_buffer.name = 'recording.webm'
+        
+        transcript = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_buffer,
+            language="en",
+            prompt="Golf rules question at Columbia Country Club. "
+                   "Terms: putt, putting, putting green, penalty area, bunker, "
+                   "cart path, OB, out of bounds, stroke and distance, "
+                   "unplayable, embedded, provisional, lateral relief, "
+                   "dropping zone, flagstick, loose impediment, "
+                   "ground under repair, aeration, sod seam, Purple Line, "
+                   "hole 1 through hole 18, fairway, rough, tee box, "
+                   "integral object, green stakes, immovable obstruction, "
+                   "turf nursery, maintenance facility."
+        )
+        
+        return jsonify({
+            'success': True,
+            'transcript': transcript.text
+        })
+        
+    except Exception as e:
+        logger.error(f"Transcription error: {str(e)}")
+        return jsonify({'success': False, 'error': str(e)}), 500
         
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8080))
