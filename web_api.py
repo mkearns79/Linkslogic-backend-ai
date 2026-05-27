@@ -236,7 +236,28 @@ OPTION 1 - Columbia CC Special Relief (2 penalty strokes):
 OPTION 2 - Standard Rule (1 penalty stroke):
   • Return to where you last played and hit again (stroke and distance)
 Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides NO FREE RELIEF - it is a boundary, not an obstruction."""
-    }
+    },
+
+     "the_shack": {
+        "keywords": [
+            "shack", "the shack", "snack bar", "snack shack",
+            "shack on 8", "shack at 8", "shack between 8 and 9",
+            "snack bar on 8", "snack bar at 8", "building at 8",
+            "gravel near shack", "paved area near shack"
+        ],
+        "local_rule": "CCC-16",
+        "quick_response": """The snack bar at hole 8, known as The Shack, is treated as a single immovable obstruction under Columbia's local rules.
+
+FREE RELIEF available from:
+  • The structure itself
+  • Surrounding gravel areas
+  • Surrounding paved areas
+
+The entire complex is treated as one immovable obstruction. To take relief:
+  • Find the nearest point of complete relief, not nearer the hole
+  • Drop within one club-length of that point
+  • No penalty stroke"""
+    },
 }
 
 def extract_hole_number_from_query(query: str):

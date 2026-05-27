@@ -507,6 +507,31 @@ COLUMBIA_CC_LOCAL_RULES = {
                     'examples': ['Ball under bridge against support beam', 'Bridge column in swing path', 'Ball under bridge on 13 near beam', 'Support beam interfering with stance', 'Ball against bridge support on 17']
                 },
             ]
+        },
+
+                {
+            'id': 'CCC-16',
+            'title': 'Snack Bar at Hole 8 (The Shack)',
+            'text': 'The snack bar between holes 8 and 9, known as The Shack, including the building, surrounding gravel areas, and paved areas, is treated as a single immovable obstruction. Free relief is allowed under Rule 16.1.',
+            'keywords': ['shack', 'snack bar', 'snack shack', 'the shack', 'hole 8', 'hole 9', 'between 8 and 9', 'gravel near shack', 'paved area shack', 'building between 8 9', 'snack bar 8', 'shack at 8'],
+            'examples': [
+                'Ball near The Shack - free relief available under Rule 16.1',
+                'Ball on gravel area around snack bar at 8 - free relief',
+                'Ball on paved area near The Shack - free relief',
+                'Shack building interferes with swing - free relief'
+            ],
+            'conditions': [
+                {
+                    'situation': 'The Shack and surrounding areas',
+                    'explanation': 'The snack bar at hole 8, commonly known as The Shack, including the building itself, all surrounding gravel areas, and all paved areas, is treated as a single immovable obstruction. Free relief is available under Rule 16.1. Find the nearest point of complete relief not nearer the hole and drop within one club-length.',
+                    'examples': ['Ball near snack bar building', 'Ball on gravel around The Shack', 'Ball on paved area near snack bar', 'The Shack in my line of play']
+                },
+                {
+                    'situation': 'Free relief procedure from The Shack',
+                    'explanation': 'When your ball is on or near The Shack, its gravel areas, or its paved areas, and any part of the structure interferes with your lie, stance, or swing, take free relief under Rule 16.1. Drop within one club-length of the nearest point of complete relief, not nearer the hole, no penalty.',
+                    'examples': ['Ball against shack wall', 'Standing on gravel near shack', 'Shack blocks swing path']
+                }
+            ]
         }
     ],
     
@@ -539,6 +564,7 @@ COLUMBIA_CC_LOCAL_RULES = {
         '3': ['CCC-3', 'CCC-5', 'CCC-15'],
         '4': ['CCC-3'],
         '6': ['CCC-9'],
+        '7': ['CCC-16'],
         '9': ['CCC-7', 'CCC-8'],
         '10': ['CCC-7', 'CCC-8'],
         '12': ['CCC-4'],

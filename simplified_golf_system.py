@@ -205,6 +205,12 @@ class SimplifiedGolfRulesSystem:
                 'required': ['line'],
                 'any_of': ['white', 'boundary', 'touching', 'on the', 'painted', 'ob'],
                 'min_matches': 2
+            },
+            'the_shack': {
+                'required': ['shack'],
+                'any_of': ['relief', 'drop', 'gravel', 'paved', 'building', 'snack', 'snackbar'],
+                'min_matches': 1,
+                'min_confidence': 0.2
             }
         }
         
