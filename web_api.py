@@ -183,20 +183,21 @@ The construction fence is treated as a boundary, not a regular obstruction."""
 
     "green_stakes_cart_path": {
     "keywords": [
-        "green stakes behind 17", "green stakes behind seventeenth",
-        "cart path behind 17th green", "path behind seventeenth green", 
+        "green stakes behind 14", "green stakes behind 17", "green stakes behind fourteenth", "green stakes behind seventeenth",
+        "cart path behind 14th green", "cart path behind 17th green", "path behind fourteenth green", "path behind seventeenth green", 
         "cart path green stakes", "path marked with green stakes", "integral object cart path",
-        "no relief cart path", "cart path behind green", "path behind 17",
-        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #17 green"
+        "no relief cart path", "cart path behind green", "path behind 14", "path behind 17",
+        "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #14 & #17 green"
     ],
     "local_rule": "CCC-4",
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
-  • Cart path sections behind 17th green marked by green stakes, including the adjacent short retaining wall  
+  • Cart path sections behind 14th green marked by green stakes
+  • Cart path sections behind 17th green marked by green stakes, along with the short retaining wall adjacent to the 15th teebox  
   • Unpaved road behind 12th green
 NO FREE RELIEF AVAILABLE - Your options:
-  • Play the ball as it lies
+  • Play the ball as it lies if possible
   • Declare the ball unplayable under Rule 19 (1 penalty stroke)
         - Drop within two club-lengths, not nearer hole
         - Drop on line from hole through ball, going back as far as desired
@@ -1927,7 +1928,7 @@ def get_quick_questions():
             },
             {
                 'id': 'green_stakes_cart_path',
-                'text': 'Path behind #12 & #17 green',
+                'text': 'Path behind #14 & #17 green',
                 'category': 'local_rules',
                 'expected_source': 'template'
             }
