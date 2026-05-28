@@ -965,7 +965,7 @@ RULES_DATABASE = [
     {
         "id": "5.2",
         "title": "Practising on Course Before or Between Rounds",
-        "text": "For this Rule, 'practising on the course' means playing a ball, or testing the surface of the putting green by rolling a ball or rubbing the surface. In match play, players may practise on the course before or between rounds. In stroke play, players must not practise on the course before a round, except putting/chipping near first tee, practice areas, or near completed hole's green.",
+        "text": "For this Rule, 'practising on the course' means playing a ball, or testing the surface of the putting green by rolling a ball or rubbing the surface. In match play, players may practise on the course before or between rounds. In stroke play, players must not practice on the course before a round, except putting/chipping near first tee, practice areas, or near completed hole's green.",
         "keywords": ["practising on course", "playing ball", "testing putting green", "rolling ball rubbing surface", "match play may practise", "stroke play must not", "putting chipping near tee", "practice areas", "completed hole green"],
         "examples": [
             "practice restrictions",
@@ -986,7 +986,7 @@ RULES_DATABASE = [
         },
         {
             "situation": "Stroke play practice restrictions",
-            "explanation": "Under Rule 5.2b, on day of stroke-play competition: player must not practise on course before round, except may practise putting or chipping on or near first teeing area, practise on any practice area, practise on or near putting green of hole just completed even if will play that hole again same day.",
+            "explanation": "Under Rule 5.2b, on day of stroke-play competition: player must not practice on course before round, except may practice putting or chipping on or near first teeing area, practise on any practice area, practice on or near putting green of hole just completed even if will play that hole again same day.",
             "examples": ["must not practise", "except putting chipping", "near first tee", "practice area", "completed hole green"]
         },
         {
@@ -1091,7 +1091,7 @@ RULES_DATABASE = [
     },
     {
         "id": "5.5",
-        "title": "Practising During Round or While Play Is Stopped",
+        "title": "Practicing During Round or While Play Is Stopped",
         "text": "While playing a hole, players must not make practice strokes at any ball. After completing a hole, players must not make practice strokes except putting/chipping on or near the completed hole's green, practice greens, or next tee area. While play is suspended, practice is restricted to outside the course or Committee-allowed areas.",
         "keywords": ["playing hole", "no practice strokes", "after completing hole", "putting chipping", "completed hole green", "practice greens", "next tee area", "play suspended", "outside course", "committee allowed"],
         "examples": [
@@ -3683,8 +3683,8 @@ RULES_DATABASE = [
     {
         "id": "13.1f",
         "title": "Relief Must Be Taken from Wrong Green",
-        "text": "When there is interference by a wrong green (ball touching wrong green or wrong green interfering with stance/swing), a player must not play the ball as it lies and must take free relief by dropping in a relief area, unless interference exists only because of clearly unreasonable choices.",
-        "keywords": ["relief must be taken", "wrong green", "interference", "touching wrong green", "stance swing", "free relief", "dropping", "relief area", "clearly unreasonable"],
+        "text": "When there is interference by a wrong green, including a practice green (ball touching wrong green or wrong green interfering with stance/swing), a player must not play the ball as it lies and must take free relief by dropping in a relief area, unless interference exists only because of clearly unreasonable choices.",
+        "keywords": ["relief must be taken", "wrong green", "ball on practice green", "ball on practice area green", "interference", "touching wrong green", "stance swing", "free relief", "dropping", "relief area", "clearly unreasonable"],
         "examples": [
             "ball on wrong green relief",
             "wrong green interfering with stance",
@@ -3695,7 +3695,7 @@ RULES_DATABASE = [
         {
             "situation": "When interference by wrong green exists",
             "explanation": "Under Rule 13.1f(1), interference exists when: any part of the player's ball touches a wrong green or lies on or in anything inside the edge of a wrong green, or a wrong green physically interferes with the player's area of intended stance or area of intended swing.",
-            "examples": ["ball touching wrong green", "ball on objects on wrong green", "stance on wrong green", "swing through wrong green"]
+            "examples": ["ball touching wrong green", "ball on objects on wrong green", "ball on practice green", "stance on wrong green", "swing through wrong green"]
         },
         {
             "situation": "Mandatory relief procedures",

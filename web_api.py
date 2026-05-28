@@ -246,7 +246,7 @@ Remember: The Purple Line boundary wall (or any temporary mesh fencing) provides
             "gravel near shack", "pebbles by the shack", "paved area near shack"
         ],
         "local_rule": "CCC-16",
-        "quick_response": """The snack bar at hole 8, known as The Shack, is treated as a single immovable obstruction under Columbia's local rules.
+        "quick_response": """The snack bar at hole 8, known as "The Shack", is treated as a single immovable obstruction under Columbia's local rules.
 
 FREE RELIEF available from:
   • The structure itself
