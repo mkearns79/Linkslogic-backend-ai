@@ -258,6 +258,23 @@ The entire complex is treated as one immovable obstruction. To take relief:
   • Drop within one club-length of that point
   • No penalty stroke"""
     },
+
+     "wrong_green_practice": {
+        "keywords": [
+            "practice green", "ball on practice green", "hit onto practice green",
+            "landed on practice green", "practice putting green", "wrong green"
+        ],
+        "local_rule": "13.1f",
+        "quick_response": """According to Rule 13.1f, you CANNOT play your ball as it lies on the practice green. The practice green is a "wrong green" and you MUST take free relief:
+
+  • Find the nearest point of complete relief in the general area (not on the practice green)
+  • Drop within one club-length of that point
+  • Must be in the same area of the course (general area)
+  • Must not be nearer the hole
+  • No penalty stroke
+
+This is MANDATORY relief - you are not allowed to play from the practice green even if you want to."""
+    }   
 }
 
 def extract_hole_number_from_query(query: str):

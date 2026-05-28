@@ -211,6 +211,12 @@ class SimplifiedGolfRulesSystem:
                 'any_of': ['relief', 'drop', 'gravel', 'pebbles', 'rocks', 'paved', 'building', 'snack', 'snackbar'],
                 'min_matches': 1,
                 'min_confidence': 0.2
+            },
+            'wrong_green_practice': {
+                'required': ['practice green'],
+                'any_of': ['relief', 'drop', 'ball', 'lies', 'play', 'hit', 'landed', 'resting', 'stance', 'swing'],
+                'min_matches': 1,
+                'min_confidence': 0.2
             }
         }
         
