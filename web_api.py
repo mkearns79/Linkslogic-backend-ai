@@ -1994,7 +1994,7 @@ def view_all_queries():
         resource.type="cloud_run_revision"
         textPayload:"GOLF_QUERY:"
         timestamp >= "{}T00:00:00Z"
-        '''.format((datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))
+        '''.format((datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d'))
         
         all_queries = []
         
@@ -2068,7 +2068,7 @@ def view_all_queries():
         for query in all_queries[:100]:  # Limit to 100 for performance
             timestamp = query.get('timestamp', 'N/A')
             question = query.get('question', 'N/A')[:100]
-            answer = query.get('answer', 'N/A')[:1000]
+            answer = query.get('answer', 'N/A')[:5000]
             source = query.get('source', 'unknown')
             rule_type = query.get('rule_type', 'N/A')
             tokens = query.get('tokens_used', 0)
