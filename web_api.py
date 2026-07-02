@@ -183,8 +183,8 @@ The construction fence is treated as a boundary, not a regular obstruction."""
 
     "green_stakes_cart_path": {
     "keywords": [
-        "green stakes behind 14", "green stakes behind 17", "green stakes behind fourteenth", "green stakes behind seventeenth",
-        "cart path behind 14th green", "cart path behind 17th green", "path behind fourteenth green", "path behind seventeenth green", 
+        "green stakes behind 17", "green stakes behind seventeenth",
+        "cart path behind 17th green", "path behind seventeenth green", 
         "cart path green stakes", "path marked with green stakes", "integral object cart path",
         "no relief cart path", "cart path behind green", "path behind 14", "path behind 17",
         "green stakes cart path", "stakes behind green", "marked cart path", "Path behind #14 & #17 green"
@@ -193,7 +193,6 @@ The construction fence is treated as a boundary, not a regular obstruction."""
     "quick_response": """According to Columbia Country Club's local rules, certain cart paths are designated as INTEGRAL OBJECTS from which NO FREE RELIEF is available:
 
 AFFECTED AREAS:
-  • Cart path sections behind 14th green marked by green stakes
   • Cart path sections behind 17th green marked by green stakes, along with the short retaining wall adjacent to the 15th teebox  
   • Unpaved road behind 12th green
 NO FREE RELIEF AVAILABLE - Your options:
@@ -261,7 +260,7 @@ The entire complex is treated as one immovable obstruction. To take relief:
 
      "wrong_green_practice": {
         "keywords": [
-            "practice green", "ball on practice green", "hit onto practice green",
+            "practice green", "ball on practice green", "hit onto practice green", "practice area green",
             "landed on practice green", "practice putting green", "wrong green"
         ],
         "local_rule": "13.1f",
