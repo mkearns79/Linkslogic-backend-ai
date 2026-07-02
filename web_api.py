@@ -1819,6 +1819,7 @@ def ask_question():
                         "intent_detected": response_data.get('intent_detected', ''),
                         "success": response_data.get('success', False)
                     }
+                    logger.info(f"GOLF_QUERY: {json.dumps(comprehensive_log)}")
                     
                 except Exception as e:
                     logger.error(f"Dashboard logging error: {e}")
