@@ -13,12 +13,6 @@ from dotenv import load_dotenv
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
 from golf_clarifications_db import USGA_CLARIFICATIONS
 
-import pytz
-
-def eastern_now():
-    eastern = pytz.timezone('America/New_York')
-    return datetime.now(eastern)
-
 
 # Import your existing comprehensive databases
 from golf_rules_data import RULES_DATABASE
@@ -1740,7 +1734,7 @@ def ask_question():
                 response_data['response_time'] = response_time
                 response_data['club_id'] = 'columbia_cc'
                 response_data['ai_system'] = 'definitions_database'
-                response_data['timestamp'] = eastern_now().isoformat()
+                response_data['timestamp'] = datetime.now().isoformat()
                 response_data['tokens_used'] = 0  # Definitions are free
                 response_data['estimated_cost'] = 0.0
                 response_data['intent_detected'] = 'definition'
@@ -1748,7 +1742,7 @@ def ask_question():
                 # ADD COMPREHENSIVE LOGGING (same format as other sources)
                 try:
                     comprehensive_log = {
-                        "timestamp": eastern_now().isoformat(),
+                        "timestamp": datetime.now().isoformat(),
                         "question": question,
                         "answer": response_data.get('answer', ''),
                         "source": 'definitions_database',
@@ -1798,7 +1792,7 @@ def ask_question():
                     'tokens_used': result.get('tokens_used', 0),
                     'estimated_cost': round(result.get('tokens_used', 0) * 0.00001, 4),
                     'intent_detected': result.get('intent_detected', 'unknown'),
-                    'timestamp': eastern_now().isoformat()
+                    'timestamp': datetime.now().isoformat()
                 }
                 
                 if 'rules_used' in result:
@@ -1809,7 +1803,7 @@ def ask_question():
                 logger.info(f" Production hybrid response ({result['source']}) in {response_time}s")
                 try:
                     comprehensive_log = {
-                        "timestamp": eastern_now().isoformat(),
+                        "timestamp": datetime.now().isoformat(),
                         "question": question,
                         "answer": response_data.get('answer', ''),
                         "source": response_data.get('source', ''),
@@ -1846,7 +1840,7 @@ def ask_question():
             'confidence': 'low',
             'response_time': response_time,
             'ai_system': 'fallback',
-            'timestamp': eastern_now().isoformat()
+            'timestamp': datetime.now().isoformat()
         }
         
         logger.info(f" Fallback response in {response_time}s") 
@@ -1858,7 +1852,7 @@ def ask_question():
         return jsonify({
             'success': False,
             'error': f'Failed to process question: {str(e)}',
-            'timestamp': eastern_now().isoformat()
+            'timestamp': datetime.now().isoformat()
         }), 500
 
 @app.route('/api/definitions', methods=['GET'])
@@ -1924,7 +1918,7 @@ def health_check():
     return jsonify({
         'status': 'healthy',
         'service': 'production_hybrid_golf_rules',
-        'timestamp': eastern_now().isoformat(),
+        'timestamp': datetime.now().isoformat(),
         'version': '6.1.0-production-hybrid',
         'ai_available': ai_system_available,
         'approach': 'templates_first_then_ai_with_rule_scoring',
