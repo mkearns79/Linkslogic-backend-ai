@@ -16,10 +16,11 @@ import re
 import json
 from typing import Dict, List, Optional, Any
 from datetime import datetime
-from zoneinfo import ZoneInfo
+import pytz
 
 def eastern_now():
-    return datetime.now(ZoneInfo('America/New_York'))
+    eastern = pytz.timezone('America/New_York')
+    return datetime.now(eastern)
 
 logger = logging.getLogger(__name__)
 

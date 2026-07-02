@@ -12,7 +12,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
 from golf_clarifications_db import USGA_CLARIFICATIONS
-from zoneinfo import ZoneInfo
+import pytz
 
 
 # Import your existing comprehensive databases
@@ -29,7 +29,8 @@ from golf_definitions_db import (
 from simplified_golf_system import SimplifiedGolfRulesSystem, create_simplified_system
 
 def eastern_now():
-    return datetime.now(ZoneInfo('America/New_York'))
+    eastern = pytz.timezone('America/New_York')
+    return datetime.now(eastern)
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
