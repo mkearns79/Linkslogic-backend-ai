@@ -16,11 +16,6 @@ import re
 import json
 from typing import Dict, List, Optional, Any
 from datetime import datetime
-import pytz
-
-def eastern_now():
-    eastern = pytz.timezone('America/New_York')
-    return datetime.now(eastern)
 
 logger = logging.getLogger(__name__)
 
@@ -931,7 +926,7 @@ Now provide your complete ruling:"""
         try:
             # Build comprehensive log entry
             log_entry = {
-                "timestamp": eastern_now().isoformat(),
+                "timestamp": datetime.now().isoformat(),
                 "query_id": query_id,
                 "question": question,  # Full question, no truncation
                 "answer": result.get('answer', ''),  # Full answer, no truncation
