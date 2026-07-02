@@ -2066,7 +2066,7 @@ def view_all_queries():
         
         # Add rows for each query with definitions database color coding
         for query in all_queries[:100]:  # Limit to 100 for performance
-            timestamp = query.get('timestamp', 'N/A')[:16]
+            timestamp = query.get('timestamp', 'N/A')
             question = query.get('question', 'N/A')[:100]
             answer = query.get('answer', 'N/A')[:1000]
             source = query.get('source', 'unknown')
@@ -2088,7 +2088,7 @@ def view_all_queries():
             
             html += f"""
                 <tr class="{row_class}">
-                    <td>{timestamp}</td>
+                    <td class="ts">{timestamp}</td>
                     <td class="question">{question}</td>
                     <td class="answer">{answer}</td>
                     <td>{source}</td>
@@ -2112,6 +2112,18 @@ def view_all_queries():
             </div>
             
             <script>
+                // Convert timestamps to Eastern time
+                document.querySelectorAll('.ts').forEach(td => {
+                  try {
+                    const d = new Date(td.textContent + 'Z');
+                    td.textContent = d.toLocaleString('en-US', {
+                      timeZone: 'America/New_York',
+                      month: 'short', day: 'numeric',
+                      hour: 'numeric', minute: '2-digit',
+                      hour12: true
+                    });
+                  } catch(e) {}
+                });
                 // Auto-refresh every 60 seconds
                 setTimeout(() => location.reload(), 60000);
             </script>
