@@ -1989,12 +1989,12 @@ def view_all_queries():
         # Initialize Cloud Logging client
         logging_client = cloud_logging.Client()
         
-        # Query for our golf queries from the last 7 days
+        # Query for our golf queries from the last 14 days
         filter_str = '''
         resource.type="cloud_run_revision"
         textPayload:"GOLF_QUERY:"
         timestamp >= "{}T00:00:00Z"
-        '''.format((datetime.now() - timedelta(days=14)).strftime('%Y-%m-%d'))
+        '''.format((datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d'))
         
         all_queries = []
         
@@ -2042,7 +2042,7 @@ def view_all_queries():
             <h1> Golf Rules Query Dashboard (Persistent)</h1>
             
             <div class="summary">
-                <h3>Summary (Last 7 Days)</h3>
+                <h3>Summary (Last 14 Days)</h3>
                 <p><strong>Total Queries:</strong> {len(all_queries)}</p>
                 <p><strong>Template Responses:</strong> {template_count}</p>
                 <p><strong>Definitions Database:</strong> {definitions_count} -- NEW</p>
@@ -2068,7 +2068,7 @@ def view_all_queries():
         for query in all_queries[:100]:  # Limit to 100 for performance
             timestamp = query.get('timestamp', 'N/A')
             question = query.get('question', 'N/A')[:100]
-            answer = query.get('answer', 'N/A')[:5000]
+            answer = query.get('answer', 'N/A')[:1000]
             source = query.get('source', 'unknown')
             rule_type = query.get('rule_type', 'N/A')
             tokens = query.get('tokens_used', 0)

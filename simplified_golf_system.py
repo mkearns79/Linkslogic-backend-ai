@@ -945,9 +945,6 @@ Now provide your complete ruling:"""
                 "rule_id": result.get('rule_id', '')
             }
             
-            # Log to Cloud Logging with GOLF_QUERY prefix for dashboard
-            logger.info(f"GOLF_QUERY: {json.dumps(log_entry)}")
-            
             # Additional detailed logging for debugging
             if result.get('source') == 'error':
                 logger.error(f" [{query_id}] Query failed: {result.get('error', 'Unknown error')}")
