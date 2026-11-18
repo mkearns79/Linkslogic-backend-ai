@@ -888,7 +888,7 @@ D) Penalty situations - Penalty strokes, breaches, wrong ball
 E) Definitions - What is a term, terminology questions
 F) Procedures - How to proceed, order of play, marking
 G) Equipment - Clubs, balls, devices
-H) General/Other - Doesn't fit above categories
+H) General/Other - Does not fit above categories
 
 Answer with letter only:"""
 
