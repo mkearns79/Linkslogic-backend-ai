@@ -288,9 +288,9 @@ This is MANDATORY relief - you are not allowed to play from the practice green e
 
 A ball that enters a tunnel is OUT OF BOUNDS unless it bounces back into play on the same side it entered.
 
-Take one penalty stroke, return to where you last played and hit again (stroke and distance)
-
-    },
+Take one penalty stroke, return to where you last played and hit again (stroke and distance)"""
+        },
+    
 }
 
 def extract_hole_number_from_query(query: str):
