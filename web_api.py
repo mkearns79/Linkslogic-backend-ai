@@ -281,7 +281,7 @@ This is MANDATORY relief - you are not allowed to play from the practice green e
             "tunnel", "ball in tunnel", "ball under tunnel", "ball into tunnel",
             "ball through tunnel", "ball entered tunnel", "tunnel on 1", "tunnel on 2",
             "tunnel on 14", "tunnel on 15", "tunnel number 1", "under the tunnel",
-            "inside the tunnel", "went into tunnel", "rest in tunnel", "underneath the tunnel"
+            "inside the tunnel", "went into tunnel", "rest in tunnel", "underneath the tunnel", "lying in tunnel"
         ],
         "local_rule": "CCC-6",
         "quick_response": """According to Columbia Country Club's local rules, the tunnels under the Purple Line at holes 1, 2, 14, and 15 are OUT OF BOUNDS.
